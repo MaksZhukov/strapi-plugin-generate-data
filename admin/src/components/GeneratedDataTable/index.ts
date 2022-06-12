@@ -1,1 +1,1 @@
-export { default } from "./GeneratedDataTable";
+export { default } from './GeneratedDataTable';
