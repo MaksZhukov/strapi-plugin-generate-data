@@ -2,6 +2,35 @@
 
 This plugin is for generating data for your content-types.
 
-For now it supports only `text` and `number` fields of your content types.
+![Preview](./preview.jpg)
 
-It creates content in draft if the content type has draft & publish option
+# Features
+
+* It supports only `string`, `richtext` and `integer` fields of your content types.
+* Ability of choosing which field should be included in generating data
+* It has preview of data in table, which you want to upload
+* Ability of flushing data of the content type you want to upload the generated data
+* It creates content in draft if the content type has draft & publish option
+
+# Instalations
+
+To install this plugin, you need to add an NPM dependency to your Strapi application:
+
+```
+# Using Yarn
+yarn add strapi-plugin-generate-data
+
+# Or using NPM
+npm install strapi-plugin-generate-data
+
+```
+And then enable the plugin in config/plugins
+
+```
+{
+    ...,
+    "generate-data": {
+        enabled: true,
+    },
+}
+```
