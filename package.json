@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-generate-data",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The plugin can help generate random data for your content.",
   "strapi": {
     "name": "generate-data",
@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@faker-js/faker": "^7.1.0",
+    "@strapi/design-system": "^1.1.1",
+    "@strapi/icons": "^0.0.1-alpha.79",
     "axios": "^0.27.2"
   },
   "devDependencies": {
@@ -29,9 +31,9 @@
   },
   "maintainers": [
     {
-        "name": "Maksim Zhukau",
-        "email": "maks_zhukov_97@mail.ru",
-        "url": "https://github.com/MaksZhukov"
+      "name": "Maksim Zhukau",
+      "email": "maks_zhukov_97@mail.ru",
+      "url": "https://github.com/MaksZhukov"
     }
   ],
   "engines": {
