@@ -1,6 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
-    default: {},
-    validator() { },
+exports.__esModule = true;
+exports["default"] = {
+    "default": {},
+    validator: function () { }
 };

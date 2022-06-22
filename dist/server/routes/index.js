@@ -1,14 +1,14 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = [
+exports.__esModule = true;
+exports["default"] = [
     {
         method: "GET",
         path: "/",
         handler: "myController.index",
         config: {
             policies: [],
-            auth: false,
-        },
+            auth: false
+        }
     },
     {
         method: "POST",
@@ -16,7 +16,7 @@ exports.default = [
         handler: "myController.flush",
         config: {
             policies: [],
-            auth: false,
-        },
+            auth: false
+        }
     },
 ];

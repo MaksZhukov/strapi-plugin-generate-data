@@ -1,14 +1,17 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ({ strapi }) => ({
-    index(ctx) {
-        ctx.body = strapi
-            .plugin("generate-data")
-            .service("myService")
-            .getWelcomeMessage();
-    },
-    flush(ctx) {
-        const { contentType } = ctx.params;
-        return strapi.entityService.deleteMany(contentType);
-    },
+exports.__esModule = true;
+exports["default"] = (function (_a) {
+    var strapi = _a.strapi;
+    return ({
+        index: function (ctx) {
+            ctx.body = strapi
+                .plugin("generate-data")
+                .service("myService")
+                .getWelcomeMessage();
+        },
+        flush: function (ctx) {
+            var contentType = ctx.params.contentType;
+            return strapi.entityService.deleteMany(contentType);
+        }
+    });
 });

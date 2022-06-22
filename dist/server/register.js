@@ -1,5 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ({ strapi }) => {
+exports.__esModule = true;
+exports["default"] = (function (_a) {
+    var strapi = _a.strapi;
     // registeration phase
-};
+});
