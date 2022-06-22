@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,12 +58,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 var helper_plugin_1 = require("@strapi/helper-plugin");
-var package_json_1 = require("../../package.json");
-var pluginId_1 = require("./pluginId");
-var Initializer_1 = require("./components/Initializer");
-var PluginIcon_1 = require("./components/PluginIcon");
+var package_json_1 = __importDefault(require("../../package.json"));
+var pluginId_1 = __importDefault(require("./pluginId"));
+var Initializer_1 = __importDefault(require("./components/Initializer"));
+var PluginIcon_1 = __importDefault(require("./components/PluginIcon"));
 var displayName = package_json_1["default"].strapi.displayName;
 exports["default"] = {
     register: function (app) {
@@ -56,8 +82,8 @@ exports["default"] = {
                 var component;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, Promise.resolve().then(function () { return require(
-                            /* webpackChunkName: "[request]" */ './pages/App'); })];
+                        case 0: return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require(
+                            /* webpackChunkName: "[request]" */ './pages/App')); })];
                         case 1:
                             component = _a.sent();
                             return [2 /*return*/, component];
@@ -89,7 +115,7 @@ exports["default"] = {
                     case 0:
                         locales = app.locales;
                         return [4 /*yield*/, Promise.all(locales.map(function (locale) {
-                                return Promise.resolve().then(function () { return require("./translations/".concat(locale, ".json")); }).then(function (_a) {
+                                return Promise.resolve().then(function () { return __importStar(require("./translations/".concat(locale, ".json"))); }).then(function (_a) {
                                     var data = _a["default"];
                                     return {
                                         data: (0, helper_plugin_1.prefixPluginTranslations)(data, pluginId_1["default"]),

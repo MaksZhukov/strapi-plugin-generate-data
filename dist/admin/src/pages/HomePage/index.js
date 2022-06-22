@@ -55,6 +55,9 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 var jsx_runtime_1 = require("react/jsx-runtime");
 /*
@@ -73,8 +76,8 @@ var Button_1 = require("@strapi/design-system/Button");
 var NumberInput_1 = require("@strapi/design-system/NumberInput");
 var Checkbox_1 = require("@strapi/design-system/Checkbox");
 var Alert_1 = require("@strapi/design-system/Alert");
-var GeneratedDataTable_1 = require("../../components/GeneratedDataTable");
-var axiosInstance_1 = require("../../utils/axiosInstance");
+var GeneratedDataTable_1 = __importDefault(require("../../components/GeneratedDataTable"));
+var axiosInstance_1 = __importDefault(require("../../utils/axiosInstance"));
 var COUNT_PAGINATION_ROWS = 25;
 var COUNT_UPLOADED_DATA_ONCE = 25;
 var includeTypes = ['integer', 'string', 'richtext'];

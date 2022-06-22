@@ -38,8 +38,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
-var axios_1 = require("axios");
+var axios_1 = __importDefault(require("axios"));
 var helper_plugin_1 = require("@strapi/helper-plugin");
 var instance = axios_1["default"].create({
     baseURL: process.env.STRAPI_ADMIN_BACKEND_URL
