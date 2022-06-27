@@ -33,7 +33,7 @@ interface ContentType {
 const COUNT_PAGINATION_ROWS = 25;
 const COUNT_UPLOADED_DATA_ONCE = 25;
 
-const includeTypes = ['integer', 'string', 'richtext'];
+const includeTypes = ['integer', 'string', 'richtext', 'email'];
 
 const HomePage: React.VoidFunctionComponent = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
@@ -80,13 +80,19 @@ const HomePage: React.VoidFunctionComponent = () => {
 			let newCheckedAttributes: string[] = [];
 			Object.keys(attributes).forEach((key) => {
 				if (attributes[key].type === 'integer') {
-					obj[key] = { min: 0, max: 10 };
+					obj[key] = {
+						min: attributes[key].min || 0,
+						max: attributes[key].max || 10,
+					};
 				}
 				if (
 					attributes[key].type === 'string' ||
 					'richtext' === attributes[key].type
 				) {
 					obj[key] = { count: 10 };
+				}
+				if (attributes[key].type === 'email') {
+					obj[key] = {};
 				}
 				newCheckedAttributes.push(key);
 			});
@@ -114,13 +120,14 @@ const HomePage: React.VoidFunctionComponent = () => {
 								max: number;
 							};
 							obj[key] = faker.datatype.number({ min, max });
-						}
-						if (
+						} else if (
 							attributes[key].type === 'string' ||
 							'richtext' === attributes[key].type
 						) {
 							let { count } = values[key] as { count: number };
 							obj[key] = faker.random.words(count);
+						} else if (attributes[key].type === 'email') {
+							obj[key] = faker.internet.email();
 						}
 					});
 				// @ts-ignore
@@ -132,9 +139,27 @@ const HomePage: React.VoidFunctionComponent = () => {
 
 	const handleValueChange =
 		(key: string, field: string) => (value: number) => {
+			const { min, max } = attributes[key];
+			if (min || max) {
+				let { min: currentMin, max: currentMax } = values[key] as {
+					min: number;
+					max: number;
+				};
+				if (
+					value < min ||
+					value > max ||
+					(field === 'min' && value > currentMax) ||
+					(field === 'max' && value < currentMin)
+				) {
+					return;
+				}
+			}
 			if (value > 0) {
 				// @ts-ignore
-				setValues({ ...values, [key]: { [field]: value } });
+				setValues({
+					...values,
+					[key]: { ...values[key], [field]: value },
+				});
 			}
 		};
 
@@ -189,9 +214,10 @@ const HomePage: React.VoidFunctionComponent = () => {
 		setShowAlert(false);
 	};
 
-	let renderStringInput = (key: string) => (
+	let renderStringInput = (key: string, attribute) => (
 		<Flex gap='10px' alignItems='center'>
 			<Checkbox
+				disabled={attribute.required}
 				onChange={handleChangeChecked(key)}
 				checked={checkedAttributes.includes(key)}></Checkbox>
 			<Typography variant='beta'>{key}</Typography>
@@ -204,11 +230,12 @@ const HomePage: React.VoidFunctionComponent = () => {
 		</Flex>
 	);
 
-	const getAttributeInputs = (key: string) => {
+	const getAttributeInputs = (key: string, attribute) => {
 		return {
 			['integer']: (
 				<Flex gap='10px'>
 					<Checkbox
+						disabled={attribute.required}
 						checked={checkedAttributes.includes(key)}></Checkbox>
 					<Typography variant='beta'>{key}</Typography>
 					<NumberInput
@@ -216,21 +243,27 @@ const HomePage: React.VoidFunctionComponent = () => {
 						onValueChange={handleValueChange(key, 'min')}
 						// @ts-ignore
 						value={values[key].min}
-						label='min'></NumberInput>
+						label={'min ' + attribute.min}></NumberInput>
 					<NumberInput
 						disabled={!checkedAttributes.includes(key)}
 						onValueChange={handleValueChange(key, 'max')}
 						// @ts-ignore
 						value={values[key].max}
-						label='max'></NumberInput>
+						label={'max ' + attribute.max}></NumberInput>
 				</Flex>
 			),
-			['richtext']: renderStringInput(key),
-			['string']: renderStringInput(key),
+			['richtext']: renderStringInput(key, attribute),
+			['string']: renderStringInput(key, attribute),
+			['email']: (
+				<Flex>
+					<Checkbox
+						disabled={attribute.required}
+						checked={checkedAttributes.includes(key)}></Checkbox>
+					<Typography variant='beta'>{key}</Typography>
+				</Flex>
+			),
 		};
 	};
-
-	const pageCount = Math.floor(generatedData.length / COUNT_PAGINATION_ROWS);
 
 	return (
 		<Layout>
@@ -253,7 +286,10 @@ const HomePage: React.VoidFunctionComponent = () => {
 				{attributes &&
 					values &&
 					Object.keys(attributes).map(
-						(key) => getAttributeInputs(key)[attributes[key].type]
+						(key) =>
+							getAttributeInputs(key, attributes[key])[
+								attributes[key].type
+							]
 					)}
 				{selectedType && (
 					<Box paddingTop='10px' paddingBottom='10px'>
