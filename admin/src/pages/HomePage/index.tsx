@@ -10,6 +10,7 @@ import { Select, Option } from '@strapi/design-system/Select';
 import { Typography } from '@strapi/design-system/Typography';
 import { Box } from '@strapi/design-system/Box';
 import { faker } from '@faker-js/faker';
+import { DatePicker } from '@strapi/design-system/DatePicker';
 import {
 	HeaderLayout,
 	ContentLayout,
@@ -27,21 +28,28 @@ import axios from '../../utils/axiosInstance';
 interface ContentType {
 	apiID: string;
 	uid: string;
-	schema: { attributes: { [key: string]: { type: string } } };
+	schema: {
+		attributes: { [key: string]: { type: string } };
+		draftAndPublish: boolean;
+	};
 }
 
 const COUNT_PAGINATION_ROWS = 25;
 const COUNT_UPLOADED_DATA_ONCE = 25;
 
-const includeTypes = ['integer', 'string', 'richtext', 'email'];
+const includeTypes = ['integer', 'string', 'richtext', 'email', 'date'];
 
 const HomePage: React.VoidFunctionComponent = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 	const [isUploadingData, setIsUploadingData] = useState<boolean>(false);
+	const [isPublished, setIsPublished] = useState<boolean>(false);
 	const [showAlert, setShowAlert] = useState<boolean>(false);
 	const [selectedTypeUID, setSelectedTypeUID] = useState<string | null>(null);
 	const [values, setValues] = useState<{
-		[key: string]: { count: number } | { min: number; max: number };
+		[key: string]:
+			| { count: number }
+			| { min: number; max: number }
+			| { from: Date; to: Date };
 	} | null>(null);
 	const [count, setCount] = useState<number>(10);
 	const [checkedAttributes, setCheckedAttributes] = useState<string[]>([]);
@@ -64,12 +72,17 @@ const HomePage: React.VoidFunctionComponent = () => {
 		(item) => item.uid === selectedTypeUID
 	) as unknown as ContentType;
 
+	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
+
 	const attributes = selectedType
 		? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
 				return includeTypes.includes(
 					selectedType.schema.attributes[key].type
 				)
-					? { ...prev, [key]: selectedType.schema.attributes[key] }
+					? {
+							...prev,
+							[key]: selectedType.schema.attributes[key],
+					  }
 					: prev;
 		  }, {})
 		: null;
@@ -93,6 +106,9 @@ const HomePage: React.VoidFunctionComponent = () => {
 				}
 				if (attributes[key].type === 'email') {
 					obj[key] = {};
+				}
+				if (attributes[key].type === 'date') {
+					obj[key] = { from: new Date(), to: new Date() };
 				}
 				newCheckedAttributes.push(key);
 			});
@@ -128,6 +144,12 @@ const HomePage: React.VoidFunctionComponent = () => {
 							obj[key] = faker.random.words(count);
 						} else if (attributes[key].type === 'email') {
 							obj[key] = faker.internet.email();
+						} else if (attributes[key].type === 'date') {
+							let { from, to } = values[key] as {
+								from: Date;
+								to: Date;
+							};
+							obj[key] = faker.date.between(from, to);
 						}
 					});
 				// @ts-ignore
@@ -138,8 +160,8 @@ const HomePage: React.VoidFunctionComponent = () => {
 	};
 
 	const handleValueChange =
-		(key: string, field: string) => (value: number) => {
-			const { min, max } = attributes[key];
+		(key: string, field: string) => (value: number | Date) => {
+			const { min, max, from, to } = attributes[key];
 			if (min || max) {
 				let { min: currentMin, max: currentMax } = values[key] as {
 					min: number;
@@ -150,6 +172,19 @@ const HomePage: React.VoidFunctionComponent = () => {
 					value > max ||
 					(field === 'min' && value > currentMax) ||
 					(field === 'max' && value < currentMin)
+				) {
+					return;
+				}
+			}
+			if (field === 'from' || field === 'to') {
+				let { from, to } = values[key] as {
+					from: Date;
+					to: Date;
+				};
+
+				if (
+					(field === 'from' && value > to) ||
+					(field === 'to' && value < from)
 				) {
 					return;
 				}
@@ -184,6 +219,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 		if (selectedType) {
 			try {
 				if (isFlushedPreviousData) {
+					debugger;
 					await axios.post(
 						`/generate-data/flush/${selectedType.uid}`
 					);
@@ -193,7 +229,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 						return;
 					}
 					let dataByCount = data.slice(0, COUNT_UPLOADED_DATA_ONCE);
-					await Promise.all(
+					const response = await Promise.all(
 						dataByCount.map((item) =>
 							axios.post(
 								`/content-manager/collection-types/${selectedType.uid}`,
@@ -201,6 +237,16 @@ const HomePage: React.VoidFunctionComponent = () => {
 							)
 						)
 					);
+
+					if (isPublished) {
+						await Promise.all(
+							response.map((item) =>
+								axios.post(
+									`/content-manager/collection-types/${selectedType.uid}/${item.data.id}/actions/publish`
+								)
+							)
+						);
+					}
 					return uploadData(data.slice(COUNT_UPLOADED_DATA_ONCE));
 				};
 				await uploadData(generatedData);
@@ -212,6 +258,10 @@ const HomePage: React.VoidFunctionComponent = () => {
 
 	const handleCloseAlert = () => {
 		setShowAlert(false);
+	};
+
+	const handleChangeIsPublished = () => {
+		setIsPublished(!isPublished);
 	};
 
 	let renderStringInput = (key: string, attribute) => (
@@ -236,6 +286,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 				<Flex gap='10px'>
 					<Checkbox
 						disabled={attribute.required}
+						onChange={handleChangeChecked(key)}
 						checked={checkedAttributes.includes(key)}></Checkbox>
 					<Typography variant='beta'>{key}</Typography>
 					<NumberInput
@@ -255,11 +306,37 @@ const HomePage: React.VoidFunctionComponent = () => {
 			['richtext']: renderStringInput(key, attribute),
 			['string']: renderStringInput(key, attribute),
 			['email']: (
-				<Flex>
+				<Flex gap='10px'>
 					<Checkbox
 						disabled={attribute.required}
+						onChange={handleChangeChecked(key)}
 						checked={checkedAttributes.includes(key)}></Checkbox>
 					<Typography variant='beta'>{key}</Typography>
+				</Flex>
+			),
+			['date']: (
+				<Flex gap='10px'>
+					<Checkbox
+						disabled={attribute.required}
+						onChange={handleChangeChecked(key)}
+						checked={checkedAttributes.includes(key)}></Checkbox>
+					<Typography variant='beta'>{key}</Typography>
+					<DatePicker
+						onChange={handleValueChange(key, 'from')}
+						selectedDateLabel={(formattedDate) =>
+							`Date picker, current is ${formattedDate}`
+						}
+						// @ts-ignore
+						selectedDate={values[key].from}
+						label='Date from'></DatePicker>
+					<DatePicker
+						label='Date to'
+						onChange={handleValueChange(key, 'to')}
+						selectedDateLabel={(formattedDate) =>
+							`Date picker, current is ${formattedDate}`
+						}
+						// @ts-ignore
+						selectedDate={values[key].to}></DatePicker>
 				</Flex>
 			),
 		};
@@ -273,16 +350,18 @@ const HomePage: React.VoidFunctionComponent = () => {
 				as='h1'
 			/>
 			<ContentLayout>
-				<Select
-					placeholder='Select your content type'
-					value={selectedTypeUID}
-					onChange={handleChangeSelect}>
-					{contentTypes.map((item) => (
-						<Option key={item.uid} value={item.uid}>
-							{item.apiID}
-						</Option>
-					))}
-				</Select>
+				<Box marginBottom='10px'>
+					<Select
+						placeholder='Select your content type'
+						value={selectedTypeUID}
+						onChange={handleChangeSelect}>
+						{contentTypes.map((item) => (
+							<Option key={item.uid} value={item.uid}>
+								{item.apiID}
+							</Option>
+						))}
+					</Select>
+				</Box>
 				{attributes &&
 					values &&
 					Object.keys(attributes).map(
@@ -319,6 +398,13 @@ const HomePage: React.VoidFunctionComponent = () => {
 								onChange={handleChangeIsFlushedPreviousData}>
 								Flush previous content type data before upload
 							</Checkbox>
+							{draftAndPublish && (
+								<Checkbox
+									onChange={handleChangeIsPublished}
+									checked={isPublished}>
+									Publish content?
+								</Checkbox>
+							)}
 							<Button
 								loading={isUploadingData}
 								onClick={handleUploadData}>
@@ -329,7 +415,6 @@ const HomePage: React.VoidFunctionComponent = () => {
 				)}
 				{showAlert && selectedType && (
 					<Alert
-						className='hello'
 						variant='success'
 						onClose={handleCloseAlert}
 						closeLabel='Close alert'

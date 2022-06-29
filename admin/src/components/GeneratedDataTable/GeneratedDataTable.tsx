@@ -60,7 +60,11 @@ const GeneratedDataTable = ({ data }: Props) => {
 									(activePage - 1) * COUNT_PAGINATION_ROWS}
 							</Td>
 							{Object.keys(item).map((key) => (
-								<Td>{item[key]}</Td>
+								<Td>
+									{item[key] instanceof Date
+										? item[key].toString()
+										: item[key]}
+								</Td>
 							))}
 						</Tr>
 					))}
