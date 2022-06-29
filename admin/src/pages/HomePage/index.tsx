@@ -219,6 +219,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 		if (selectedType) {
 			try {
 				if (isFlushedPreviousData) {
+					debugger;
 					await axios.post(
 						`/generate-data/flush/${selectedType.uid}`
 					);
