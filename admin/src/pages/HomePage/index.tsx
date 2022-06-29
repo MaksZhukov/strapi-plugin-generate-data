@@ -149,7 +149,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 								from: Date;
 								to: Date;
 							};
-							obj[key] = faker.date.between(from, to).toString();
+							obj[key] = faker.date.between(from, to);
 						}
 					});
 				// @ts-ignore

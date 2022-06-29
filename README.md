@@ -6,7 +6,8 @@ This plugin is for generating data for your content-types.
 
 # Features
 
-* It supports only `string`, `email`, `richtext` and `integer` fields of your content types.
+* It supports only `string`, `email`, `richtext` and `integer`, `date` fields of your content types.
+* Ability to publish data if you have draft mode for your type
 * Ability of choosing which field should be included in generating data
 * It has preview of data in table, which you want to upload
 * Ability of flushing data of the content type you want to upload the generated data
