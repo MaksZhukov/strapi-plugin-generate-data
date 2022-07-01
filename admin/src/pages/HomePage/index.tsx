@@ -17,6 +17,7 @@ import {
 	Layout,
 } from '@strapi/design-system/Layout';
 
+import { Grid, GridItem } from '@strapi/design-system/Grid';
 import { Flex } from '@strapi/design-system/Flex';
 import { Button } from '@strapi/design-system/Button';
 import { NumberInput } from '@strapi/design-system/NumberInput';
@@ -24,6 +25,7 @@ import { Checkbox } from '@strapi/design-system/Checkbox';
 import { Alert } from '@strapi/design-system/Alert';
 import GeneratedDataTable from '../../components/GeneratedDataTable';
 import axios from '../../utils/axiosInstance';
+import RefreshIcon from '@strapi/icons/Refresh';
 
 interface ContentType {
 	apiID: string;
@@ -120,6 +122,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 	const handleChangeSelect = (newTypeUID: string) => {
 		setValues(null);
 		setSelectedTypeUID(newTypeUID);
+		setGeneratedData([]);
 	};
 
 	const handleClickGenerate = () => {
@@ -265,79 +268,120 @@ const HomePage: React.VoidFunctionComponent = () => {
 	};
 
 	let renderStringInput = (key: string, attribute) => (
-		<Flex gap='10px' alignItems='center'>
-			<Checkbox
-				disabled={attribute.required}
-				onChange={handleChangeChecked(key)}
-				checked={checkedAttributes.includes(key)}></Checkbox>
-			<Typography variant='beta'>{key}</Typography>
-			<NumberInput
-				disabled={!checkedAttributes.includes(key)}
-				onValueChange={handleValueChange(key, 'count')}
-				// @ts-ignore
-				value={values[key].count}
-				label='Count words'></NumberInput>
-		</Flex>
-	);
-
-	const getAttributeInputs = (key: string, attribute) => {
-		return {
-			['integer']: (
-				<Flex gap='10px'>
+		<GridItem col={6}>
+			<Box marginBottom='8px'>
+				<Box marginBottom='12px'>
 					<Checkbox
 						disabled={attribute.required}
 						onChange={handleChangeChecked(key)}
-						checked={checkedAttributes.includes(key)}></Checkbox>
-					<Typography variant='beta'>{key}</Typography>
-					<NumberInput
-						disabled={!checkedAttributes.includes(key)}
-						onValueChange={handleValueChange(key, 'min')}
-						// @ts-ignore
-						value={values[key].min}
-						label={'min ' + attribute.min}></NumberInput>
-					<NumberInput
-						disabled={!checkedAttributes.includes(key)}
-						onValueChange={handleValueChange(key, 'max')}
-						// @ts-ignore
-						value={values[key].max}
-						label={'max ' + attribute.max}></NumberInput>
-				</Flex>
+						checked={checkedAttributes.includes(key)}>
+						{key}
+					</Checkbox>
+				</Box>
+				<NumberInput
+					disabled={!checkedAttributes.includes(key)}
+					onValueChange={handleValueChange(key, 'count')}
+					// @ts-ignore
+					value={values[key].count}
+					label='Count words'></NumberInput>
+			</Box>
+		</GridItem>
+	);
+
+	const getAttributeInputs = (key: string, attribute) => {
+		console.log(attribute.min === undefined ? '' : attribute.min);
+		return {
+			['integer']: (
+				<GridItem col={12}>
+					<Box marginBottom='8px'>
+						<Box marginBottom='12px'>
+							<Checkbox
+								disabled={attribute.required}
+								onChange={handleChangeChecked(key)}
+								checked={checkedAttributes.includes(key)}>
+								{key}
+							</Checkbox>
+						</Box>
+						<Flex gap='16px'>
+							<Box flex='1'>
+								<NumberInput
+									disabled={!checkedAttributes.includes(key)}
+									onValueChange={handleValueChange(
+										key,
+										'min'
+									)}
+									// @ts-ignore
+									value={values[key].min}
+									label={`min ${
+										attribute.min ? attribute.min : ''
+									}`}></NumberInput>
+							</Box>
+							<Box flex='1'>
+								<NumberInput
+									disabled={!checkedAttributes.includes(key)}
+									onValueChange={handleValueChange(
+										key,
+										'max'
+									)}
+									// @ts-ignore
+									value={values[key].max}
+									label={`max ${
+										attribute.max ? attribute.max : ''
+									}`}></NumberInput>
+							</Box>
+						</Flex>
+					</Box>
+				</GridItem>
 			),
 			['richtext']: renderStringInput(key, attribute),
 			['string']: renderStringInput(key, attribute),
 			['email']: (
-				<Flex gap='10px'>
-					<Checkbox
-						disabled={attribute.required}
-						onChange={handleChangeChecked(key)}
-						checked={checkedAttributes.includes(key)}></Checkbox>
-					<Typography variant='beta'>{key}</Typography>
-				</Flex>
+				<GridItem col={6}>
+					<Box marginBottom='8px'>
+						<Checkbox
+							disabled={attribute.required}
+							onChange={handleChangeChecked(key)}
+							checked={checkedAttributes.includes(key)}>
+							{key}
+						</Checkbox>
+					</Box>
+				</GridItem>
 			),
 			['date']: (
-				<Flex gap='10px'>
-					<Checkbox
-						disabled={attribute.required}
-						onChange={handleChangeChecked(key)}
-						checked={checkedAttributes.includes(key)}></Checkbox>
-					<Typography variant='beta'>{key}</Typography>
-					<DatePicker
-						onChange={handleValueChange(key, 'from')}
-						selectedDateLabel={(formattedDate) =>
-							`Date picker, current is ${formattedDate}`
-						}
-						// @ts-ignore
-						selectedDate={values[key].from}
-						label='Date from'></DatePicker>
-					<DatePicker
-						label='Date to'
-						onChange={handleValueChange(key, 'to')}
-						selectedDateLabel={(formattedDate) =>
-							`Date picker, current is ${formattedDate}`
-						}
-						// @ts-ignore
-						selectedDate={values[key].to}></DatePicker>
-				</Flex>
+				<GridItem col={12}>
+					<Box marginBottom='8px'>
+						<Box marginBottom='12px'>
+							<Checkbox
+								disabled={attribute.required}
+								onChange={handleChangeChecked(key)}
+								checked={checkedAttributes.includes(key)}>
+								{key}
+							</Checkbox>
+						</Box>
+						<Flex gap='16px'>
+							<Box flex='1'>
+								<DatePicker
+									onChange={handleValueChange(key, 'from')}
+									selectedDateLabel={(formattedDate) =>
+										`Date picker, current is ${formattedDate}`
+									}
+									// @ts-ignore
+									selectedDate={values[key].from}
+									label='Date from'></DatePicker>
+							</Box>
+							<Box flex='1'>
+								<DatePicker
+									label='Date to'
+									onChange={handleValueChange(key, 'to')}
+									selectedDateLabel={(formattedDate) =>
+										`Date picker, current is ${formattedDate}`
+									}
+									// @ts-ignore
+									selectedDate={values[key].to}></DatePicker>
+							</Box>
+						</Flex>
+					</Box>
+				</GridItem>
 			),
 		};
 	};
@@ -348,50 +392,70 @@ const HomePage: React.VoidFunctionComponent = () => {
 				title='Generate data'
 				subtitle='Generate data for your content types'
 				as='h1'
+				primaryAction={
+					selectedType && (
+						<Button
+							startIcon={<RefreshIcon></RefreshIcon>}
+							onClick={handleClickGenerate}>
+							Generate
+						</Button>
+					)
+				}
 			/>
 			<ContentLayout>
-				<Box marginBottom='10px'>
-					<Select
-						placeholder='Select your content type'
-						value={selectedTypeUID}
-						onChange={handleChangeSelect}>
-						{contentTypes.map((item) => (
-							<Option key={item.uid} value={item.uid}>
-								{item.apiID}
-							</Option>
-						))}
-					</Select>
-				</Box>
-				{attributes &&
-					values &&
-					Object.keys(attributes).map(
-						(key) =>
-							getAttributeInputs(key, attributes[key])[
-								attributes[key].type
-							]
-					)}
-				{selectedType && (
-					<Box paddingTop='10px' paddingBottom='10px'>
-						<Flex alignItems='end' gap='20px'>
-							<NumberInput
-								value={count}
-								onValueChange={setCount}
-								label='Count'></NumberInput>
-							<Button onClick={handleClickGenerate}>
-								Generate
-							</Button>
+				<Box
+					shadow='filterShadow'
+					padding='24px 32px'
+					borderRadius='4px'
+					marginBottom='24px'
+					background='neutral0'>
+					<Flex gap='16px'>
+						<Box flex='1' marginBottom='24px'>
+							<Select
+								label='Content type'
+								placeholder='Select your content type'
+								value={selectedTypeUID}
+								onChange={handleChangeSelect}>
+								{contentTypes.map((item) => (
+									<Option key={item.uid} value={item.uid}>
+										{item.apiID}
+									</Option>
+								))}
+							</Select>
+						</Box>
+						<Box flex='1'></Box>
+					</Flex>
+					<Grid gap='16px'>
+						{attributes &&
+							values &&
+							Object.keys(attributes).map(
+								(key) =>
+									getAttributeInputs(key, attributes[key])[
+										attributes[key].type
+									]
+							)}
+					</Grid>
+					{attributes && (
+						<Flex gap='16px'>
+							<Box paddingTop='16px' flex='1'>
+								<NumberInput
+									value={count}
+									onValueChange={setCount}
+									label='Count items to generate'></NumberInput>
+							</Box>{' '}
+							<Box flex='1'></Box>
 						</Flex>
-					</Box>
-				)}
+					)}
+				</Box>
 				{!!generatedData.length && (
 					<>
 						<GeneratedDataTable
 							data={generatedData}></GeneratedDataTable>
 						<Flex
 							alignItems='center'
-							marginTop='20px'
-							marginBottom='20px'
-							gap='20px'>
+							marginTop='12px'
+							marginBottom='12px'
+							gap='32px'>
 							<Checkbox
 								disabled={isUploadingData}
 								checked={isFlushedPreviousData}
@@ -406,6 +470,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 								</Checkbox>
 							)}
 							<Button
+								variant='secondary'
 								loading={isUploadingData}
 								onClick={handleUploadData}>
 								Upload data

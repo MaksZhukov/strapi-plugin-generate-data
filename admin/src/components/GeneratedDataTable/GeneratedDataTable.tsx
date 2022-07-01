@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Table, Thead, Tbody, Tr, Td, Th } from '@strapi/design-system/Table';
 import { PageLink, Pagination } from '@strapi/design-system/v2/Pagination';
+import { Typography } from '@strapi/design-system/Typography';
 
 interface Props {
 	data: any[];
@@ -40,9 +41,13 @@ const GeneratedDataTable = ({ data }: Props) => {
 			}>
 			<Thead>
 				<Tr>
-					<Th>row</Th>
+					<Th>
+						<Typography variant='sigma'>ROW</Typography>
+					</Th>
 					{Object.keys(data[0]).map((key) => (
-						<Th>{key}</Th>
+						<Th>
+							<Typography variant='sigma'>{key}</Typography>
+						</Th>
 					))}
 				</Tr>
 			</Thead>
@@ -61,9 +66,11 @@ const GeneratedDataTable = ({ data }: Props) => {
 							</Td>
 							{Object.keys(item).map((key) => (
 								<Td>
-									{item[key] instanceof Date
-										? item[key].toString()
-										: item[key]}
+									<Typography>
+										{item[key] instanceof Date
+											? item[key].toString()
+											: item[key]}
+									</Typography>
 								</Td>
 							))}
 						</Tr>
