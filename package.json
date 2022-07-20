@@ -2,6 +2,7 @@
     "name": "strapi-plugin-generate-data",
     "version": "1.0.10",
     "description": "The plugin can help generate random data for your content.",
+	"keywords": ["strapi", "plugin", "data", "generate", "open source", "nodejs", "javascript", "react", "typescript"],
     "strapi": {
         "name": "generate-data",
         "displayName": "Generate data",
