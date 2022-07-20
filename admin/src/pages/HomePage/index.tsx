@@ -7,7 +7,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { Select, Option } from '@strapi/design-system/Select';
-import { Typography } from '@strapi/design-system/Typography';
 import { Box } from '@strapi/design-system/Box';
 import { faker } from '@faker-js/faker';
 import { DatePicker } from '@strapi/design-system/DatePicker';
@@ -36,10 +35,16 @@ interface ContentType {
 	};
 }
 
-const COUNT_PAGINATION_ROWS = 25;
 const COUNT_UPLOADED_DATA_ONCE = 25;
 
-const includeTypes = ['integer', 'string', 'richtext', 'email', 'date'];
+const includeTypes = [
+	'integer',
+	'string',
+	'richtext',
+	'email',
+	'date',
+	'media',
+];
 
 const HomePage: React.VoidFunctionComponent = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
@@ -112,6 +117,13 @@ const HomePage: React.VoidFunctionComponent = () => {
 				if (attributes[key].type === 'date') {
 					obj[key] = { from: new Date(), to: new Date() };
 				}
+				if (attributes[key].type === 'media') {
+					obj[key] = {
+						width: 640,
+						height: 480,
+						...(attributes[key].multiple ? { min: 1, max: 3 } : {}),
+					};
+				}
 				newCheckedAttributes.push(key);
 			});
 			setCheckedAttributes(newCheckedAttributes);
@@ -153,6 +165,26 @@ const HomePage: React.VoidFunctionComponent = () => {
 								to: Date;
 							};
 							obj[key] = faker.date.between(from, to);
+						} else if (attributes[key].type === 'media') {
+							let { width, height, min, max } = values[key] as {
+								width: number;
+								height: number;
+								min: number;
+								max: number;
+							};
+							if (min && max) {
+								obj[key] = new Array(
+									faker.datatype.number({ min, max })
+								)
+									.fill(null)
+									.map(() =>
+										faker.image.image(width, height, true)
+									);
+							} else {
+								obj[key] = [
+									faker.image.image(width, height, true),
+								];
+							}
 						}
 					});
 				// @ts-ignore
@@ -164,7 +196,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 
 	const handleValueChange =
 		(key: string, field: string) => (value: number | Date) => {
-			const { min, max, from, to } = attributes[key];
+			const { min, max } = attributes[key];
 			if (min || max) {
 				let { min: currentMin, max: currentMax } = values[key] as {
 					min: number;
@@ -218,11 +250,13 @@ const HomePage: React.VoidFunctionComponent = () => {
 	const handleUploadData = async () => {
 		setIsUploadingData(true);
 		setShowAlert(false);
+		const mediaKeys = Object.keys(attributes).filter(
+			(key) => attributes[key].type === 'media'
+		);
 
 		if (selectedType) {
 			try {
 				if (isFlushedPreviousData) {
-					debugger;
 					await axios.post(
 						`/generate-data/flush/${selectedType.uid}`
 					);
@@ -232,8 +266,41 @@ const HomePage: React.VoidFunctionComponent = () => {
 						return;
 					}
 					let dataByCount = data.slice(0, COUNT_UPLOADED_DATA_ONCE);
+					let uploadedMediaData = {};
+					if (mediaKeys.length) {
+						const mediaData = mediaKeys.reduce((prev, key) => {
+							return {
+								...prev,
+								[key]: dataByCount.map(
+									(item, index) => item[key]
+								),
+							};
+						}, {});
+						const response = await axios.post(
+							'/generate-data/upload',
+							mediaData
+						);
+						uploadedMediaData = response.data;
+					}
+
+					const transformedData = Object.keys(uploadedMediaData)
+						.length
+						? dataByCount.map((item, index) => {
+								Object.keys(uploadedMediaData).forEach(
+									(key) => {
+										item[key] =
+											uploadedMediaData[key][index].map(
+												(uploadedItem) =>
+													uploadedItem.id
+											) || item[key];
+									}
+								);
+								return item;
+						  })
+						: dataByCount;
+
 					const response = await Promise.all(
-						dataByCount.map((item) =>
+						transformedData.map((item) =>
 							axios.post(
 								`/content-manager/collection-types/${selectedType.uid}`,
 								item
@@ -289,7 +356,6 @@ const HomePage: React.VoidFunctionComponent = () => {
 	);
 
 	const getAttributeInputs = (key: string, attribute) => {
-		console.log(attribute.min === undefined ? '' : attribute.min);
 		return {
 			['integer']: (
 				<GridItem col={12}>
@@ -380,6 +446,74 @@ const HomePage: React.VoidFunctionComponent = () => {
 									selectedDate={values[key].to}></DatePicker>
 							</Box>
 						</Flex>
+					</Box>
+				</GridItem>
+			),
+			['media']: (
+				<GridItem col={12}>
+					<Box marginBottom='8px'>
+						<Box marginBottom='12px'>
+							<Checkbox
+								disabled={attribute.required}
+								onChange={handleChangeChecked(key)}
+								checked={checkedAttributes.includes(key)}>
+								{key}
+							</Checkbox>
+						</Box>
+						<Flex gap='16px'>
+							<Box flex='1'>
+								<NumberInput
+									disabled={!checkedAttributes.includes(key)}
+									onValueChange={handleValueChange(
+										key,
+										'width'
+									)}
+									// @ts-ignore
+									value={values[key].width}
+									label={`width (px)`}></NumberInput>
+							</Box>
+							<Box flex='1'>
+								<NumberInput
+									disabled={!checkedAttributes.includes(key)}
+									onValueChange={handleValueChange(
+										key,
+										'height'
+									)}
+									// @ts-ignore
+									value={values[key].height}
+									label={`height (px)`}></NumberInput>
+							</Box>
+						</Flex>
+						{attribute.multiple && (
+							<Flex marginTop='12px' gap='16px'>
+								<Box flex='1'>
+									<NumberInput
+										disabled={
+											!checkedAttributes.includes(key)
+										}
+										onValueChange={handleValueChange(
+											key,
+											'min'
+										)}
+										// @ts-ignore
+										value={values[key].min}
+										label={`Count min`}></NumberInput>
+								</Box>
+								<Box flex='1'>
+									<NumberInput
+										disabled={
+											!checkedAttributes.includes(key)
+										}
+										onValueChange={handleValueChange(
+											key,
+											'max'
+										)}
+										// @ts-ignore
+										value={values[key].max}
+										label={`Count max`}></NumberInput>
+								</Box>
+							</Flex>
+						)}
 					</Box>
 				</GridItem>
 			),
