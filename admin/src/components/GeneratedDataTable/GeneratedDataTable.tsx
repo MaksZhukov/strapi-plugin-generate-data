@@ -42,11 +42,15 @@ const GeneratedDataTable = ({ data }: Props) => {
 			<Thead>
 				<Tr>
 					<Th>
-						<Typography variant='sigma'>ROW</Typography>
+						<Typography textColor='neutral600' variant='sigma'>
+							ROW
+						</Typography>
 					</Th>
 					{Object.keys(data[0]).map((key) => (
 						<Th>
-							<Typography variant='sigma'>{key}</Typography>
+							<Typography textColor='neutral600' variant='sigma'>
+								{key}
+							</Typography>
 						</Th>
 					))}
 				</Tr>
