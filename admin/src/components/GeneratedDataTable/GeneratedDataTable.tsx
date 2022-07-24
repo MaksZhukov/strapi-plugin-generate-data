@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Td, Th } from '@strapi/design-system/Table';
 import { PageLink, Pagination } from '@strapi/design-system/v2/Pagination';
 import { Typography } from '@strapi/design-system/Typography';
+import ImageCell from './ImageCell';
 
 interface Props {
 	data: any[];
@@ -23,6 +24,18 @@ const GeneratedDataTable = ({ data }: Props) => {
 
 	const pageCount = Math.floor(data.length / COUNT_PAGINATION_ROWS);
 
+	const renderCell = (item: any) => {
+		if (Array.isArray(item)) {
+			return <ImageCell data={item} />;
+		}
+
+		return (
+			<Typography>
+				{item instanceof Date ? item.toString() : item}
+			</Typography>
+		);
+	};
+
 	return (
 		<Table
 			footer={
@@ -42,11 +55,15 @@ const GeneratedDataTable = ({ data }: Props) => {
 			<Thead>
 				<Tr>
 					<Th>
-						<Typography variant='sigma'>ROW</Typography>
+						<Typography textColor='neutral600' variant='sigma'>
+							ROW
+						</Typography>
 					</Th>
 					{Object.keys(data[0]).map((key) => (
 						<Th>
-							<Typography variant='sigma'>{key}</Typography>
+							<Typography textColor='neutral600' variant='sigma'>
+								{key}
+							</Typography>
 						</Th>
 					))}
 				</Tr>
@@ -65,13 +82,7 @@ const GeneratedDataTable = ({ data }: Props) => {
 									(activePage - 1) * COUNT_PAGINATION_ROWS}
 							</Td>
 							{Object.keys(item).map((key) => (
-								<Td>
-									<Typography>
-										{item[key] instanceof Date
-											? item[key].toString()
-											: item[key]}
-									</Typography>
-								</Td>
+								<Td key={key}>{renderCell(item[key])}</Td>
 							))}
 						</Tr>
 					))}
