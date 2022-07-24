@@ -1,30 +1,22 @@
-/*
- *
- * HomePage
- *
- */
-
 import React, { useState, useEffect } from 'react';
-
 import { Select, Option } from '@strapi/design-system/Select';
-import { Box } from '@strapi/design-system/Box';
-import { faker } from '@faker-js/faker';
-import { DatePicker } from '@strapi/design-system/DatePicker';
 import {
 	HeaderLayout,
 	ContentLayout,
 	Layout,
 } from '@strapi/design-system/Layout';
-
-import { Grid, GridItem } from '@strapi/design-system/Grid';
+import { Box } from '@strapi/design-system/Box';
+import { Grid } from '@strapi/design-system/Grid';
 import { Flex } from '@strapi/design-system/Flex';
-import { Button } from '@strapi/design-system/Button';
 import { NumberInput } from '@strapi/design-system/NumberInput';
 import { Checkbox } from '@strapi/design-system/Checkbox';
 import { Alert } from '@strapi/design-system/Alert';
 import GeneratedDataTable from '../../components/GeneratedDataTable';
+import Upload from '../../components/Upload';
+import Generate from '../../components/Generate';
 import axios from '../../utils/axiosInstance';
-import RefreshIcon from '@strapi/icons/Refresh';
+import { getAttributeInputs } from './config';
+import { Values } from './types';
 
 interface ContentType {
 	apiID: string;
@@ -35,8 +27,6 @@ interface ContentType {
 	};
 }
 
-const COUNT_UPLOADED_DATA_ONCE = 25;
-
 const includeTypes = [
 	'integer',
 	'string',
@@ -46,18 +36,13 @@ const includeTypes = [
 	'media',
 ];
 
-const HomePage: React.VoidFunctionComponent = () => {
+const HomePage: React.FC = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 	const [isUploadingData, setIsUploadingData] = useState<boolean>(false);
 	const [isPublished, setIsPublished] = useState<boolean>(false);
 	const [showAlert, setShowAlert] = useState<boolean>(false);
 	const [selectedTypeUID, setSelectedTypeUID] = useState<string | null>(null);
-	const [values, setValues] = useState<{
-		[key: string]:
-			| { count: number }
-			| { min: number; max: number }
-			| { from: Date; to: Date };
-	} | null>(null);
+	const [values, setValues] = useState<Values>(null);
 	const [count, setCount] = useState<number>(10);
 	const [checkedAttributes, setCheckedAttributes] = useState<string[]>([]);
 	const [generatedData, setGeneratedData] = useState<
@@ -137,64 +122,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 		setGeneratedData([]);
 	};
 
-	const handleClickGenerate = () => {
-		let data = [];
-		if (attributes && values) {
-			for (let i = 0; i < count; i++) {
-				let obj = {};
-				Object.keys(attributes)
-					.filter((key) => checkedAttributes.includes(key))
-					.forEach((key) => {
-						if (attributes[key].type === 'integer') {
-							let { min, max } = values[key] as {
-								min: number;
-								max: number;
-							};
-							obj[key] = faker.datatype.number({ min, max });
-						} else if (
-							attributes[key].type === 'string' ||
-							'richtext' === attributes[key].type
-						) {
-							let { count } = values[key] as { count: number };
-							obj[key] = faker.random.words(count);
-						} else if (attributes[key].type === 'email') {
-							obj[key] = faker.internet.email();
-						} else if (attributes[key].type === 'date') {
-							let { from, to } = values[key] as {
-								from: Date;
-								to: Date;
-							};
-							obj[key] = faker.date.between(from, to);
-						} else if (attributes[key].type === 'media') {
-							let { width, height, min, max } = values[key] as {
-								width: number;
-								height: number;
-								min: number;
-								max: number;
-							};
-							if (min && max) {
-								obj[key] = new Array(
-									faker.datatype.number({ min, max })
-								)
-									.fill(null)
-									.map(() =>
-										faker.image.image(width, height, true)
-									);
-							} else {
-								obj[key] = [
-									faker.image.image(width, height, true),
-								];
-							}
-						}
-					});
-				// @ts-ignore
-				data.push(obj);
-			}
-		}
-		setGeneratedData(data);
-	};
-
-	const handleValueChange =
+	const handleChangeValue =
 		(key: string, field: string) => (value: number | Date) => {
 			const { min, max } = attributes[key];
 			if (min || max) {
@@ -233,7 +161,7 @@ const HomePage: React.VoidFunctionComponent = () => {
 			}
 		};
 
-	const handleChangeChecked = (key: string) => () => {
+	const handleChangeCheck = (key: string) => () => {
 		if (checkedAttributes.includes(key)) {
 			setCheckedAttributes(
 				checkedAttributes.filter((item) => item !== key)
@@ -247,277 +175,12 @@ const HomePage: React.VoidFunctionComponent = () => {
 		setIsFlashedPreviousData(!isFlushedPreviousData);
 	};
 
-	const handleUploadData = async () => {
-		setIsUploadingData(true);
-		setShowAlert(false);
-		const mediaKeys = Object.keys(attributes).filter(
-			(key) => attributes[key].type === 'media'
-		);
-
-		if (selectedType) {
-			try {
-				if (isFlushedPreviousData) {
-					await axios.post(
-						`/generate-data/flush/${selectedType.uid}`
-					);
-				}
-				let uploadData = async (data) => {
-					if (!data.length) {
-						return;
-					}
-					let dataByCount = data.slice(0, COUNT_UPLOADED_DATA_ONCE);
-					let uploadedMediaData = {};
-					if (mediaKeys.length) {
-						const mediaData = mediaKeys.reduce((prev, key) => {
-							return {
-								...prev,
-								[key]: dataByCount.map(
-									(item, index) => item[key]
-								),
-							};
-						}, {});
-						const response = await axios.post(
-							'/generate-data/upload',
-							mediaData
-						);
-						uploadedMediaData = response.data;
-					}
-
-					const transformedData = Object.keys(uploadedMediaData)
-						.length
-						? dataByCount.map((item, index) => {
-								Object.keys(uploadedMediaData).forEach(
-									(key) => {
-										item[key] =
-											uploadedMediaData[key][index].map(
-												(uploadedItem) =>
-													uploadedItem.id
-											) || item[key];
-									}
-								);
-								return item;
-						  })
-						: dataByCount;
-
-					const response = await Promise.all(
-						transformedData.map((item) =>
-							axios.post(
-								`/content-manager/collection-types/${selectedType.uid}`,
-								item
-							)
-						)
-					);
-
-					if (isPublished) {
-						await Promise.all(
-							response.map((item) =>
-								axios.post(
-									`/content-manager/collection-types/${selectedType.uid}/${item.data.id}/actions/publish`
-								)
-							)
-						);
-					}
-					return uploadData(data.slice(COUNT_UPLOADED_DATA_ONCE));
-				};
-				await uploadData(generatedData);
-			} catch (err) {}
-		}
-		setIsUploadingData(false);
-		setShowAlert(true);
-	};
-
 	const handleCloseAlert = () => {
 		setShowAlert(false);
 	};
 
 	const handleChangeIsPublished = () => {
 		setIsPublished(!isPublished);
-	};
-
-	let renderStringInput = (key: string, attribute) => (
-		<GridItem col={6}>
-			<Box marginBottom='8px'>
-				<Box marginBottom='12px'>
-					<Checkbox
-						disabled={attribute.required}
-						onChange={handleChangeChecked(key)}
-						checked={checkedAttributes.includes(key)}>
-						{key}
-					</Checkbox>
-				</Box>
-				<NumberInput
-					disabled={!checkedAttributes.includes(key)}
-					onValueChange={handleValueChange(key, 'count')}
-					// @ts-ignore
-					value={values[key].count}
-					label='Count words'></NumberInput>
-			</Box>
-		</GridItem>
-	);
-
-	const getAttributeInputs = (key: string, attribute) => {
-		return {
-			['integer']: (
-				<GridItem col={12}>
-					<Box marginBottom='8px'>
-						<Box marginBottom='12px'>
-							<Checkbox
-								disabled={attribute.required}
-								onChange={handleChangeChecked(key)}
-								checked={checkedAttributes.includes(key)}>
-								{key}
-							</Checkbox>
-						</Box>
-						<Flex gap='16px'>
-							<Box flex='1'>
-								<NumberInput
-									disabled={!checkedAttributes.includes(key)}
-									onValueChange={handleValueChange(
-										key,
-										'min'
-									)}
-									// @ts-ignore
-									value={values[key].min}
-									label={`min ${
-										attribute.min ? attribute.min : ''
-									}`}></NumberInput>
-							</Box>
-							<Box flex='1'>
-								<NumberInput
-									disabled={!checkedAttributes.includes(key)}
-									onValueChange={handleValueChange(
-										key,
-										'max'
-									)}
-									// @ts-ignore
-									value={values[key].max}
-									label={`max ${
-										attribute.max ? attribute.max : ''
-									}`}></NumberInput>
-							</Box>
-						</Flex>
-					</Box>
-				</GridItem>
-			),
-			['richtext']: renderStringInput(key, attribute),
-			['string']: renderStringInput(key, attribute),
-			['email']: (
-				<GridItem col={6}>
-					<Box marginBottom='8px'>
-						<Checkbox
-							disabled={attribute.required}
-							onChange={handleChangeChecked(key)}
-							checked={checkedAttributes.includes(key)}>
-							{key}
-						</Checkbox>
-					</Box>
-				</GridItem>
-			),
-			['date']: (
-				<GridItem col={12}>
-					<Box marginBottom='8px'>
-						<Box marginBottom='12px'>
-							<Checkbox
-								disabled={attribute.required}
-								onChange={handleChangeChecked(key)}
-								checked={checkedAttributes.includes(key)}>
-								{key}
-							</Checkbox>
-						</Box>
-						<Flex gap='16px'>
-							<Box flex='1'>
-								<DatePicker
-									onChange={handleValueChange(key, 'from')}
-									selectedDateLabel={(formattedDate) =>
-										`Date picker, current is ${formattedDate}`
-									}
-									// @ts-ignore
-									selectedDate={values[key].from}
-									label='Date from'></DatePicker>
-							</Box>
-							<Box flex='1'>
-								<DatePicker
-									label='Date to'
-									onChange={handleValueChange(key, 'to')}
-									selectedDateLabel={(formattedDate) =>
-										`Date picker, current is ${formattedDate}`
-									}
-									// @ts-ignore
-									selectedDate={values[key].to}></DatePicker>
-							</Box>
-						</Flex>
-					</Box>
-				</GridItem>
-			),
-			['media']: (
-				<GridItem col={12}>
-					<Box marginBottom='8px'>
-						<Box marginBottom='12px'>
-							<Checkbox
-								disabled={attribute.required}
-								onChange={handleChangeChecked(key)}
-								checked={checkedAttributes.includes(key)}>
-								{key}
-							</Checkbox>
-						</Box>
-						<Flex gap='16px'>
-							<Box flex='1'>
-								<NumberInput
-									disabled={!checkedAttributes.includes(key)}
-									onValueChange={handleValueChange(
-										key,
-										'width'
-									)}
-									// @ts-ignore
-									value={values[key].width}
-									label={`width (px)`}></NumberInput>
-							</Box>
-							<Box flex='1'>
-								<NumberInput
-									disabled={!checkedAttributes.includes(key)}
-									onValueChange={handleValueChange(
-										key,
-										'height'
-									)}
-									// @ts-ignore
-									value={values[key].height}
-									label={`height (px)`}></NumberInput>
-							</Box>
-						</Flex>
-						{attribute.multiple && (
-							<Flex marginTop='12px' gap='16px'>
-								<Box flex='1'>
-									<NumberInput
-										disabled={
-											!checkedAttributes.includes(key)
-										}
-										onValueChange={handleValueChange(
-											key,
-											'min'
-										)}
-										// @ts-ignore
-										value={values[key].min}
-										label={`Count min`}></NumberInput>
-								</Box>
-								<Box flex='1'>
-									<NumberInput
-										disabled={
-											!checkedAttributes.includes(key)
-										}
-										onValueChange={handleValueChange(
-											key,
-											'max'
-										)}
-										// @ts-ignore
-										value={values[key].max}
-										label={`Count max`}></NumberInput>
-								</Box>
-							</Flex>
-						)}
-					</Box>
-				</GridItem>
-			),
-		};
 	};
 
 	return (
@@ -528,11 +191,12 @@ const HomePage: React.VoidFunctionComponent = () => {
 				as='h1'
 				primaryAction={
 					selectedType && (
-						<Button
-							startIcon={<RefreshIcon></RefreshIcon>}
-							onClick={handleClickGenerate}>
-							Generate
-						</Button>
+						<Generate
+							attributes={attributes}
+							checkedAttributes={checkedAttributes}
+							count={count}
+							onChangeGenerateData={setGeneratedData}
+							values={values}></Generate>
 					)
 				}
 			/>
@@ -564,9 +228,14 @@ const HomePage: React.VoidFunctionComponent = () => {
 							values &&
 							Object.keys(attributes).map(
 								(key) =>
-									getAttributeInputs(key, attributes[key])[
-										attributes[key].type
-									]
+									getAttributeInputs({
+										key,
+										attribute: attributes[key],
+										values,
+										checkedAttributes,
+										onChangeCheck: handleChangeCheck,
+										onChangeValue: handleChangeValue,
+									})[attributes[key].type]
 							)}
 					</Grid>
 					{attributes && (
@@ -603,12 +272,15 @@ const HomePage: React.VoidFunctionComponent = () => {
 									Publish content?
 								</Checkbox>
 							)}
-							<Button
-								variant='secondary'
-								loading={isUploadingData}
-								onClick={handleUploadData}>
-								Upload data
-							</Button>
+							<Upload
+								attributes={attributes}
+								selectedType={selectedType}
+								generatedData={generatedData}
+								isFlushedPreviousData={isFlushedPreviousData}
+								isPublished={isPublished}
+								isUploadingData={isUploadingData}
+								onChangeIsUploadingData={setIsUploadingData}
+								onChangeShowAlert={setShowAlert}></Upload>
 						</Flex>
 					</>
 				)}
