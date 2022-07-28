@@ -35,3 +35,7 @@ And then enable the plugin in config/plugins
     },
 }
 ```
+
+# Future plans
+- Add support for fields `boolean`, `enumeration`, `password`, `UID`, `JSON`, `Relation`
+- Add support generate video urls
