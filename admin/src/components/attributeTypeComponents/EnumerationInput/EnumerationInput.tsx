@@ -4,7 +4,7 @@ import { GridItem } from "@strapi/design-system/Grid";
 import { Checkbox } from "@strapi/design-system/Checkbox";
 import { GeneralProps } from "../types";
 
-const Email = ({
+const EnumerationInput = ({
   attribute,
   attributeKey,
   checked,
@@ -23,4 +23,4 @@ const Email = ({
   </GridItem>
 );
 
-export default Email;
+export default EnumerationInput;

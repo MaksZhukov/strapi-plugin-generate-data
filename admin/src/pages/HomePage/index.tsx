@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
   const selectedType = contentTypes.find(
     (item) => item.uid === selectedTypeUID
   ) as unknown as ContentType;
-
+  console.log(selectedType);
   let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
   const attributes = selectedType
@@ -89,7 +89,8 @@ const HomePage: React.FC = () => {
         }
         if (
           attributes[key].type === AttributeType.Email ||
-          attributes[key].type === AttributeType.Boolean
+          attributes[key].type === AttributeType.Boolean ||
+          attributes[key].type === AttributeType.Enumeration
         ) {
           obj[key] = {};
         }
