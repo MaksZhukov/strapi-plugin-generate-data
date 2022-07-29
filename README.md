@@ -6,7 +6,7 @@ This plugin is for generating data for your content-types.
 
 # Features
 
-- It supports only `string`, `email`, `richtext`, `integer`, `date`, `media` and `boolean` fields of your content types.
+- It supports only `string`, `email`, `richtext`, `integer`, `date`, `media`, `boolean` `enumeration` fields of your content types.
 - Ability to publish data if you have draft mode for your type
 - Ability of choosing which field should be included in generating data
 - It has preview of data in table, which you want to upload
@@ -39,5 +39,5 @@ And then enable the plugin in config/plugins
 
 # Future plans
 
-- Add support for fields `enumeration`, `password`, `UID`, `JSON`, `Relation`
+- Add support for fields `password`, `UID`, `JSON`, `Relation`
 - Add support generate video urls

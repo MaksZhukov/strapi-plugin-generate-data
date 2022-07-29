@@ -6,6 +6,7 @@ export enum AttributeType {
   Date = "date",
   Media = "media",
   Boolean = "boolean",
+  Enumeration = "enumeration",
 }
 
 export type Values = {
