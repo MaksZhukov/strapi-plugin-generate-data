@@ -1,7 +1,7 @@
 import React from 'react';
 import RefreshIcon from '@strapi/icons/Refresh';
 import { Button } from '@strapi/design-system/Button';
-import { Values } from '../../pages/HomePage/types';
+import { AttributeType, Values } from '../../pages/HomePage/types';
 import { faker } from '@faker-js/faker';
 
 interface Props {
@@ -19,6 +19,76 @@ const Generate = ({
 	count,
 	onChangeGenerateData,
 }: Props) => {
+	console.log(attributes);
+	const getValueByIntegerType = (key: string): number => {
+		let { min, max } = values[key] as {
+			min: number;
+			max: number;
+		};
+		return faker.datatype.number({ min, max });
+	};
+
+	const getValueByStringAndRichtextType = (key: string): string => {
+		let { count } = values[key] as { count: number };
+		return faker.random.words(count);
+	};
+	const getValueByEmailType = (): string => {
+		return faker.internet.email();
+	};
+	const getValueByDateType = (key: string): Date => {
+		let { from, to } = values[key] as {
+			from: Date;
+			to: Date;
+		};
+		return faker.date.between(from, to);
+	};
+
+	const getValueByMediaType = (key: string): string[] => {
+		let value = [];
+		let { width, height, min, max } = values[key] as {
+			width: number;
+			height: number;
+			min: number;
+			max: number;
+		};
+		if (min && max) {
+			value.push(
+				...new Array(faker.datatype.number({ min, max }))
+					.fill(null)
+					.map(() => faker.image.image(width, height, true))
+			);
+		} else {
+			value.push(faker.image.image(width, height, true));
+		}
+		return value;
+	};
+
+	const getValueBooleanType = (): boolean => {
+		return faker.datatype.boolean();
+	};
+
+	const getValueByEnumerationType = (key: string): string => {
+		const enumValues = attributes[key].enum;
+		let randomIndex = faker.datatype.number({
+			min: 0,
+			max: enumValues.length - 1,
+		});
+		return enumValues[randomIndex];
+	};
+
+	const getGeneratedDataByType = (type: AttributeType, key: string): any => {
+		let obj = {
+			[AttributeType.Integer]: getValueByIntegerType,
+			[AttributeType.String]: getValueByStringAndRichtextType,
+			[AttributeType.Richtext]: getValueByStringAndRichtextType,
+			[AttributeType.Email]: getValueByEmailType,
+			[AttributeType.Date]: getValueByDateType,
+			[AttributeType.Media]: getValueByMediaType,
+			[AttributeType.Boolean]: getValueBooleanType,
+			[AttributeType.Enumeration]: getValueByEnumerationType,
+		};
+		return obj[type](key);
+	};
 	const handleClickGenerate = () => {
 		let data = [];
 		if (attributes && values) {
@@ -27,49 +97,11 @@ const Generate = ({
 				Object.keys(attributes)
 					.filter((key) => checkedAttributes.includes(key))
 					.forEach((key) => {
-						if (attributes[key].type === 'integer') {
-							let { min, max } = values[key] as {
-								min: number;
-								max: number;
-							};
-							obj[key] = faker.datatype.number({ min, max });
-						} else if (
-							attributes[key].type === 'string' ||
-							'richtext' === attributes[key].type
-						) {
-							let { count } = values[key] as { count: number };
-							obj[key] = faker.random.words(count);
-						} else if (attributes[key].type === 'email') {
-							obj[key] = faker.internet.email();
-						} else if (attributes[key].type === 'date') {
-							let { from, to } = values[key] as {
-								from: Date;
-								to: Date;
-							};
-							obj[key] = faker.date.between(from, to);
-						} else if (attributes[key].type === 'media') {
-							let { width, height, min, max } = values[key] as {
-								width: number;
-								height: number;
-								min: number;
-								max: number;
-							};
-							if (min && max) {
-								obj[key] = new Array(
-									faker.datatype.number({ min, max })
-								)
-									.fill(null)
-									.map(() =>
-										faker.image.image(width, height, true)
-									);
-							} else {
-								obj[key] = [
-									faker.image.image(width, height, true),
-								];
-							}
-						}
+						obj[key] = getGeneratedDataByType(
+							attributes[key].type,
+							key
+						);
 					});
-				// @ts-ignore
 				data.push(obj);
 			}
 		}

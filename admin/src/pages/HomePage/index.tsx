@@ -16,25 +16,18 @@ import Upload from '../../components/Upload';
 import Generate from '../../components/Generate';
 import axios from '../../utils/axiosInstance';
 import { getAttributeInputs } from './config';
-import { Values } from './types';
+import { AttributeType, Values } from './types';
 
 interface ContentType {
 	apiID: string;
 	uid: string;
 	schema: {
-		attributes: { [key: string]: { type: string } };
+		attributes: { [key: string]: { type: AttributeType } };
 		draftAndPublish: boolean;
 	};
 }
 
-const includeTypes = [
-	'integer',
-	'string',
-	'richtext',
-	'email',
-	'date',
-	'media',
-];
+const includeTypes = Object.values(AttributeType);
 
 const HomePage: React.FC = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
@@ -66,6 +59,8 @@ const HomePage: React.FC = () => {
 
 	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
+	console.log(selectedType);
+
 	const attributes = selectedType
 		? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
 				return includeTypes.includes(
@@ -84,7 +79,7 @@ const HomePage: React.FC = () => {
 			let obj = {};
 			let newCheckedAttributes: string[] = [];
 			Object.keys(attributes).forEach((key) => {
-				if (attributes[key].type === 'integer') {
+				if (attributes[key].type === AttributeType.Integer) {
 					obj[key] = {
 						min: attributes[key].min || 0,
 						max: attributes[key].max || 10,
@@ -96,13 +91,17 @@ const HomePage: React.FC = () => {
 				) {
 					obj[key] = { count: 10 };
 				}
-				if (attributes[key].type === 'email') {
+				if (
+					attributes[key].type === AttributeType.Email ||
+					attributes[key].type === AttributeType.Boolean ||
+					attributes[key].type === AttributeType.Enumeration
+				) {
 					obj[key] = {};
 				}
-				if (attributes[key].type === 'date') {
+				if (attributes[key].type === AttributeType.Date) {
 					obj[key] = { from: new Date(), to: new Date() };
 				}
-				if (attributes[key].type === 'media') {
+				if (attributes[key].type === AttributeType.Media) {
 					obj[key] = {
 						width: 640,
 						height: 480,

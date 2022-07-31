@@ -13,6 +13,9 @@ export default ({ strapi }) => ({
 		return strapi.entityService.deleteMany(contentType);
 	},
 	async upload(ctx) {
+		const url = strapi.config.get('server.url');
+		const port = strapi.config.get('server.port');
+		const host = strapi.config.get('server.host');
 		const data = ctx.request.body;
 		let obj = {};
 		await Promise.all(
@@ -37,7 +40,9 @@ export default ({ strapi }) => ({
 							formData.append('files', result.data, imageName);
 						});
 						const response = await axios.post(
-							'http://localhost:1337/api/upload',
+							host === '0.0.0.0'
+								? `http://localhost:${port}api/upload`
+								: url,
 							formData
 						);
 						return response.data;

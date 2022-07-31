@@ -6,12 +6,12 @@ This plugin is for generating data for your content-types.
 
 # Features
 
-* It supports only `string`, `email`, `richtext` and `integer`, `date`, `media` fields of your content types.
-* Ability to publish data if you have draft mode for your type
-* Ability of choosing which field should be included in generating data
-* It has preview of data in table, which you want to upload
-* Ability of flushing data of the content type you want to upload the generated data
-* It creates content in draft if the content type has draft & publish option
+- It supports only `string`, `email`, `richtext`, `integer`, `date`, `media`, `boolean` `enumeration` fields of your content types.
+- Ability to publish data if you have draft mode for your type
+- Ability of choosing which field should be included in generating data
+- It has preview of data in table, which you want to upload
+- Ability of flushing data of the content type you want to upload the generated data
+- It creates content in draft if the content type has draft & publish option
 
 # Instalations
 
@@ -25,6 +25,7 @@ yarn add strapi-plugin-generate-data
 npm install strapi-plugin-generate-data
 
 ```
+
 And then enable the plugin in config/plugins
 
 ```
@@ -35,3 +36,8 @@ And then enable the plugin in config/plugins
     },
 }
 ```
+
+# Future plans
+
+- Add support for fields `password`, `UID`, `JSON`, `Relation`
+- Add support generate video urls
