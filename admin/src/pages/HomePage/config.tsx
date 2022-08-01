@@ -8,6 +8,7 @@ import { AttributeType, Values } from "./types";
 import BooleanInput from "../../components/attributeTypeComponents/BooleanInput";
 import EnumerationInput from "../../components/attributeTypeComponents/EnumerationInput";
 import PasswordInput from "../../components/attributeTypeComponents/PasswordInput";
+import UIDInput from "../../components/attributeTypeComponents/UIDInput";
 
 let getStringInput = ({
   key,
@@ -122,6 +123,14 @@ export const getAttributeInputs = ({
         checked={checked}
         onChangeCheck={onChangeCheck}
       ></PasswordInput>
+    ),
+    [AttributeType.UID]: (
+      <UIDInput
+        attribute={attribute}
+        attributeKey={key}
+        checked={checked}
+        onChangeCheck={onChangeCheck}
+      ></UIDInput>
     ),
   };
 };

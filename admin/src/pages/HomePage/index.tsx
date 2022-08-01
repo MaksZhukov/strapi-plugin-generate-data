@@ -75,27 +75,17 @@ const HomePage: React.FC = () => {
       let obj = {};
       let newCheckedAttributes: string[] = [];
       Object.keys(attributes).forEach((key) => {
-        if (attributes[key].type === AttributeType.Integer) {
+        let type = attributes[key].type;
+        if (type === AttributeType.Integer) {
           obj[key] = {
             min: attributes[key].min || 0,
             max: attributes[key].max || 10,
           };
         }
-        if (
-          attributes[key].type === "string" ||
-          "richtext" === attributes[key].type
-        ) {
+        if ([AttributeType.String, AttributeType.Richtext].includes(type)) {
           obj[key] = { count: 10 };
         }
-        if (
-          attributes[key].type === AttributeType.Email ||
-          attributes[key].type === AttributeType.Boolean ||
-          attributes[key].type === AttributeType.Enumeration ||
-          attributes[key].type === AttributeType.Password
-        ) {
-          obj[key] = {};
-        }
-        if (attributes[key].type === AttributeType.Date) {
+        if (type === AttributeType.Date) {
           obj[key] = { from: new Date(), to: new Date() };
         }
         if (attributes[key].type === AttributeType.Media) {
@@ -104,6 +94,17 @@ const HomePage: React.FC = () => {
             height: 480,
             ...(attributes[key].multiple ? { min: 1, max: 3 } : {}),
           };
+        }
+        if (
+          [
+            AttributeType.Email,
+            AttributeType.Boolean,
+            AttributeType.Enumeration,
+            AttributeType.UID,
+            AttributeType.Password,
+          ].includes(type)
+        ) {
+          obj[key] = {};
         }
         newCheckedAttributes.push(key);
       });

@@ -8,6 +8,7 @@ export enum AttributeType {
   Boolean = "boolean",
   Enumeration = "enumeration",
   Password = "password",
+  UID = "uid",
 }
 
 export type Values = {

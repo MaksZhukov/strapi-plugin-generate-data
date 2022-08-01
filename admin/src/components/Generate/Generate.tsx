@@ -80,6 +80,10 @@ const Generate = ({
     return faker.internet.password();
   };
 
+  const getValueByUIDType = () => {
+    return faker.unique(faker.datatype.number);
+  };
+
   const getGeneratedDataByType = (type: AttributeType, key: string): any => {
     let obj = {
       [AttributeType.Integer]: getValueByIntegerType,
@@ -91,6 +95,7 @@ const Generate = ({
       [AttributeType.Boolean]: getValueBooleanType,
       [AttributeType.Enumeration]: getValueByEnumerationType,
       [AttributeType.Password]: getValueByPasswordType,
+      [AttributeType.UID]: getValueByUIDType,
     };
     return obj[type](key);
   };
