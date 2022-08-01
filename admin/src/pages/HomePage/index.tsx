@@ -59,8 +59,6 @@ const HomePage: React.FC = () => {
 
   let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
-  console.log(selectedType);
-
   const attributes = selectedType
     ? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
         return includeTypes.includes(selectedType.schema.attributes[key].type)
