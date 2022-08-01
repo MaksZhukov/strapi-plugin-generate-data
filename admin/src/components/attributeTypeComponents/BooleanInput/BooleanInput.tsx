@@ -18,7 +18,7 @@ const BooleanInput = ({
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >
-          {attributeKey}
+          {attributeKey} (type: Boolean)
         </Checkbox>
       </Box>
     </GridItem>

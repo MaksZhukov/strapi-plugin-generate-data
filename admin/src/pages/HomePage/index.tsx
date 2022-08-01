@@ -56,8 +56,10 @@ const HomePage: React.FC = () => {
   const selectedType = contentTypes.find(
     (item) => item.uid === selectedTypeUID
   ) as unknown as ContentType;
-  console.log(selectedType);
+
   let draftAndPublish = selectedType?.schema.draftAndPublish || false;
+
+  console.log(selectedType);
 
   const attributes = selectedType
     ? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
