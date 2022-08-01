@@ -39,5 +39,5 @@ And then enable the plugin in config/plugins
 
 # Future plans
 
-- Add support for fields `password`, `UID`, `JSON`, `Relation`
+- Add support for fields `UID`, `JSON`, `Relation`
 - Add support generate video urls

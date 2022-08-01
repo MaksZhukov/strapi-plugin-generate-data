@@ -90,7 +90,8 @@ const HomePage: React.FC = () => {
         if (
           attributes[key].type === AttributeType.Email ||
           attributes[key].type === AttributeType.Boolean ||
-          attributes[key].type === AttributeType.Enumeration
+          attributes[key].type === AttributeType.Enumeration ||
+          attributes[key].type === AttributeType.Password
         ) {
           obj[key] = {};
         }

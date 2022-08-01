@@ -7,6 +7,7 @@ import MediaInputs from "../../components/attributeTypeComponents/MediaInputs";
 import { AttributeType, Values } from "./types";
 import BooleanInput from "../../components/attributeTypeComponents/BooleanInput";
 import EnumerationInput from "../../components/attributeTypeComponents/EnumerationInput";
+import PasswordInput from "../../components/attributeTypeComponents/PasswordInput";
 
 let getStringInput = ({
   key,
@@ -113,6 +114,14 @@ export const getAttributeInputs = ({
         checked={checked}
         onChangeCheck={onChangeCheck}
       ></EnumerationInput>
+    ),
+    [AttributeType.Password]: (
+      <PasswordInput
+        attribute={attribute}
+        attributeKey={key}
+        checked={checked}
+        onChangeCheck={onChangeCheck}
+      ></PasswordInput>
     ),
   };
 };
