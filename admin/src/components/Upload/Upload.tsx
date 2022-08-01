@@ -13,6 +13,7 @@ interface Props {
   generatedData: { [key: string]: any }[];
   onChangeIsUploadingData: (value: boolean) => void;
   onChangeShowAlert: (value: boolean) => void;
+  onChangeUploadedError: (value: boolean) => void;
 }
 
 const Upload = ({
@@ -24,10 +25,12 @@ const Upload = ({
   generatedData,
   onChangeIsUploadingData,
   onChangeShowAlert,
+  onChangeUploadedError,
 }: Props) => {
   const handleUploadData = async () => {
     onChangeIsUploadingData(true);
     onChangeShowAlert(false);
+    onChangeUploadedError(false);
     const mediaKeys = Object.keys(attributes).filter(
       (key) => attributes[key].type === "media"
     );
@@ -90,7 +93,9 @@ const Upload = ({
           return uploadData(data.slice(COUNT_UPLOADED_DATA_ONCE));
         };
         await uploadData(generatedData);
-      } catch (err) {}
+      } catch (err) {
+        onChangeUploadedError(true);
+      }
     }
     onChangeIsUploadingData(false);
     onChangeShowAlert(true);

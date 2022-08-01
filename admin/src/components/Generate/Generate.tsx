@@ -76,12 +76,12 @@ const Generate = ({
     return enumValues[randomIndex];
   };
 
-  const getValueByPasswordType = () => {
+  const getValueByPasswordType = (): string => {
     return faker.internet.password();
   };
 
-  const getValueByUIDType = () => {
-    return faker.unique(faker.datatype.number);
+  const getValueByUIDType = (): string => {
+    return faker.unique(faker.datatype.number).toString();
   };
 
   const getGeneratedDataByType = (type: AttributeType, key: string): any => {
@@ -104,11 +104,21 @@ const Generate = ({
     if (attributes && values) {
       for (let i = 0; i < count; i++) {
         let obj = {};
+        let UIDsWithTargetField = [];
         Object.keys(attributes)
           .filter((key) => checkedAttributes.includes(key))
           .forEach((key) => {
+            if (
+              attributes[key].type === AttributeType.UID &&
+              attributes[key].targetField
+            ) {
+              UIDsWithTargetField.push(attributes[key]);
+            }
             obj[key] = getGeneratedDataByType(attributes[key].type, key);
           });
+        UIDsWithTargetField.forEach((attr) => {
+          obj[attr.type] = obj[attr.targetField] + "-" + obj[attr.type];
+        });
         data.push(obj);
       }
     }

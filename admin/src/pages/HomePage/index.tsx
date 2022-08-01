@@ -34,6 +34,7 @@ const HomePage: React.FC = () => {
   const [isUploadingData, setIsUploadingData] = useState<boolean>(false);
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [uploadedError, setUploadedError] = useState<boolean>(false);
   const [selectedTypeUID, setSelectedTypeUID] = useState<string | null>(null);
   const [values, setValues] = useState<Values>(null);
   const [count, setCount] = useState<number>(10);
@@ -280,6 +281,7 @@ const HomePage: React.FC = () => {
                 isFlushedPreviousData={isFlushedPreviousData}
                 isPublished={isPublished}
                 isUploadingData={isUploadingData}
+                onChangeUploadedError={setUploadedError}
                 onChangeIsUploadingData={setIsUploadingData}
                 onChangeShowAlert={setShowAlert}
               ></Upload>
@@ -288,12 +290,13 @@ const HomePage: React.FC = () => {
         )}
         {showAlert && selectedType && (
           <Alert
-            variant="success"
+            variant={uploadedError ? "danger" : "success"}
             onClose={handleCloseAlert}
             closeLabel="Close alert"
             title="Uploaded Alert"
           >
-            The data for <b>{selectedType.apiID}</b> was uploaded
+            The data for <b>{selectedType.apiID}</b> was{uploadedError && "'t"}{" "}
+            uploaded
           </Alert>
         )}
       </ContentLayout>
