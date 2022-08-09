@@ -14,7 +14,6 @@ interface Props {
 const COUNT_PAGINATION_ROWS = 25;
 
 const GeneratedDataTable = ({ data, attributes }: Props) => {
-	console.log(attributes);
 	const [activePage, setActivePage] = useState<number>(1);
 
 	useEffect(() => {

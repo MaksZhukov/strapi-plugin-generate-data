@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@strapi/design-system/Button';
 import axios from '../../utils/axiosInstance';
+import { AttributeType } from '../../pages/HomePage/types';
 
 const COUNT_UPLOADED_DATA_ONCE = 25;
 
@@ -27,13 +28,12 @@ const Upload = ({
 	onChangeShowAlert,
 	onChangeUploadedError,
 }: Props) => {
-	console.log(generatedData);
 	const handleUploadData = async () => {
 		onChangeIsUploadingData(true);
 		onChangeShowAlert(false);
 		onChangeUploadedError(false);
 		const mediaKeys = Object.keys(attributes).filter(
-			(key) => attributes[key].type === 'media'
+			(key) => attributes[key].type === AttributeType.Media
 		);
 
 		if (selectedType) {

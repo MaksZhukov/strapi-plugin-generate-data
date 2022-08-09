@@ -150,7 +150,6 @@ const Generate = ({
 					relationData[key] = res.data.results.map((item) => item.id);
 				})
 			);
-			console.log(relationData);
 
 			for (let i = 0; i < count; i++) {
 				let obj = {};
@@ -162,7 +161,7 @@ const Generate = ({
 							attributes[key].type === AttributeType.UID &&
 							attributes[key].targetField
 						) {
-							UIDsWithTargetField.push(attributes[key]);
+							UIDsWithTargetField.push([key, attributes[key]]);
 						}
 						obj[key] = getGeneratedDataByType(
 							attributes[key].type,
@@ -170,9 +169,8 @@ const Generate = ({
 							relationData
 						);
 					});
-				UIDsWithTargetField.forEach((attr) => {
-					obj[attr.type] =
-						obj[attr.targetField] + '-' + obj[attr.type];
+				UIDsWithTargetField.forEach(([key, attr]) => {
+					obj[key] = obj[attr.targetField] + '-' + obj[key];
 				});
 				data.push(obj);
 			}

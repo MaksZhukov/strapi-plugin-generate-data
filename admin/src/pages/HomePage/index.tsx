@@ -60,7 +60,6 @@ const HomePage: React.FC = () => {
 		(item) => item.uid === selectedTypeUID
 	) as unknown as ContentType;
 
-	// console.log(selectedType);
 
 	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
