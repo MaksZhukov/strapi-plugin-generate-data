@@ -93,11 +93,20 @@ const Generate = ({
 		return faker.unique(faker.datatype.number).toString();
 	};
 
-	const getValueByRelationType = (): string => {
-		return '';
+	const getValueByRelationType = (
+		key: string,
+		relationArray: number[]
+	): number => {
+		return relationArray[
+			faker.datatype.number({ min: 0, max: relationArray.length - 1 })
+		];
 	};
 
-	const getGeneratedDataByType = (type: AttributeType, key: string): any => {
+	const getGeneratedDataByType = (
+		type: AttributeType,
+		key: string,
+		relationArray: { [key: string]: number[] }
+	): any => {
 		let obj = {
 			[AttributeType.Integer]: getValueByIntegerType,
 			[AttributeType.String]: getValueByStringAndRichtextType,
@@ -110,8 +119,9 @@ const Generate = ({
 			[AttributeType.Password]: getValueByPasswordType,
 			[AttributeType.UID]: getValueByUIDType,
 			[AttributeType.Decimal]: getValueByDecimalType,
+			[AttributeType.Relation]: getValueByRelationType,
 		};
-		return obj[type](key);
+		return obj[type](key, relationArray[key]);
 	};
 	const handleClickGenerate = async () => {
 		let data = [];
@@ -122,8 +132,8 @@ const Generate = ({
 			);
 
 			await Promise.all(
-				relationKeys.map((key) =>
-					axios(
+				relationKeys.map(async (key) => {
+					const res = await axios(
 						`/content-manager/collection-types/${
 							attributes[key].target
 						}?${qs.stringify(
@@ -136,9 +146,11 @@ const Generate = ({
 							},
 							{ encodeValuesOnly: true }
 						)}`
-					)
-				)
+					);
+					relationData[key] = res.data.results.map((item) => item.id);
+				})
 			);
+			console.log(relationData);
 
 			for (let i = 0; i < count; i++) {
 				let obj = {};
@@ -154,7 +166,8 @@ const Generate = ({
 						}
 						obj[key] = getGeneratedDataByType(
 							attributes[key].type,
-							key
+							key,
+							relationData
 						);
 					});
 				UIDsWithTargetField.forEach((attr) => {

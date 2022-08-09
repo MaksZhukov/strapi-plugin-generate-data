@@ -91,7 +91,6 @@ const HomePage: React.FC = () => {
 			let obj = {};
 			let newCheckedAttributes: string[] = [];
 			const createValues = async () => {
-				console.log('hello');
 				await Promise.all(
 					Object.keys(attributes).map(async (key) => {
 						let type = attributes[key].type;
@@ -297,6 +296,7 @@ const HomePage: React.FC = () => {
 				{!!generatedData.length && (
 					<>
 						<GeneratedDataTable
+							attributes={attributes}
 							data={generatedData}></GeneratedDataTable>
 						<Flex
 							alignItems='center'
