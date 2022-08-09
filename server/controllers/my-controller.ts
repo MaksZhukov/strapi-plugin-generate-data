@@ -13,10 +13,14 @@ export default ({ strapi }) => ({
 		return strapi.entityService.deleteMany(contentType);
 	},
 	async upload(ctx) {
+		console.log(ctx.request);
+		const token =
+			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU5OTUyNzA3LCJleHAiOjE2NjI1NDQ3MDd9.g2ENY-jRZx4TCFal5TF51DfE2mvEahO3cJztnpayiX0';
 		const url = strapi.config.get('server.url');
 		const port = strapi.config.get('server.port');
 		const host = strapi.config.get('server.host');
 		const data = ctx.request.body;
+
 		let obj = {};
 		await Promise.all(
 			Object.keys(data).map(async (key) => {
@@ -39,13 +43,23 @@ export default ({ strapi }) => ({
 								.pop();
 							formData.append('files', result.data, imageName);
 						});
-						const response = await axios.post(
-							host === '0.0.0.0'
-								? `http://localhost:${port}api/upload`
-								: url,
-							formData
-						);
-						return response.data;
+						const response = await axios
+							.post(
+								host === '0.0.0.0'
+									? `http://localhost:${port}/api/upload`
+									: `${url}/api/upload`,
+								formData,
+								{
+									headers: {
+										Authorization:
+											ctx.request.headers.authorization,
+									},
+								}
+							)
+							.catch((err) => {
+								console.log(err);
+							});
+						return [];
 					})
 				);
 				obj[key] = uploadedData;

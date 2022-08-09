@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Select, Option } from '@strapi/design-system/Select';
 import {
 	HeaderLayout,
@@ -29,7 +29,7 @@ interface ContentType {
 
 const includeTypes = Object.values(AttributeType);
 
-// axios('/content-manager/collection-types/api::product.product?pageSize=1');
+const COUNT_RELATION_DATA_PER_PAGE = 25;
 
 const HomePage: React.FC = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
@@ -60,71 +60,103 @@ const HomePage: React.FC = () => {
 		(item) => item.uid === selectedTypeUID
 	) as unknown as ContentType;
 
-	console.log(selectedType);
+	// console.log(selectedType);
 
 	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
-	const attributes = selectedType
-		? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
-				return includeTypes.includes(
-					selectedType.schema.attributes[key].type
-				)
-					? {
-							...prev,
-							[key]: selectedType.schema.attributes[key],
-					  }
-					: prev;
-		  }, {})
-		: null;
+	const attributes = useMemo(
+		() =>
+			selectedType
+				? Object.keys(selectedType.schema.attributes).reduce(
+						(prev, key) => {
+							return includeTypes.includes(
+								selectedType.schema.attributes[key].type
+							)
+								? {
+										...prev,
+										[key]: selectedType.schema.attributes[
+											key
+										],
+								  }
+								: prev;
+						},
+						{}
+				  )
+				: null,
+		[selectedType]
+	);
 
 	useEffect(() => {
 		if (attributes && !values) {
 			let obj = {};
 			let newCheckedAttributes: string[] = [];
-			Object.keys(attributes).forEach((key) => {
-				let type = attributes[key].type;
-				if (
-					[AttributeType.Integer, AttributeType.Decimal].includes(
-						type
-					)
-				) {
-					obj[key] = {
-						min: attributes[key].min || 0,
-						max: attributes[key].max || 10,
-					};
-				}
-				if (
-					[AttributeType.String, AttributeType.Richtext].includes(
-						type
-					)
-				) {
-					obj[key] = { count: 10 };
-				}
-				if (type === AttributeType.Date) {
-					obj[key] = { from: new Date(), to: new Date() };
-				}
-				if (attributes[key].type === AttributeType.Media) {
-					obj[key] = {
-						width: 640,
-						height: 480,
-						...(attributes[key].multiple ? { min: 1, max: 3 } : {}),
-					};
-				}
-				if (
-					[
-						AttributeType.Email,
-						AttributeType.Boolean,
-						AttributeType.Enumeration,
-						AttributeType.UID,
-						AttributeType.Password,
-					].includes(type)
-				) {
-					obj[key] = {};
-				}
-				newCheckedAttributes.push(key);
-			});
-			setCheckedAttributes(newCheckedAttributes);
-			setValues(obj);
+			const createValues = async () => {
+				console.log('hello');
+				await Promise.all(
+					Object.keys(attributes).map(async (key) => {
+						let type = attributes[key].type;
+						if (
+							[
+								AttributeType.Integer,
+								AttributeType.Decimal,
+							].includes(type)
+						) {
+							obj[key] = {
+								min: attributes[key].min || 0,
+								max: attributes[key].max || 10,
+							};
+						}
+						if (
+							[
+								AttributeType.String,
+								AttributeType.Richtext,
+							].includes(type)
+						) {
+							obj[key] = { count: 10 };
+						}
+						if (type === AttributeType.Date) {
+							obj[key] = { from: new Date(), to: new Date() };
+						}
+						if (attributes[key].type === AttributeType.Media) {
+							obj[key] = {
+								width: 640,
+								height: 480,
+								...(attributes[key].multiple
+									? { min: 1, max: 3 }
+									: {}),
+							};
+						}
+						if (type === AttributeType.Relation) {
+							const {
+								data: { pagination },
+							} = await axios(
+								`/content-manager/collection-types/${attributes[key].target}?pageSize=1`
+							);
+							obj[key] = {
+								pageCount: Math.ceil(
+									pagination.total /
+										COUNT_RELATION_DATA_PER_PAGE
+								),
+							};
+						}
+						if (
+							[
+								AttributeType.Email,
+								AttributeType.Boolean,
+								AttributeType.Enumeration,
+								AttributeType.UID,
+								AttributeType.Password,
+							].includes(type)
+						) {
+							obj[key] = {};
+						}
+						newCheckedAttributes.push(key);
+					})
+				);
+				setCheckedAttributes(newCheckedAttributes);
+				setValues(obj);
+			};
+			createValues();
 		}
 	}, [attributes, values]);
 

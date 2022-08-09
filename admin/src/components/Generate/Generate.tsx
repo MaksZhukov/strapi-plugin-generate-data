@@ -3,6 +3,8 @@ import RefreshIcon from '@strapi/icons/Refresh';
 import { Button } from '@strapi/design-system/Button';
 import { AttributeType, Values } from '../../pages/HomePage/types';
 import { faker } from '@faker-js/faker';
+import axios from '../../utils/axiosInstance';
+import qs from 'qs';
 
 interface Props {
 	attributes: any;
@@ -19,7 +21,6 @@ const Generate = ({
 	count,
 	onChangeGenerateData,
 }: Props) => {
-	console.log(attributes);
 	const getValueByIntegerType = (key: string): number => {
 		let { min, max } = values[key] as {
 			min: number;
@@ -92,6 +93,10 @@ const Generate = ({
 		return faker.unique(faker.datatype.number).toString();
 	};
 
+	const getValueByRelationType = (): string => {
+		return '';
+	};
+
 	const getGeneratedDataByType = (type: AttributeType, key: string): any => {
 		let obj = {
 			[AttributeType.Integer]: getValueByIntegerType,
@@ -108,9 +113,33 @@ const Generate = ({
 		};
 		return obj[type](key);
 	};
-	const handleClickGenerate = () => {
+	const handleClickGenerate = async () => {
 		let data = [];
 		if (attributes && values) {
+			let relationData = {};
+			const relationKeys = Object.keys(attributes).filter(
+				(key) => attributes[key].type === AttributeType.Relation
+			);
+
+			await Promise.all(
+				relationKeys.map((key) =>
+					axios(
+						`/content-manager/collection-types/${
+							attributes[key].target
+						}?${qs.stringify(
+							{
+								fields: ['id'],
+								page: faker.datatype.number({
+									min: 1,
+									max: 1,
+								}),
+							},
+							{ encodeValuesOnly: true }
+						)}`
+					)
+				)
+			);
+
 			for (let i = 0; i < count; i++) {
 				let obj = {};
 				let UIDsWithTargetField = [];

@@ -10,6 +10,7 @@ import EnumerationInput from '../../components/attributeTypeComponents/Enumerati
 import PasswordInput from '../../components/attributeTypeComponents/PasswordInput';
 import UIDInput from '../../components/attributeTypeComponents/UIDInput';
 import DecimalInputs from '../../components/attributeTypeComponents/DecimalInputs';
+import RelationInput from '../../components/attributeTypeComponents/RelationInput';
 
 let getStringInput = ({
 	key,
@@ -52,6 +53,7 @@ export const getAttributeInputs = ({
 		checked,
 		values,
 	});
+
 	return {
 		[AttributeType.Integer]: (
 			<IntegerInputs
@@ -132,6 +134,14 @@ export const getAttributeInputs = ({
 				checked={checked}
 				onChangeCheck={onChangeCheck}
 				onChangeValue={onChangeValue}></DecimalInputs>
+		),
+		[AttributeType.Relation]: (
+			<RelationInput
+				values={values[key] as { pageCount: number }}
+				attribute={attribute}
+				attributeKey={key}
+				checked={checked}
+				onChangeCheck={onChangeCheck}></RelationInput>
 		),
 	};
 };
