@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Select, Option } from '@strapi/design-system/Select';
 import {
 	HeaderLayout,
@@ -29,11 +29,14 @@ interface ContentType {
 
 const includeTypes = Object.values(AttributeType);
 
+const COUNT_RELATION_DATA_PER_PAGE = 25;
+
 const HomePage: React.FC = () => {
 	const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 	const [isUploadingData, setIsUploadingData] = useState<boolean>(false);
 	const [isPublished, setIsPublished] = useState<boolean>(false);
 	const [showAlert, setShowAlert] = useState<boolean>(false);
+	const [uploadedError, setUploadedError] = useState<boolean>(false);
 	const [selectedTypeUID, setSelectedTypeUID] = useState<string | null>(null);
 	const [values, setValues] = useState<Values>(null);
 	const [count, setCount] = useState<number>(10);
@@ -57,61 +60,101 @@ const HomePage: React.FC = () => {
 		(item) => item.uid === selectedTypeUID
 	) as unknown as ContentType;
 
+
 	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
-	console.log(selectedType);
-
-	const attributes = selectedType
-		? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
-				return includeTypes.includes(
-					selectedType.schema.attributes[key].type
-				)
-					? {
-							...prev,
-							[key]: selectedType.schema.attributes[key],
-					  }
-					: prev;
-		  }, {})
-		: null;
+	const attributes = useMemo(
+		() =>
+			selectedType
+				? Object.keys(selectedType.schema.attributes).reduce(
+						(prev, key) => {
+							return includeTypes.includes(
+								selectedType.schema.attributes[key].type
+							)
+								? {
+										...prev,
+										[key]: selectedType.schema.attributes[
+											key
+										],
+								  }
+								: prev;
+						},
+						{}
+				  )
+				: null,
+		[selectedType]
+	);
 
 	useEffect(() => {
 		if (attributes && !values) {
 			let obj = {};
 			let newCheckedAttributes: string[] = [];
-			Object.keys(attributes).forEach((key) => {
-				if (attributes[key].type === AttributeType.Integer) {
-					obj[key] = {
-						min: attributes[key].min || 0,
-						max: attributes[key].max || 10,
-					};
-				}
-				if (
-					attributes[key].type === 'string' ||
-					'richtext' === attributes[key].type
-				) {
-					obj[key] = { count: 10 };
-				}
-				if (
-					attributes[key].type === AttributeType.Email ||
-					attributes[key].type === AttributeType.Boolean ||
-					attributes[key].type === AttributeType.Enumeration
-				) {
-					obj[key] = {};
-				}
-				if (attributes[key].type === AttributeType.Date) {
-					obj[key] = { from: new Date(), to: new Date() };
-				}
-				if (attributes[key].type === AttributeType.Media) {
-					obj[key] = {
-						width: 640,
-						height: 480,
-						...(attributes[key].multiple ? { min: 1, max: 3 } : {}),
-					};
-				}
-				newCheckedAttributes.push(key);
-			});
-			setCheckedAttributes(newCheckedAttributes);
-			setValues(obj);
+			const createValues = async () => {
+				await Promise.all(
+					Object.keys(attributes).map(async (key) => {
+						let type = attributes[key].type;
+						if (
+							[
+								AttributeType.Integer,
+								AttributeType.Decimal,
+							].includes(type)
+						) {
+							obj[key] = {
+								min: attributes[key].min || 0,
+								max: attributes[key].max || 10,
+							};
+						}
+						if (
+							[
+								AttributeType.String,
+								AttributeType.Richtext,
+							].includes(type)
+						) {
+							obj[key] = { count: 10 };
+						}
+						if (type === AttributeType.Date) {
+							obj[key] = { from: new Date(), to: new Date() };
+						}
+						if (attributes[key].type === AttributeType.Media) {
+							obj[key] = {
+								width: 640,
+								height: 480,
+								...(attributes[key].multiple
+									? { min: 1, max: 3 }
+									: {}),
+							};
+						}
+						if (type === AttributeType.Relation) {
+							const {
+								data: { pagination },
+							} = await axios(
+								`/content-manager/collection-types/${attributes[key].target}?pageSize=1`
+							);
+							obj[key] = {
+								pageCount: Math.ceil(
+									pagination.total /
+										COUNT_RELATION_DATA_PER_PAGE
+								),
+							};
+						}
+						if (
+							[
+								AttributeType.Email,
+								AttributeType.Boolean,
+								AttributeType.Enumeration,
+								AttributeType.UID,
+								AttributeType.Password,
+							].includes(type)
+						) {
+							obj[key] = {};
+						}
+						newCheckedAttributes.push(key);
+					})
+				);
+				setCheckedAttributes(newCheckedAttributes);
+				setValues(obj);
+			};
+			createValues();
 		}
 	}, [attributes, values]);
 
@@ -252,6 +295,7 @@ const HomePage: React.FC = () => {
 				{!!generatedData.length && (
 					<>
 						<GeneratedDataTable
+							attributes={attributes}
 							data={generatedData}></GeneratedDataTable>
 						<Flex
 							alignItems='center'
@@ -278,6 +322,7 @@ const HomePage: React.FC = () => {
 								isFlushedPreviousData={isFlushedPreviousData}
 								isPublished={isPublished}
 								isUploadingData={isUploadingData}
+								onChangeUploadedError={setUploadedError}
 								onChangeIsUploadingData={setIsUploadingData}
 								onChangeShowAlert={setShowAlert}></Upload>
 						</Flex>
@@ -285,11 +330,12 @@ const HomePage: React.FC = () => {
 				)}
 				{showAlert && selectedType && (
 					<Alert
-						variant='success'
+						variant={uploadedError ? 'danger' : 'success'}
 						onClose={handleCloseAlert}
 						closeLabel='Close alert'
 						title='Uploaded Alert'>
-						The data for <b>{selectedType.apiID}</b> was uploaded
+						The data for <b>{selectedType.apiID}</b> was
+						{uploadedError && "'t"} uploaded
 					</Alert>
 				)}
 			</ContentLayout>

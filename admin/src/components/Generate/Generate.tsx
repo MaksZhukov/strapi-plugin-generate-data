@@ -3,6 +3,8 @@ import RefreshIcon from '@strapi/icons/Refresh';
 import { Button } from '@strapi/design-system/Button';
 import { AttributeType, Values } from '../../pages/HomePage/types';
 import { faker } from '@faker-js/faker';
+import axios from '../../utils/axiosInstance';
+import qs from 'qs';
 
 interface Props {
 	attributes: any;
@@ -19,13 +21,20 @@ const Generate = ({
 	count,
 	onChangeGenerateData,
 }: Props) => {
-	console.log(attributes);
 	const getValueByIntegerType = (key: string): number => {
 		let { min, max } = values[key] as {
 			min: number;
 			max: number;
 		};
 		return faker.datatype.number({ min, max });
+	};
+
+	const getValueByDecimalType = (key: string): number => {
+		let { min, max } = values[key] as {
+			min: number;
+			max: number;
+		};
+		return faker.datatype.float({ min, max });
 	};
 
 	const getValueByStringAndRichtextType = (key: string): string => {
@@ -63,7 +72,7 @@ const Generate = ({
 		return value;
 	};
 
-	const getValueBooleanType = (): boolean => {
+	const getValueByBooleanType = (): boolean => {
 		return faker.datatype.boolean();
 	};
 
@@ -76,7 +85,28 @@ const Generate = ({
 		return enumValues[randomIndex];
 	};
 
-	const getGeneratedDataByType = (type: AttributeType, key: string): any => {
+	const getValueByPasswordType = (): string => {
+		return faker.internet.password();
+	};
+
+	const getValueByUIDType = (): string => {
+		return faker.unique(faker.datatype.number).toString();
+	};
+
+	const getValueByRelationType = (
+		key: string,
+		relationArray: number[]
+	): number => {
+		return relationArray[
+			faker.datatype.number({ min: 0, max: relationArray.length - 1 })
+		];
+	};
+
+	const getGeneratedDataByType = (
+		type: AttributeType,
+		key: string,
+		relationArray: { [key: string]: number[] }
+	): any => {
 		let obj = {
 			[AttributeType.Integer]: getValueByIntegerType,
 			[AttributeType.String]: getValueByStringAndRichtextType,
@@ -84,24 +114,64 @@ const Generate = ({
 			[AttributeType.Email]: getValueByEmailType,
 			[AttributeType.Date]: getValueByDateType,
 			[AttributeType.Media]: getValueByMediaType,
-			[AttributeType.Boolean]: getValueBooleanType,
+			[AttributeType.Boolean]: getValueByBooleanType,
 			[AttributeType.Enumeration]: getValueByEnumerationType,
+			[AttributeType.Password]: getValueByPasswordType,
+			[AttributeType.UID]: getValueByUIDType,
+			[AttributeType.Decimal]: getValueByDecimalType,
+			[AttributeType.Relation]: getValueByRelationType,
 		};
-		return obj[type](key);
+		return obj[type](key, relationArray[key]);
 	};
-	const handleClickGenerate = () => {
+	const handleClickGenerate = async () => {
 		let data = [];
 		if (attributes && values) {
+			let relationData = {};
+			const relationKeys = Object.keys(attributes).filter(
+				(key) => attributes[key].type === AttributeType.Relation
+			);
+
+			await Promise.all(
+				relationKeys.map(async (key) => {
+					const res = await axios(
+						`/content-manager/collection-types/${
+							attributes[key].target
+						}?${qs.stringify(
+							{
+								fields: ['id'],
+								page: faker.datatype.number({
+									min: 1,
+									max: 1,
+								}),
+							},
+							{ encodeValuesOnly: true }
+						)}`
+					);
+					relationData[key] = res.data.results.map((item) => item.id);
+				})
+			);
+
 			for (let i = 0; i < count; i++) {
 				let obj = {};
+				let UIDsWithTargetField = [];
 				Object.keys(attributes)
 					.filter((key) => checkedAttributes.includes(key))
 					.forEach((key) => {
+						if (
+							attributes[key].type === AttributeType.UID &&
+							attributes[key].targetField
+						) {
+							UIDsWithTargetField.push([key, attributes[key]]);
+						}
 						obj[key] = getGeneratedDataByType(
 							attributes[key].type,
-							key
+							key,
+							relationData
 						);
 					});
+				UIDsWithTargetField.forEach(([key, attr]) => {
+					obj[key] = obj[attr.targetField] + '-' + obj[key];
+				});
 				data.push(obj);
 			}
 		}

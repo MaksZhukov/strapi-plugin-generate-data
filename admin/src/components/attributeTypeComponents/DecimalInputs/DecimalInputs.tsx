@@ -11,7 +11,7 @@ interface Props extends GeneralProps {
   onChangeValue: (key: string, field: string) => void;
 }
 
-const IntegerInputs = ({
+const DecimalInputs = ({
   onChangeCheck,
   attribute,
   attributeKey,
@@ -28,7 +28,7 @@ const IntegerInputs = ({
             onChange={onChangeCheck(attributeKey)}
             checked={checked}
           >
-            {attributeKey} (Field type: Integer)
+            {attributeKey} (Field type: Decimal)
           </Checkbox>
         </Box>
         <Flex gap="16px">
@@ -56,4 +56,4 @@ const IntegerInputs = ({
   );
 };
 
-export default IntegerInputs;
+export default DecimalInputs;

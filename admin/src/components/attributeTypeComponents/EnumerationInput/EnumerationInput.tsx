@@ -17,7 +17,7 @@ const EnumerationInput = ({
         onChange={onChangeCheck(attributeKey)}
         checked={checked}
       >
-        {attributeKey}
+        {attributeKey} (field type: Enumeration)
       </Checkbox>
     </Box>
   </GridItem>

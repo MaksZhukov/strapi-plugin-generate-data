@@ -4,7 +4,7 @@ import { GridItem } from "@strapi/design-system/Grid";
 import { Checkbox } from "@strapi/design-system/Checkbox";
 import { GeneralProps } from "../types";
 
-const BooleanInput = ({
+const UIDInput = ({
   attribute,
   attributeKey,
   checked,
@@ -18,11 +18,11 @@ const BooleanInput = ({
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >
-          {attributeKey} (Field type: Boolean)
+          {attributeKey} (Field type: UID)
         </Checkbox>
       </Box>
     </GridItem>
   );
 };
 
-export default BooleanInput;
+export default UIDInput;
