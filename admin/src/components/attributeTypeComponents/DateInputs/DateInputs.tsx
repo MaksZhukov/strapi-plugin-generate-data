@@ -27,7 +27,7 @@ const DateInputs = ({
             onChange={onChangeCheck(attributeKey)}
             checked={checked}
           >
-            {attributeKey} (Field type: Date)
+            {`${attributeKey} (Field type: Date)`}
           </Checkbox>
         </Box>
         <Flex gap="16px">

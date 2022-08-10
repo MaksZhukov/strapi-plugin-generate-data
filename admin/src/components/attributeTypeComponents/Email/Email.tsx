@@ -17,7 +17,7 @@ const Email = ({
         onChange={onChangeCheck(attributeKey)}
         checked={checked}
       >
-        {attributeKey} (Field type: Email)
+        {`${attributeKey} (Field type: Email)`}
       </Checkbox>
     </Box>
   </GridItem>

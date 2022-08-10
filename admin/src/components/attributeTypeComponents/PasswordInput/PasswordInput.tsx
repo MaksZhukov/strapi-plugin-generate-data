@@ -18,7 +18,7 @@ const PasswordInput = ({
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >
-          {attributeKey} (Field type: Password)
+          {`${attributeKey} (Field type: Password)`}
         </Checkbox>
       </Box>
     </GridItem>

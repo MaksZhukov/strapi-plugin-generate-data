@@ -230,7 +230,7 @@ const HomePage: React.FC = () => {
       <ContentLayout>
         <Box
           shadow="filterShadow"
-          padding="24px 32px"
+          padding={6}
           borderRadius="4px"
           marginBottom="24px"
           background="neutral0"
@@ -252,7 +252,7 @@ const HomePage: React.FC = () => {
             </Box>
             <Box flex="1"></Box>
           </Flex>
-          <Grid gap="16px">
+          <Grid gap={4}>
             {attributes &&
               values &&
               Object.keys(attributes).map(
@@ -269,9 +269,10 @@ const HomePage: React.FC = () => {
           </Grid>
           {attributes && (
             <Flex gap="16px">
-              <Box paddingTop="16px" flex="1">
+              <Box paddingTop={4} flex="1">
                 <NumberInput
                   value={count}
+                  name=""
                   onValueChange={setCount}
                   label="Count items to generate"
                 ></NumberInput>

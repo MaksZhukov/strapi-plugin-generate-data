@@ -24,12 +24,16 @@ const RelationInput = ({
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >
-          {attributeKey} (Field type: Relation){" "}
-          {values.pageCount === 0 && (
-            <Typography textColor="warning500" variant="warning">
-              Generate or add data for the type
-            </Typography>
-          )}
+          {`${attributeKey} (Field type: Relation) 
+          ${
+            values.pageCount === 0 ? (
+              <Typography textColor="warning500" variant="warning">
+                Generate or add data for the type
+              </Typography>
+            ) : (
+              ""
+            )
+          }`}
         </Checkbox>
       </Box>
     </GridItem>
