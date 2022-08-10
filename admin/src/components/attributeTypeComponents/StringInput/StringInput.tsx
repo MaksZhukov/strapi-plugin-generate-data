@@ -30,11 +30,13 @@ const StringInput = ({
             onChange={onChangeCheck(attributeKey)}
             checked={checked}
           >
-            {attributeKey} (Field type:{" "}
-            {attribute.type === AttributeType.String ? "String" : "Richtext"})
+            {`${attributeKey} (Field type: ${
+              attribute.type === AttributeType.String ? "String" : "Richtext"
+            })`}
           </Checkbox>
         </Box>
         <NumberInput
+          name=""
           disabled={!checked}
           onValueChange={onChangeValue(attributeKey, "count")}
           // @ts-ignore

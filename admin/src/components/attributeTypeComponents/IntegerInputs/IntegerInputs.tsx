@@ -28,12 +28,13 @@ const IntegerInputs = ({
             onChange={onChangeCheck(attributeKey)}
             checked={checked}
           >
-            {attributeKey} (Field type: Integer)
+            {`${attributeKey} (Field type: Integer)`}
           </Checkbox>
         </Box>
         <Flex gap="16px">
           <Box flex="1">
             <NumberInput
+              name=""
               disabled={!checked}
               onValueChange={onChangeValue(attributeKey, "min")}
               // @ts-ignore
@@ -43,6 +44,7 @@ const IntegerInputs = ({
           </Box>
           <Box flex="1">
             <NumberInput
+              name=""
               disabled={!checked}
               onValueChange={onChangeValue(attributeKey, "max")}
               // @ts-ignore

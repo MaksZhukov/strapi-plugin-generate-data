@@ -18,7 +18,7 @@ const UIDInput = ({
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >
-          {attributeKey} (Field type: UID)
+          {`${attributeKey} (Field type: UID)`}
         </Checkbox>
       </Box>
     </GridItem>
