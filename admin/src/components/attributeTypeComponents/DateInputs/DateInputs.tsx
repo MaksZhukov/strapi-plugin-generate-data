@@ -15,6 +15,7 @@ const DateInputs = ({
   attribute,
   attributeKey,
   checked,
+  values,
   onChangeValue,
   onChangeCheck,
 }: Props) => {
@@ -37,7 +38,6 @@ const DateInputs = ({
               selectedDateLabel={(formattedDate) =>
                 `Date picker, current is ${formattedDate}`
               }
-              // @ts-ignore
               selectedDate={values.from}
               label="Date from"
             ></DatePicker>
@@ -49,7 +49,6 @@ const DateInputs = ({
               selectedDateLabel={(formattedDate) =>
                 `Date picker, current is ${formattedDate}`
               }
-              // @ts-ignore
               selectedDate={values.to}
             ></DatePicker>
           </Box>

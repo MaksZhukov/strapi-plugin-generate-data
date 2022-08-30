@@ -1,65 +1,65 @@
 {
-    "name": "strapi-plugin-generate-data",
-    "version": "1.0.15",
+  "name": "strapi-plugin-generate-data",
+  "version": "1.0.15",
+  "description": "The plugin can help generate random data for your content.",
+  "keywords": [
+    "strapi",
+    "plugin",
+    "data",
+    "generate",
+    "open source",
+    "nodejs",
+    "javascript",
+    "react",
+    "typescript"
+  ],
+  "strapi": {
+    "name": "generate-data",
+    "displayName": "Generate data",
     "description": "The plugin can help generate random data for your content.",
-    "keywords": [
-        "strapi",
-        "plugin",
-        "data",
-        "generate",
-        "open source",
-        "nodejs",
-        "javascript",
-        "react",
-        "typescript"
-    ],
-    "strapi": {
-        "name": "generate-data",
-        "displayName": "Generate data",
-        "description": "The plugin can help generate random data for your content.",
-        "kind": "plugin"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/MaksZhukov/strapi-generate-data.git"
-    },
-    "dependencies": {
-        "@faker-js/faker": "^7.4.0",
-        "@strapi/design-system": "^1.2.1",
-        "@strapi/helper-plugin": "^4.3.2",
-        "@strapi/icons": "^1.2.1",
-        "axios": "^0.27.2",
-        "mime-types": "^2.1.35",
-        "qs": "^6.10.1",
-        "slugify": "^1.6.5",
-        "typescript": "4.7.4"
-    },
-    "peerDependencies": {
-        "@strapi/strapi": "^4.0.0"
-    },
-    "author": {
-        "name": "Maksim Zhukau",
-        "email": "maks_zhukov_97@mail.ru",
-        "url": "https://github.com/MaksZhukov"
-    },
-    "maintainers": [
-        {
-            "name": "Maksim Zhukau",
-            "email": "maks_zhukov_97@mail.ru",
-            "url": "https://github.com/MaksZhukov"
-        }
-    ],
-    "engines": {
-        "node": ">=12.x.x <=16.x.x",
-        "npm": ">=6.0.0"
-    },
-    "scripts": {
-        "postinstall": "tsc",
-        "develop": "tsc -w",
-        "build": "tsc"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "license": "MIT"
+    "kind": "plugin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaksZhukov/strapi-generate-data.git"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^7.4.0",
+    "@strapi/design-system": "^1.2.1",
+    "@strapi/helper-plugin": "^4.3.2",
+    "@strapi/icons": "^1.2.1",
+    "axios": "^0.27.2",
+    "mime-types": "^2.1.35",
+    "qs": "^6.10.1",
+    "slugify": "^1.6.5",
+    "typescript": "4.7.4"
+  },
+  "peerDependencies": {
+    "@strapi/strapi": "^4.0.0"
+  },
+  "author": {
+    "name": "Maksim Zhukau",
+    "email": "maks_zhukov_97@mail.ru",
+    "url": "https://github.com/MaksZhukov"
+  },
+  "maintainers": [
+    {
+      "name": "Maksim Zhukau",
+      "email": "maks_zhukov_97@mail.ru",
+      "url": "https://github.com/MaksZhukov"
+    }
+  ],
+  "engines": {
+    "node": ">=12.x.x <=16.x.x",
+    "npm": ">=6.0.0"
+  },
+  "scripts": {
+    "postinstall": "tsc",
+    "develop": "tsc -w",
+    "build": "tsc"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT"
 }

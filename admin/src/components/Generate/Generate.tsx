@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from "react";
 import RefreshIcon from "@strapi/icons/Refresh";
 import { Button } from "@strapi/design-system/Button";
