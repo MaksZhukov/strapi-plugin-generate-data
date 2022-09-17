@@ -13,7 +13,7 @@ This plugin is for generating data for your content-types.
 - Ability of flushing data of the content type you want to upload the generated data
 - It creates content in draft if the content type has draft & publish option
 
-# Instalations
+# Installations
 
 To install this plugin, you need to add an NPM dependency to your Strapi application:
 
