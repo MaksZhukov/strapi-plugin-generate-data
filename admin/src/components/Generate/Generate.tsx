@@ -171,6 +171,7 @@ const Generate = ({
               relationData
             );
           });
+        console.log(UIDsWithTargetField);
         UIDsWithTargetField.forEach(([key, attr]) => {
           obj[key] = slugify(obj[attr.targetField], "-") + "-" + obj[key];
         });

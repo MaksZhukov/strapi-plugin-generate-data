@@ -13,6 +13,7 @@ const RelationInput = ({
   attribute,
   attributeKey,
   checked,
+  disabled,
   values,
   onChangeCheck,
 }: Props): ReactElement => {
@@ -20,7 +21,7 @@ const RelationInput = ({
     <GridItem col={6}>
       <Box marginBottom="8px">
         <Checkbox
-          disabled={attribute.required || values.pageCount === 0}
+          disabled={disabled || values.pageCount === 0}
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >

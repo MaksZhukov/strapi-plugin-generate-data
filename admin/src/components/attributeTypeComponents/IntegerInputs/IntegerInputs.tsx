@@ -16,6 +16,7 @@ const IntegerInputs = ({
   attribute,
   attributeKey,
   checked,
+  disabled,
   values,
   onChangeValue,
 }: Props) => {
@@ -24,7 +25,7 @@ const IntegerInputs = ({
       <Box marginBottom="8px">
         <Box marginBottom="12px">
           <Checkbox
-            disabled={attribute.required}
+            disabled={disabled}
             onChange={onChangeCheck(attributeKey)}
             checked={checked}
           >

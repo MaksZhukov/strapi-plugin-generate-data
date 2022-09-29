@@ -8,13 +8,14 @@ const PasswordInput = ({
   attribute,
   attributeKey,
   checked,
+  disabled,
   onChangeCheck,
 }: GeneralProps): ReactElement => {
   return (
     <GridItem col={6}>
       <Box marginBottom="8px">
         <Checkbox
-          disabled={attribute.required}
+          disabled={disabled}
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >

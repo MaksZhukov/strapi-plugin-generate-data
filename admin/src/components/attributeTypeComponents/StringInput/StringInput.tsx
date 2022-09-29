@@ -17,6 +17,7 @@ const StringInput = ({
   attribute,
   attributeKey,
   checked,
+  disabled,
   values,
   onChangeCheck,
   onChangeValue,
@@ -26,7 +27,7 @@ const StringInput = ({
       <Box marginBottom="8px">
         <Box marginBottom="12px">
           <Checkbox
-            disabled={attribute.required}
+            disabled={disabled}
             onChange={onChangeCheck(attributeKey)}
             checked={checked}
           >

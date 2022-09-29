@@ -189,11 +189,25 @@ const HomePage: React.FC = () => {
       }
     };
 
+  console.log(attributes);
+
   const handleChangeCheck = (key: string) => () => {
     if (checkedAttributes.includes(key)) {
       setCheckedAttributes(checkedAttributes.filter((item) => item !== key));
     } else {
-      setCheckedAttributes([...checkedAttributes, key]);
+      if (attributes[key].targetField) {
+        if (checkedAttributes.includes(attributes[key].targetField)) {
+          setCheckedAttributes([...checkedAttributes, key]);
+        } else {
+          setCheckedAttributes([
+            ...checkedAttributes,
+            key,
+            attributes[key].targetField,
+          ]);
+        }
+      } else {
+        setCheckedAttributes([...checkedAttributes, key]);
+      }
     }
   };
 
@@ -209,6 +223,10 @@ const HomePage: React.FC = () => {
     setIsPublished(!isPublished);
   };
 
+  const handleChangeGenerateData = (data) => {
+    setGeneratedData(data);
+  };
+
   return (
     <Layout>
       <HeaderLayout
@@ -221,7 +239,7 @@ const HomePage: React.FC = () => {
               attributes={attributes}
               checkedAttributes={checkedAttributes}
               count={count}
-              onChangeGenerateData={setGeneratedData}
+              onChangeGenerateData={handleChangeGenerateData}
               values={values}
             ></Generate>
           )
@@ -259,6 +277,7 @@ const HomePage: React.FC = () => {
                 (key) =>
                   getAttributeInputs({
                     key,
+                    attributes,
                     attribute: attributes[key],
                     values,
                     checkedAttributes,
@@ -281,47 +300,54 @@ const HomePage: React.FC = () => {
             </Flex>
           )}
         </Box>
-        {!!generatedData.length && (
-          <>
-            <GeneratedDataTable
-              attributes={attributes}
-              data={generatedData}
-            ></GeneratedDataTable>
-            <Flex
-              alignItems="center"
-              marginTop="12px"
-              marginBottom="12px"
-              gap="32px"
-            >
-              <Checkbox
-                disabled={isUploadingData}
-                checked={isFlushedPreviousData}
-                onChange={handleChangeIsFlushedPreviousData}
-              >
-                Flush previous content type data before upload
-              </Checkbox>
-              {draftAndPublish && (
-                <Checkbox
-                  onChange={handleChangeIsPublished}
-                  checked={isPublished}
-                >
-                  Publish content?
-                </Checkbox>
-              )}
-              <Upload
+        {!!generatedData.length &&
+          Object.keys(generatedData[0]).length >= checkedAttributes.length && (
+            <>
+              <GeneratedDataTable
                 attributes={attributes}
-                selectedType={selectedType}
-                generatedData={generatedData}
-                isFlushedPreviousData={isFlushedPreviousData}
-                isPublished={isPublished}
-                isUploadingData={isUploadingData}
-                onChangeUploadedError={setUploadedError}
-                onChangeIsUploadingData={setIsUploadingData}
-                onChangeShowAlert={setShowAlert}
-              ></Upload>
-            </Flex>
-          </>
-        )}
+                data={generatedData}
+                checkedAttributes={checkedAttributes}
+              ></GeneratedDataTable>
+              <Flex
+                alignItems="center"
+                marginTop="12px"
+                marginBottom="12px"
+                gap="32px"
+              >
+                <Checkbox
+                  disabled={isUploadingData}
+                  checked={isFlushedPreviousData}
+                  onChange={handleChangeIsFlushedPreviousData}
+                >
+                  Flush previous content type data before upload
+                </Checkbox>
+                {draftAndPublish && (
+                  <Checkbox
+                    onChange={handleChangeIsPublished}
+                    checked={isPublished}
+                  >
+                    Publish content?
+                  </Checkbox>
+                )}
+                <Upload
+                  attributes={attributes}
+                  selectedType={selectedType}
+                  generatedData={generatedData}
+                  isFlushedPreviousData={isFlushedPreviousData}
+                  isPublished={isPublished}
+                  checkedAttributes={checkedAttributes}
+                  isUploadingData={isUploadingData}
+                  onChangeUploadedError={setUploadedError}
+                  onChangeIsUploadingData={setIsUploadingData}
+                  onChangeShowAlert={setShowAlert}
+                ></Upload>
+              </Flex>
+            </>
+          )}
+        {!!generatedData.length &&
+          Object.keys(generatedData[0]).length < checkedAttributes.length && (
+            <Alert>Regenerate data with new added attributes</Alert>
+          )}
         {showAlert && selectedType && (
           <Alert
             variant={uploadedError ? "danger" : "success"}
