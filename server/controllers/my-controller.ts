@@ -1,3 +1,10 @@
+import fs from "fs";
+import path from "path";
+
+const COUNT_VIDEOS = 20;
+const COUNT_AUDIOS = 10;
+const COUNT_FILES = 5;
+
 export default ({ strapi }) => ({
   flush(ctx) {
     const { contentType } = ctx.params;
@@ -17,7 +24,9 @@ export default ({ strapi }) => ({
                   strapi
                     .plugin("generate-data")
                     .service("myService")
-                    .uploadToLibrary(url)
+                    .uploadToLibrary(
+                      "http://localhost:1337/generate-data/videos/1.mp4"
+                    )
                 )
               )
             )
@@ -29,5 +38,26 @@ export default ({ strapi }) => ({
       console.log(err);
     }
     return obj;
+  },
+  getVideos(ctx) {
+    const { name } = ctx.params;
+    ctx.set("Content-Type", "video/mp4");
+    return fs.readFileSync(
+      path.resolve(__dirname, "..", "..", "public") + `/${name}`
+    );
+  },
+  getAudios(ctx) {
+    const { name } = ctx.params;
+    ctx.set("Content-Type", "audio/wav");
+    return fs.readFileSync(
+      path.resolve(__dirname, "..", "..", "public") + `/${name}`
+    );
+  },
+  getFiles(ctx) {
+    const { name } = ctx.params;
+    ctx.set("Content-Type", "text/json");
+    return fs.readFileSync(
+      path.resolve(__dirname, "..", "..", "public") + `/${name}`
+    );
   },
 });
