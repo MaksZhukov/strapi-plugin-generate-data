@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Thead, Tbody, Tr, Td, Th } from "@strapi/design-system/Table";
 import { PageLink, Pagination } from "@strapi/design-system/v2/Pagination";
 import { Typography } from "@strapi/design-system/Typography";
-import ImageCell from "./ImageCell";
+import MediaCell from "./MediaCell";
 import { AttributeType } from "../../pages/HomePage/types";
 
 interface Props {
@@ -29,7 +29,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 
   const renderCell = (item: any) => {
     if (Array.isArray(item)) {
-      return <ImageCell data={item} />;
+      return <MediaCell data={item} />;
     }
 
     return <Typography>{item.toString()}</Typography>;
