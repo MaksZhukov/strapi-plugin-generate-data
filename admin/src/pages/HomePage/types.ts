@@ -11,6 +11,7 @@ export enum AttributeType {
 	UID = 'uid',
 	Decimal = 'decimal',
 	Relation = 'relation',
+	JSON = 'json',
 }
 
 export type Values = {

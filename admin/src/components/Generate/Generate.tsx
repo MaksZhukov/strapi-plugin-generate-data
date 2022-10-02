@@ -155,6 +155,21 @@ const Generate = ({
 		];
 	};
 
+	const getValueByJSONType = (key) => {
+		let { min, max } = values[key] as {
+			min: number;
+			max: number;
+		};
+		let countFields = faker.datatype.number({ min, max });
+		return new Array(countFields).fill(null).reduce(
+			(accum) => ({
+				...accum,
+				[faker.random.word()]: faker.random.word(),
+			}),
+			{}
+		);
+	};
+
 	const getGeneratedDataByType = (
 		type: AttributeType,
 		key: string,
@@ -173,6 +188,7 @@ const Generate = ({
 			[AttributeType.UID]: getValueByUIDType,
 			[AttributeType.Decimal]: getValueByDecimalType,
 			[AttributeType.Relation]: getValueByRelationType,
+			[AttributeType.JSON]: getValueByJSONType,
 		};
 		return obj[type](key, relationArray[key]);
 	};

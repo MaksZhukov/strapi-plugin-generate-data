@@ -96,6 +96,7 @@ const HomePage: React.FC = () => {
 							[
 								AttributeType.Integer,
 								AttributeType.Decimal,
+								AttributeType.JSON,
 							].includes(type)
 						) {
 							obj[key] = {
