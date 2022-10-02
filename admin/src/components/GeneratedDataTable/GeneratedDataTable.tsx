@@ -3,17 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Td, Th } from '@strapi/design-system/Table';
 import { PageLink, Pagination } from '@strapi/design-system/v2/Pagination';
 import { Typography } from '@strapi/design-system/Typography';
-import ImageCell from './ImageCell';
+import MediaCell from './MediaCell';
 import { AttributeType } from '../../pages/HomePage/types';
 
 interface Props {
 	data: any[];
 	attributes: any;
+	checkedAttributes: string[];
 }
 
 const COUNT_PAGINATION_ROWS = 25;
 
-const GeneratedDataTable = ({ data, attributes }: Props) => {
+const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 	const [activePage, setActivePage] = useState<number>(1);
 
 	useEffect(() => {
@@ -26,9 +27,21 @@ const GeneratedDataTable = ({ data, attributes }: Props) => {
 
 	const pageCount = Math.floor(data.length / COUNT_PAGINATION_ROWS);
 
-	const renderCell = (item: any) => {
-		if (Array.isArray(item)) {
-			return <ImageCell data={item} />;
+	const headKeys = Object.keys(data[0]).filter((key) =>
+		checkedAttributes.includes(key)
+	);
+
+	const renderCell = (item: any, index: number) => {
+		if (attributes[headKeys[index]].type === AttributeType.Media) {
+			return <MediaCell data={item} />;
+		}
+
+		if (attributes[headKeys[index]].type === AttributeType.JSON) {
+			return (
+				<pre style={{ maxHeight: 200, overflowY: 'auto' }}>
+					{JSON.stringify(item, undefined, 2)}
+				</pre>
+			);
 		}
 
 		return <Typography>{item.toString()}</Typography>;
@@ -54,7 +67,7 @@ const GeneratedDataTable = ({ data, attributes }: Props) => {
 							ROW
 						</Typography>
 					</Th>
-					{Object.keys(data[0]).map((key) => (
+					{headKeys.map((key) => (
 						<Th>
 							<Typography textColor='neutral600' variant='sigma'>
 								{attributes[key].type === AttributeType.Relation
@@ -78,8 +91,8 @@ const GeneratedDataTable = ({ data, attributes }: Props) => {
 									1 +
 									(activePage - 1) * COUNT_PAGINATION_ROWS}
 							</Td>
-							{Object.keys(item).map((key) => (
-								<Td key={key}>{renderCell(item[key])}</Td>
+							{headKeys.map((key, i) => (
+								<Td key={key}>{renderCell(item[key], i)}</Td>
 							))}
 						</Tr>
 					))}

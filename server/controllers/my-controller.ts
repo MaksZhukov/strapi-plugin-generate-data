@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 export default ({ strapi }) => ({
 	flush(ctx) {
 		const { contentType } = ctx.params;
@@ -29,5 +32,26 @@ export default ({ strapi }) => ({
 			console.log(err);
 		}
 		return obj;
+	},
+	getVideos(ctx) {
+		const { name } = ctx.params;
+		ctx.set('Content-Type', 'video/mp4');
+		return fs.readFileSync(
+			path.resolve(__dirname, '..', '..', 'public') + `/${name}`
+		);
+	},
+	getAudios(ctx) {
+		const { name } = ctx.params;
+		ctx.set('Content-Type', 'audio/wav');
+		return fs.readFileSync(
+			path.resolve(__dirname, '..', '..', 'public') + `/${name}`
+		);
+	},
+	getFiles(ctx) {
+		const { name } = ctx.params;
+		ctx.set('Content-Type', 'text/json');
+		return fs.readFileSync(
+			path.resolve(__dirname, '..', '..', 'public') + `/${name}`
+		);
 	},
 });

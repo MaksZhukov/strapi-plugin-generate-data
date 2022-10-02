@@ -11,6 +11,7 @@ interface Props {
 	selectedType: any;
 	isFlushedPreviousData: boolean;
 	isPublished: boolean;
+	checkedAttributes: string[];
 	generatedData: { [key: string]: any }[];
 	onChangeIsUploadingData: (value: boolean) => void;
 	onChangeShowAlert: (value: boolean) => void;
@@ -23,6 +24,7 @@ const Upload = ({
 	isFlushedPreviousData,
 	selectedType,
 	isPublished,
+	checkedAttributes,
 	generatedData,
 	onChangeIsUploadingData,
 	onChangeShowAlert,
@@ -33,7 +35,9 @@ const Upload = ({
 		onChangeShowAlert(false);
 		onChangeUploadedError(false);
 		const mediaKeys = Object.keys(attributes).filter(
-			(key) => attributes[key].type === AttributeType.Media
+			(key) =>
+				attributes[key].type === AttributeType.Media &&
+				checkedAttributes.includes(key)
 		);
 
 		if (selectedType) {
@@ -56,6 +60,7 @@ const Upload = ({
 								[key]: dataByCount.map((item) => item[key]),
 							};
 						}, {});
+
 						const response = await axios.post(
 							'/generate-data/upload',
 							mediaData

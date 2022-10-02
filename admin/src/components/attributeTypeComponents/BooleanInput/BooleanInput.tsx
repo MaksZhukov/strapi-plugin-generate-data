@@ -8,15 +8,16 @@ const BooleanInput = ({
   attribute,
   attributeKey,
   checked,
+  disabled,
   onChangeCheck,
 }: GeneralProps): ReactElement => {
   return (
     <GridItem col={6}>
       <Box marginBottom="8px">
         <Checkbox
-          disabled={attribute.required}
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
+          disabled={disabled}
         >
           {`${attributeKey} (Field type: Boolean)`}
         </Checkbox>

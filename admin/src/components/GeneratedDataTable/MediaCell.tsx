@@ -4,13 +4,24 @@ import {
 	CarouselSlide,
 	CarouselImage,
 } from '@strapi/design-system/CarouselInput';
+import { Typography } from '@strapi/design-system/Typography';
 
 interface Props {
 	data: string[];
 }
 
-const ImageCell = ({ data }: Props) => {
+const MediaCell = ({ data }: Props) => {
 	const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
+	let type = 'images';
+
+	if (data[0] && data[0].includes('mp4')) {
+		type = 'videos';
+	} else if (data[0] && data[0].includes('wav')) {
+		type = 'audios';
+	} else if (data[0] && data[0].includes('json')) {
+		type = 'files';
+	}
 
 	const handleNext = () => {
 		setSelectedIndex((current) =>
@@ -24,6 +35,13 @@ const ImageCell = ({ data }: Props) => {
 		);
 	};
 
+	const renderCarouselSlideContent = (url) => ({
+		images: <CarouselImage src={url} alt={url} />,
+		videos: <video loop autoPlay width={200} src={url}></video>,
+		audios: <audio controls src={url}></audio>,
+		files: <Typography>{url.split('/').reverse()[0]}</Typography>,
+	});
+
 	return (
 		<CarouselInput
 			selectedSlide={selectedIndex}
@@ -34,11 +52,11 @@ const ImageCell = ({ data }: Props) => {
 			nextLabel='Next slide'>
 			{data.map((url) => (
 				<CarouselSlide key={url}>
-					<CarouselImage src={url} alt={url} />
+					{renderCarouselSlideContent(url)[type]}
 				</CarouselSlide>
 			))}
 		</CarouselInput>
 	);
 };
 
-export default ImageCell;
+export default MediaCell;

@@ -11,11 +11,11 @@ export enum AttributeType {
 	UID = 'uid',
 	Decimal = 'decimal',
 	Relation = 'relation',
+	JSON = 'json',
 }
 
 export type Values = {
 	[key: string]:
-		| { count: number }
 		| { min: number; max: number }
 		| { from: Date; to: Date }
 		| { pageCount: number };
