@@ -44,8 +44,8 @@ const Generate = ({
 	};
 
 	const getValueByStringAndRichtextType = (key: string): string => {
-		let { count } = values[key] as { count: number };
-		return faker.random.words(count);
+		let { min, max } = values[key] as { min: number; max: number };
+		return faker.random.words(faker.datatype.number({ min, max }));
 	};
 	const getValueByEmailType = (): string => {
 		return faker.internet.email();

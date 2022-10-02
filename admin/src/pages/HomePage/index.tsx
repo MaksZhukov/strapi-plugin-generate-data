@@ -96,21 +96,15 @@ const HomePage: React.FC = () => {
 							[
 								AttributeType.Integer,
 								AttributeType.Decimal,
+								AttributeType.String,
+								AttributeType.Richtext,
 								AttributeType.JSON,
 							].includes(type)
 						) {
 							obj[key] = {
-								min: attributes[key].min || 0,
+								min: attributes[key].min || 1,
 								max: attributes[key].max || 10,
 							};
-						}
-						if (
-							[
-								AttributeType.String,
-								AttributeType.Richtext,
-							].includes(type)
-						) {
-							obj[key] = { count: 10 };
 						}
 						if (type === AttributeType.Date) {
 							obj[key] = { from: new Date(), to: new Date() };

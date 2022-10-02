@@ -91,7 +91,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 									1 +
 									(activePage - 1) * COUNT_PAGINATION_ROWS}
 							</Td>
-							{Object.keys(item).map((key, i) => (
+							{headKeys.map((key, i) => (
 								<Td key={key}>{renderCell(item[key], i)}</Td>
 							))}
 						</Tr>
