@@ -1,6 +1,7 @@
 export enum AttributeType {
 	Integer = 'integer',
 	String = 'string',
+	Text = 'text',
 	Richtext = 'richtext',
 	Email = 'email',
 	Date = 'date',

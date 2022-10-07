@@ -31,7 +31,8 @@ const StringInput = ({
 						onChange={onChangeCheck(attributeKey)}
 						checked={checked}>
 						{`${attributeKey} (Field type: ${
-							attribute.type === AttributeType.String
+							attribute.type === AttributeType.String ||
+              						attribute.typp == AttributeType.Text
 								? 'String'
 								: 'Richtext'
 						})`}
