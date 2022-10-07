@@ -32,7 +32,7 @@ const StringInput = ({
 						checked={checked}>
 						{`${attributeKey} (Field type: ${
 							attribute.type === AttributeType.String ||
-              						attribute.typp == AttributeType.Text
+              						attribute.type == AttributeType.Text
 								? 'String'
 								: 'Richtext'
 						})`}
