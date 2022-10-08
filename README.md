@@ -37,6 +37,10 @@ And then enable the plugin in config/plugins
 }
 ```
 
+# Environment
+
+- Strapi version 4.x.x
+
 # Future plans
 
 - Custom fields
