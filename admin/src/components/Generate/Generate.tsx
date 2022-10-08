@@ -178,6 +178,7 @@ const Generate = ({
 		let obj = {
 			[AttributeType.Integer]: getValueByIntegerType,
 			[AttributeType.String]: getValueByStringAndRichtextType,
+			[AttributeType.Text]: getValueByStringAndRichtextType,
 			[AttributeType.Richtext]: getValueByStringAndRichtextType,
 			[AttributeType.Email]: getValueByEmailType,
 			[AttributeType.Date]: getValueByDateType,

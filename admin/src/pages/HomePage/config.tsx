@@ -83,6 +83,7 @@ export const getAttributeInputs = ({
 		),
 		[AttributeType.Richtext]: stringInput,
 		[AttributeType.String]: stringInput,
+		[AttributeType.Text]: stringInput,
 		[AttributeType.Email]: (
 			<Email
 				key={key}
