@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Select, Option } from '@strapi/design-system/Select';
 import {
 	HeaderLayout,
@@ -37,7 +38,6 @@ const HomePage: React.FC = () => {
 	const [isPublished, setIsPublished] = useState<boolean>(false);
 	const [showAlert, setShowAlert] = useState<boolean>(false);
 	const [uploadedError, setUploadedError] = useState<boolean>(false);
-	const [selectedTypeUID, setSelectedTypeUID] = useState<string | null>(null);
 	const [values, setValues] = useState<Values>(null);
 	const [count, setCount] = useState<number>(10);
 	const [checkedAttributes, setCheckedAttributes] = useState<string[]>([]);
@@ -46,6 +46,11 @@ const HomePage: React.FC = () => {
 	>([]);
 	const [isFlushedPreviousData, setIsFlashedPreviousData] =
 		useState<boolean>(false);
+
+	const { search } = useLocation();
+	const history = useHistory();
+	const query = new URLSearchParams(search);
+	const selectedTypeUID = query.get('typeUID') || null;
 
 	useEffect(() => {
 		(async () => {
@@ -97,7 +102,7 @@ const HomePage: React.FC = () => {
 								AttributeType.Integer,
 								AttributeType.Decimal,
 								AttributeType.String,
-                                                                AttributeType.Text,
+								AttributeType.Text,
 								AttributeType.Richtext,
 								AttributeType.JSON,
 							].includes(type)
@@ -157,8 +162,10 @@ const HomePage: React.FC = () => {
 	}, [attributes, values]);
 
 	const handleChangeSelect = (newTypeUID: string) => {
+		const params = new URLSearchParams();
+		params.append('typeUID', newTypeUID);
+		history.push({ search: params.toString() });
 		setValues(null);
-		setSelectedTypeUID(newTypeUID);
 		setGeneratedData([]);
 		setShowAlert(false);
 	};
