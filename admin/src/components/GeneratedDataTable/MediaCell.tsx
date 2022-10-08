@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	CarouselInput,
 	CarouselSlide,
@@ -12,6 +12,10 @@ interface Props {
 
 const MediaCell = ({ data }: Props) => {
 	const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
+	useEffect(() => {
+		setSelectedIndex(0);
+	}, [data]);
 
 	let type = 'images';
 
@@ -41,7 +45,7 @@ const MediaCell = ({ data }: Props) => {
 		audios: <audio controls src={url}></audio>,
 		files: <Typography>{url.split('/').reverse()[0]}</Typography>,
 	});
-
+	console.log(data);
 	return (
 		<CarouselInput
 			selectedSlide={selectedIndex}
@@ -50,8 +54,8 @@ const MediaCell = ({ data }: Props) => {
 			onPrevious={handlePrevious}
 			previousLabel='Previous slide'
 			nextLabel='Next slide'>
-			{data.map((url) => (
-				<CarouselSlide key={url}>
+			{data.map((url, index) => (
+				<CarouselSlide label={url} key={url + index}>
 					{renderCarouselSlideContent(url)[type]}
 				</CarouselSlide>
 			))}
