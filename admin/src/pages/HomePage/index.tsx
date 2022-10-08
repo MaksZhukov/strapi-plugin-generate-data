@@ -97,6 +97,7 @@ const HomePage: React.FC = () => {
 								AttributeType.Integer,
 								AttributeType.Decimal,
 								AttributeType.String,
+                                                                AttributeType.Text,
 								AttributeType.Richtext,
 								AttributeType.JSON,
 							].includes(type)
