@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { Select, Option } from '@strapi/design-system/Select';
 import {
 	HeaderLayout,
 	ContentLayout,
 	Layout,
-} from '@strapi/design-system/Layout';
-import { Box } from '@strapi/design-system/Box';
-import { Grid } from '@strapi/design-system/Grid';
-import { Flex } from '@strapi/design-system/Flex';
-import { NumberInput } from '@strapi/design-system/NumberInput';
-import { Checkbox } from '@strapi/design-system/Checkbox';
-import { Alert } from '@strapi/design-system/Alert';
+	Select,
+	Option,
+	Box,
+	Grid,
+	Flex,
+	NumberInput,
+	Checkbox,
+	Alert
+} from '@strapi/design-system';
 import GeneratedDataTable from '../../components/GeneratedDataTable';
 import Upload from '../../components/Upload';
 import Generate from '../../components/Generate';

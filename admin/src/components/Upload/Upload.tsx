@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@strapi/design-system/Button';
+import { Button } from '@strapi/design-system';
 import axios from '../../utils/axiosInstance';
 import { AttributeType } from '../../pages/HomePage/types';
 

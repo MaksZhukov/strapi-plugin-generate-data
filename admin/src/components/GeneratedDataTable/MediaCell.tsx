@@ -3,8 +3,8 @@ import {
 	CarouselInput,
 	CarouselSlide,
 	CarouselImage,
-} from '@strapi/design-system/CarouselInput';
-import { Typography } from '@strapi/design-system/Typography';
+	Typography
+} from '@strapi/design-system';
 
 interface Props {
 	data: string[];
