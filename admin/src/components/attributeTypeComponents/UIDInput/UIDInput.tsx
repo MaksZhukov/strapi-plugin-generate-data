@@ -1,8 +1,5 @@
 import React, { ReactElement } from "react";
-import { Box } from "@strapi/design-system/Box";
-import { GridItem } from "@strapi/design-system/Grid";
-import { Typography } from "@strapi/design-system/Typography";
-import { Checkbox } from "@strapi/design-system/Checkbox";
+import { Box, GridItem, Typography, Checkbox } from "@strapi/design-system";
 import { GeneralProps } from "../types";
 
 const UIDInput = ({

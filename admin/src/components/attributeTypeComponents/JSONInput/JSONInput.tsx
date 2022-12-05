@@ -1,9 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Box } from '@strapi/design-system/Box';
-import { GridItem } from '@strapi/design-system/Grid';
-import { Checkbox } from '@strapi/design-system/Checkbox';
-import { NumberInput } from '@strapi/design-system/NumberInput';
-import { Flex } from '@strapi/design-system/Flex';
+import { Box, GridItem, Checkbox, NumberInput, Flex } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 
 interface Props extends GeneralProps {

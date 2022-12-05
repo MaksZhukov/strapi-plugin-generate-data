@@ -1,8 +1,5 @@
 import React, { ReactElement } from "react";
-import { Box } from "@strapi/design-system/Box";
-import { GridItem } from "@strapi/design-system/Grid";
-import { Checkbox } from "@strapi/design-system/Checkbox";
-import { Typography } from "@strapi/design-system/Typography";
+import { Box, GridItem, Checkbox, Typography } from "@strapi/design-system";
 import { GeneralProps } from "../types";
 
 interface Props extends GeneralProps {
@@ -25,7 +22,7 @@ const RelationInput = ({
           onChange={onChangeCheck(attributeKey)}
           checked={checked}
         >
-          {`${attributeKey} (Field type: Relation) 
+          {`${attributeKey} (Field type: Relation)
           ${
             values.pageCount === 0 ? (
               <Typography textColor="warning500" variant="warning">

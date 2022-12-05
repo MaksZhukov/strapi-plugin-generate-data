@@ -1,10 +1,5 @@
 import React from 'react';
-import { Box } from '@strapi/design-system/Box';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Flex } from '@strapi/design-system/Flex';
-import { Button } from '@strapi/design-system/Button';
-import { NumberInput } from '@strapi/design-system/NumberInput';
-import { Checkbox } from '@strapi/design-system/Checkbox';
+import { Box, GridItem, Flex, NumberInput, Checkbox } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 import { AttributeType } from '../../../pages/HomePage/types';
 

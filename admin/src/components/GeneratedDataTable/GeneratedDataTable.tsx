@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Table, Thead, Tbody, Tr, Td, Th } from '@strapi/design-system/Table';
-import { PageLink, Pagination } from '@strapi/design-system/v2/Pagination';
-import { Typography } from '@strapi/design-system/Typography';
+import { Table, Thead, Tbody, Tr, Td, Th, PageLink, Pagination, Typography } from '@strapi/design-system';
 import MediaCell from './MediaCell';
 import { AttributeType } from '../../pages/HomePage/types';
 
