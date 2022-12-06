@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-	CarouselInput,
-	CarouselSlide,
-	CarouselImage,
-	Typography
-} from '@strapi/design-system';
+import { CarouselInput, CarouselSlide, CarouselImage, Typography, Box } from '@strapi/design-system';
 
 interface Props {
 	data: string[];
@@ -28,15 +23,11 @@ const MediaCell = ({ data }: Props) => {
 	}
 
 	const handleNext = () => {
-		setSelectedIndex((current) =>
-			current < data.length - 1 ? current + 1 : 0
-		);
+		setSelectedIndex((current) => (current < data.length - 1 ? current + 1 : 0));
 	};
 
 	const handlePrevious = () => {
-		setSelectedIndex((current) =>
-			current > 0 ? current - 1 : data.length - 1
-		);
+		setSelectedIndex((current) => (current > 0 ? current - 1 : data.length - 1));
 	};
 
 	const renderCarouselSlideContent = (url) => ({
@@ -45,21 +36,24 @@ const MediaCell = ({ data }: Props) => {
 		audios: <audio controls src={url}></audio>,
 		files: <Typography>{url.split('/').reverse()[0]}</Typography>,
 	});
-	console.log(data);
 	return (
-		<CarouselInput
-			selectedSlide={selectedIndex}
-			label={`Carousel (${selectedIndex + 1}/${data.length})`}
-			onNext={handleNext}
-			onPrevious={handlePrevious}
-			previousLabel='Previous slide'
-			nextLabel='Next slide'>
-			{data.map((url, index) => (
-				<CarouselSlide label={url} key={url + index}>
-					{renderCarouselSlideContent(url)[type]}
-				</CarouselSlide>
-			))}
-		</CarouselInput>
+		<Box width='200px'>
+			<CarouselInput
+				selectedSlide={selectedIndex}
+				className='hello'
+				label={`Carousel (${selectedIndex + 1}/${data.length})`}
+				onNext={handleNext}
+				onPrevious={handlePrevious}
+				previousLabel='Previous slide'
+				nextLabel='Next slide'
+			>
+				{data.map((url, index) => (
+					<CarouselSlide label={url} key={url + index}>
+						{renderCarouselSlideContent(url)[type]}
+					</CarouselSlide>
+				))}
+			</CarouselInput>
+		</Box>
 	);
 };
 
