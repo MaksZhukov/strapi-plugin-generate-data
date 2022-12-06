@@ -6,6 +6,15 @@ export default ({ strapi }) => ({
 		const { contentType } = ctx.params;
 		return strapi.entityService.deleteMany(contentType);
 	},
+	async create(ctx) {
+		const { contentType } = ctx.params;
+		const data = ctx.request.body;
+		return data.map((item) => {
+			return strapi.entityService.create(contentType, {
+				data: item,
+			});
+		});
+	},
 	async upload(ctx) {
 		const data = ctx.request.body;
 
@@ -17,10 +26,7 @@ export default ({ strapi }) => ({
 						data[key].map((urls) =>
 							Promise.all(
 								urls.map((url) =>
-									strapi
-										.plugin('generate-data')
-										.service('myService')
-										.uploadToLibrary(url)
+									strapi.plugin('generate-data').service('myService').uploadToLibrary(url)
 								)
 							)
 						)
@@ -36,22 +42,16 @@ export default ({ strapi }) => ({
 	getVideos(ctx) {
 		const { name } = ctx.params;
 		ctx.set('Content-Type', 'video/mp4');
-		return fs.readFileSync(
-			path.resolve(__dirname, '..', '..', 'public') + `/${name}`
-		);
+		return fs.readFileSync(path.resolve(__dirname, '..', '..', 'public') + `/${name}`);
 	},
 	getAudios(ctx) {
 		const { name } = ctx.params;
 		ctx.set('Content-Type', 'audio/wav');
-		return fs.readFileSync(
-			path.resolve(__dirname, '..', '..', 'public') + `/${name}`
-		);
+		return fs.readFileSync(path.resolve(__dirname, '..', '..', 'public') + `/${name}`);
 	},
 	getFiles(ctx) {
 		const { name } = ctx.params;
 		ctx.set('Content-Type', 'text/json');
-		return fs.readFileSync(
-			path.resolve(__dirname, '..', '..', 'public') + `/${name}`
-		);
+		return fs.readFileSync(path.resolve(__dirname, '..', '..', 'public') + `/${name}`);
 	},
 });

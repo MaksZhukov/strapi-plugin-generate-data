@@ -11,7 +11,7 @@ import {
 	Flex,
 	NumberInput,
 	Checkbox,
-	Alert
+	Alert,
 } from '@strapi/design-system';
 import GeneratedDataTable from '../../components/GeneratedDataTable';
 import Upload from '../../components/Upload';
@@ -42,11 +42,8 @@ const HomePage: React.FC = () => {
 	const [values, setValues] = useState<Values>(null);
 	const [count, setCount] = useState<number>(10);
 	const [checkedAttributes, setCheckedAttributes] = useState<string[]>([]);
-	const [generatedData, setGeneratedData] = useState<
-		{ [key: string]: any }[]
-	>([]);
-	const [isFlushedPreviousData, setIsFlashedPreviousData] =
-		useState<boolean>(false);
+	const [generatedData, setGeneratedData] = useState<{ [key: string]: any }[]>([]);
+	const [isFlushedPreviousData, setIsFlashedPreviousData] = useState<boolean>(false);
 
 	const { search } = useLocation();
 	const history = useHistory();
@@ -62,30 +59,21 @@ const HomePage: React.FC = () => {
 		})();
 	}, []);
 
-	const selectedType = contentTypes.find(
-		(item) => item.uid === selectedTypeUID
-	) as unknown as ContentType;
+	const selectedType = contentTypes.find((item) => item.uid === selectedTypeUID) as unknown as ContentType;
 
 	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
 	const attributes = useMemo(
 		() =>
 			selectedType
-				? Object.keys(selectedType.schema.attributes).reduce(
-						(prev, key) => {
-							return includeTypes.includes(
-								selectedType.schema.attributes[key].type
-							)
-								? {
-										...prev,
-										[key]: selectedType.schema.attributes[
-											key
-										],
-								  }
-								: prev;
-						},
-						{}
-				  )
+				? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
+						return includeTypes.includes(selectedType.schema.attributes[key].type)
+							? {
+									...prev,
+									[key]: selectedType.schema.attributes[key],
+							  }
+							: prev;
+				  }, {})
 				: null,
 		[selectedType]
 	);
@@ -120,20 +108,14 @@ const HomePage: React.FC = () => {
 							obj[key] = {
 								width: 640,
 								height: 480,
-								...(attributes[key].multiple
-									? { min: 1, max: 3 }
-									: {}),
+								...(attributes[key].multiple ? { min: 1, max: 3 } : {}),
 							};
 						}
 						if (type === AttributeType.Relation) {
 							const {
 								data: { pagination },
-							} = await axios(
-								`/content-manager/collection-types/${attributes[key].target}?pageSize=1`
-							);
-							let pageCount = Math.ceil(
-								pagination.total / COUNT_RELATION_DATA_PER_PAGE
-							);
+							} = await axios(`/content-manager/collection-types/${attributes[key].target}?pageSize=1`);
+							let pageCount = Math.ceil(pagination.total / COUNT_RELATION_DATA_PER_PAGE);
 							obj[key] = {
 								pageCount,
 							};
@@ -171,60 +153,50 @@ const HomePage: React.FC = () => {
 		setShowAlert(false);
 	};
 
-	const handleChangeValue =
-		(key: string, field: string) => (value: number | Date) => {
-			const { min, max } = attributes[key];
-			if (min || max) {
-				let { min: currentMin, max: currentMax } = values[key] as {
-					min: number;
-					max: number;
-				};
-				if (
-					value < min ||
-					value > max ||
-					(field === 'min' && value > currentMax) ||
-					(field === 'max' && value < currentMin)
-				) {
-					return;
-				}
+	const handleChangeValue = (key: string, field: string) => (value: number | Date) => {
+		const { min, max } = attributes[key];
+		if (min || max) {
+			let { min: currentMin, max: currentMax } = values[key] as {
+				min: number;
+				max: number;
+			};
+			if (
+				value < min ||
+				value > max ||
+				(field === 'min' && value > currentMax) ||
+				(field === 'max' && value < currentMin)
+			) {
+				return;
 			}
-			if (field === 'from' || field === 'to') {
-				let { from, to } = values[key] as {
-					from: Date;
-					to: Date;
-				};
+		}
+		if (field === 'from' || field === 'to') {
+			let { from, to } = values[key] as {
+				from: Date;
+				to: Date;
+			};
 
-				if (
-					(field === 'from' && value > to) ||
-					(field === 'to' && value < from)
-				) {
-					return;
-				}
+			if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
+				return;
 			}
-			if (value > 0) {
-				// @ts-ignore
-				setValues({
-					...values,
-					[key]: { ...values[key], [field]: value },
-				});
-			}
-		};
+		}
+		if (value > 0) {
+			// @ts-ignore
+			setValues({
+				...values,
+				[key]: { ...values[key], [field]: value },
+			});
+		}
+	};
 
 	const handleChangeCheck = (key: string) => () => {
 		if (checkedAttributes.includes(key)) {
-			setCheckedAttributes(
-				checkedAttributes.filter((item) => item !== key)
-			);
+			setCheckedAttributes(checkedAttributes.filter((item) => item !== key));
 		} else {
 			if (attributes[key].targetField) {
 				if (checkedAttributes.includes(attributes[key].targetField)) {
 					setCheckedAttributes([...checkedAttributes, key]);
 				} else {
-					setCheckedAttributes([
-						...checkedAttributes,
-						key,
-						attributes[key].targetField,
-					]);
+					setCheckedAttributes([...checkedAttributes, key, attributes[key].targetField]);
 				}
 			} else {
 				setCheckedAttributes([...checkedAttributes, key]);
@@ -261,24 +233,21 @@ const HomePage: React.FC = () => {
 							checkedAttributes={checkedAttributes}
 							count={count}
 							onChangeGenerateData={handleChangeGenerateData}
-							values={values}></Generate>
+							values={values}
+						></Generate>
 					)
 				}
 			/>
 			<ContentLayout>
-				<Box
-					shadow='filterShadow'
-					padding={6}
-					borderRadius='4px'
-					marginBottom='24px'
-					background='neutral0'>
+				<Box shadow='filterShadow' padding={6} borderRadius='4px' marginBottom='24px' background='neutral0'>
 					<Flex gap='16px'>
 						<Box flex='1' marginBottom='24px'>
 							<Select
 								label='Content type'
 								placeholder='Select your content type'
 								value={selectedTypeUID}
-								onChange={handleChangeSelect}>
+								onChange={handleChangeSelect}
+							>
 								{contentTypes.map((item) => (
 									<Option key={item.uid} value={item.uid}>
 										{item.apiID}
@@ -311,70 +280,58 @@ const HomePage: React.FC = () => {
 									value={count}
 									name=''
 									onValueChange={setCount}
-									label='Count items to generate'></NumberInput>
+									label='Count items to generate'
+								></NumberInput>
 							</Box>{' '}
 							<Box flex='1'></Box>
 						</Flex>
 					)}
 				</Box>
-				{!!generatedData.length &&
-					Object.keys(generatedData[0]).length >=
-						checkedAttributes.length && (
-						<>
-							<GeneratedDataTable
-								attributes={attributes}
-								data={generatedData}
-								checkedAttributes={
-									checkedAttributes
-								}></GeneratedDataTable>
-							<Flex
-								alignItems='center'
-								marginTop='12px'
-								marginBottom='12px'
-								gap='32px'>
-								<Checkbox
-									disabled={isUploadingData}
-									checked={isFlushedPreviousData}
-									onChange={
-										handleChangeIsFlushedPreviousData
-									}>
-									Flush previous content type data before
-									upload
+				{!!generatedData.length && Object.keys(generatedData[0]).length >= checkedAttributes.length && (
+					<>
+						<GeneratedDataTable
+							attributes={attributes}
+							data={generatedData}
+							checkedAttributes={checkedAttributes}
+						></GeneratedDataTable>
+						<Flex alignItems='center' marginTop='12px' marginBottom='12px' gap='32px'>
+							<Checkbox
+								disabled={isUploadingData}
+								checked={isFlushedPreviousData}
+								onChange={handleChangeIsFlushedPreviousData}
+							>
+								Flush previous content type data before upload
+							</Checkbox>
+							{draftAndPublish && (
+								<Checkbox onChange={handleChangeIsPublished} checked={isPublished}>
+									Publish content?
 								</Checkbox>
-								{draftAndPublish && (
-									<Checkbox
-										onChange={handleChangeIsPublished}
-										checked={isPublished}>
-										Publish content?
-									</Checkbox>
-								)}
-								<Upload
-									attributes={attributes}
-									selectedType={selectedType}
-									generatedData={generatedData}
-									isFlushedPreviousData={
-										isFlushedPreviousData
-									}
-									isPublished={isPublished}
-									checkedAttributes={checkedAttributes}
-									isUploadingData={isUploadingData}
-									onChangeUploadedError={setUploadedError}
-									onChangeIsUploadingData={setIsUploadingData}
-									onChangeShowAlert={setShowAlert}></Upload>
-							</Flex>
-						</>
-					)}
-				{!!generatedData.length &&
-					Object.keys(generatedData[0]).length <
-						checkedAttributes.length && (
-						<Alert>Regenerate data with new added attributes</Alert>
-					)}
+							)}
+							<Upload
+								attributes={attributes}
+								selectedType={selectedType}
+								generatedData={generatedData}
+								isFlushedPreviousData={isFlushedPreviousData}
+								isPublished={isPublished}
+								checkedAttributes={checkedAttributes}
+								isUploadingData={isUploadingData}
+								onChangeUploadedError={setUploadedError}
+								onChangeIsUploadingData={setIsUploadingData}
+								onChangeShowAlert={setShowAlert}
+							></Upload>
+						</Flex>
+					</>
+				)}
+				{!!generatedData.length && Object.keys(generatedData[0]).length < checkedAttributes.length && (
+					<Alert>Regenerate data with new added attributes</Alert>
+				)}
 				{showAlert && selectedType && (
 					<Alert
 						variant={uploadedError ? 'danger' : 'success'}
 						onClose={handleCloseAlert}
 						closeLabel='Close alert'
-						title='Uploaded Alert'>
+						title='Uploaded Alert'
+					>
 						The data for <b>{selectedType.apiID}</b> was
 						{uploadedError && "'t"} uploaded
 					</Alert>

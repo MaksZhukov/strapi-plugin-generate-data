@@ -1,7 +1,7 @@
 //@ts-nocheck
 import React from 'react';
 import RefreshIcon from '@strapi/icons/Refresh';
-import { Button } from '@strapi/design-system/Button';
+import { Button } from '@strapi/design-system';
 import { AttributeType, Values } from '../../pages/HomePage/types';
 import { faker } from '@faker-js/faker';
 import axios from '../../utils/axiosInstance';
@@ -20,13 +20,7 @@ interface Props {
 	onChangeGenerateData: (data: any[]) => void;
 }
 
-const Generate = ({
-	attributes,
-	checkedAttributes,
-	values,
-	count,
-	onChangeGenerateData,
-}: Props) => {
+const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenerateData }: Props) => {
 	const getValueByIntegerType = (key: string): number => {
 		let { min, max } = values[key] as {
 			min: number;
@@ -109,9 +103,7 @@ const Generate = ({
 			max: number;
 		};
 		let multiple = min && max;
-		let arrValues = new Array(
-			multiple ? faker.datatype.number({ min, max }) : 1
-		).fill(null);
+		let arrValues = new Array(multiple ? faker.datatype.number({ min, max }) : 1).fill(null);
 
 		let getValues = {
 			images: getValueByMediaTypeImages(arrValues, width, height),
@@ -146,13 +138,8 @@ const Generate = ({
 		return faker.unique(faker.datatype.number).toString();
 	};
 
-	const getValueByRelationType = (
-		key: string,
-		relationArray: number[]
-	): number => {
-		return relationArray[
-			faker.datatype.number({ min: 0, max: relationArray.length - 1 })
-		];
+	const getValueByRelationType = (key: string, relationArray: number[]): number => {
+		return relationArray[faker.datatype.number({ min: 0, max: relationArray.length - 1 })];
 	};
 
 	const getValueByJSONType = (key) => {
@@ -199,16 +186,12 @@ const Generate = ({
 			let relationData = {};
 			const relationKeys = Object.keys(attributes)
 				.filter((key) => checkedAttributes.includes(key))
-				.filter(
-					(key) => attributes[key].type === AttributeType.Relation
-				);
+				.filter((key) => attributes[key].type === AttributeType.Relation);
 
 			await Promise.all(
 				relationKeys.map(async (key) => {
 					const res = await axios(
-						`/content-manager/collection-types/${
-							attributes[key].target
-						}?${qs.stringify(
+						`/content-manager/collection-types/${attributes[key].target}?${qs.stringify(
 							{
 								fields: ['id'],
 								page: faker.datatype.number({
@@ -229,21 +212,13 @@ const Generate = ({
 				Object.keys(attributes)
 					.filter((key) => checkedAttributes.includes(key))
 					.forEach((key) => {
-						if (
-							attributes[key].type === AttributeType.UID &&
-							attributes[key].targetField
-						) {
+						if (attributes[key].type === AttributeType.UID && attributes[key].targetField) {
 							UIDsWithTargetField.push([key, attributes[key]]);
 						}
-						obj[key] = getGeneratedDataByType(
-							attributes[key].type,
-							key,
-							relationData
-						);
+						obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
 					});
 				UIDsWithTargetField.forEach(([key, attr]) => {
-					obj[key] =
-						slugify(obj[attr.targetField], '-') + '-' + obj[key];
+					obj[key] = slugify(obj[attr.targetField], '-') + '-' + obj[key];
 				});
 				data.push(obj);
 			}
@@ -251,9 +226,7 @@ const Generate = ({
 		onChangeGenerateData(data);
 	};
 	return (
-		<Button
-			startIcon={<RefreshIcon></RefreshIcon>}
-			onClick={handleClickGenerate}>
+		<Button startIcon={<RefreshIcon></RefreshIcon>} onClick={handleClickGenerate}>
 			Generate
 		</Button>
 	);
