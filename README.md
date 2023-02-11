@@ -26,7 +26,7 @@ npm install strapi-plugin-generate-data
 
 ```
 
-And then enable the plugin in config/plugins
+It should be activated by default, but if you don't have it in your admin then enable the plugin manually in config/plugins
 
 ```
 {
@@ -35,6 +35,28 @@ And then enable the plugin in config/plugins
         enabled: true,
     },
 }
+```
+
+# Possible issues
+
+If you don't see generated images on ui and see in console error like **content security policy** for each image url then you need to update middleware **strapi::security** in config/middlewares like
+
+```
+...,
+ {
+    name: "strapi::security",
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          "connect-src": ["'self'", "https:"],
+          "img-src": ["'self'", "data:", "blob:", `https://loremflickr.com/`],
+          upgradeInsecureRequests: null,
+        },
+      },
+    },
+  },
+...
 ```
 
 # Environment
