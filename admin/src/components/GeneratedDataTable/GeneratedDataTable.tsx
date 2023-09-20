@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Table, Thead, Tbody, Tr, Td, Th, PageLink, Pagination, Typography } from '@strapi/design-system';
+import { Table, Thead, Tbody, Tr, Td, Th, Button, Flex, Pagination, Typography } from '@strapi/design-system';
 import MediaCell from './MediaCell';
 import { AttributeType } from '../../pages/HomePage/types';
 
@@ -23,11 +23,9 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 		setActivePage(page);
 	};
 
-	const pageCount = Math.floor(data.length / COUNT_PAGINATION_ROWS);
+	const pageCount = Math.ceil(data.length / COUNT_PAGINATION_ROWS);
 
-	const headKeys = Object.keys(data[0]).filter((key) =>
-		checkedAttributes.includes(key)
-	);
+	const headKeys = Object.keys(data[0]).filter((key) => checkedAttributes.includes(key));
 
 	const renderCell = (item: any, index: number) => {
 		if (attributes[headKeys[index]].type === AttributeType.Media) {
@@ -35,11 +33,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 		}
 
 		if (attributes[headKeys[index]].type === AttributeType.JSON) {
-			return (
-				<pre style={{ maxHeight: 200, overflowY: 'auto' }}>
-					{JSON.stringify(item, undefined, 2)}
-				</pre>
-			);
+			return <pre style={{ maxHeight: 200, overflowY: 'auto' }}>{JSON.stringify(item, undefined, 2)}</pre>;
 		}
 
 		return <Typography>{item.toString()}</Typography>;
@@ -48,15 +42,15 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 	return (
 		<Table
 			footer={
-				<Pagination activePage={activePage} pageCount={pageCount}>
-					{new Array(pageCount).fill(null).map((item, index) => (
-						<PageLink
-							number={index + 1}
-							onClick={handleChangePagination(index + 1)}>
-							Go to page {index + 1}
-						</PageLink>
-					))}
-				</Pagination>
+				<Flex justifyContent='center' padding={[2, 2]}>
+					<Pagination activePage={activePage} pageCount={pageCount}>
+						{new Array(pageCount).fill(null).map((item, index) => (
+							<Button onClick={handleChangePagination(index + 1)} variant='tertiary'>
+								{index + 1}
+							</Button>
+						))}
+					</Pagination>
+				</Flex>
 			}>
 			<Thead>
 				<Tr>
@@ -68,9 +62,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 					{headKeys.map((key) => (
 						<Th>
 							<Typography textColor='neutral600' variant='sigma'>
-								{attributes[key].type === AttributeType.Relation
-									? `${key} (ID)`
-									: key}
+								{attributes[key].type === AttributeType.Relation ? `${key} (ID)` : key}
 							</Typography>
 						</Th>
 					))}
@@ -78,17 +70,10 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 			</Thead>
 			<Tbody>
 				{data
-					.slice(
-						(activePage - 1) * COUNT_PAGINATION_ROWS,
-						COUNT_PAGINATION_ROWS * activePage
-					)
+					.slice((activePage - 1) * COUNT_PAGINATION_ROWS, COUNT_PAGINATION_ROWS * activePage)
 					.map((item, index) => (
 						<Tr>
-							<Td>
-								{index +
-									1 +
-									(activePage - 1) * COUNT_PAGINATION_ROWS}
-							</Td>
+							<Td>{index + 1 + (activePage - 1) * COUNT_PAGINATION_ROWS}</Td>
 							{headKeys.map((key, i) => (
 								<Td key={key}>{renderCell(item[key], i)}</Td>
 							))}
