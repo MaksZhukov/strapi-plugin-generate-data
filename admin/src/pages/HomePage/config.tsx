@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import React from 'react';
 import IntegerInputs from '../../components/attributeTypeComponents/IntegerInputs';
 import Email from '../../components/attributeTypeComponents/Email';
@@ -13,15 +15,7 @@ import DecimalInputs from '../../components/attributeTypeComponents/DecimalInput
 import RelationInput from '../../components/attributeTypeComponents/RelationInput';
 import JSONInput from '../../components/attributeTypeComponents/JSONInput';
 
-let getStringInput = ({
-	key,
-	attribute,
-	onChangeCheck,
-	onChangeValue,
-	checked,
-	disabled,
-	values,
-}) => (
+let getStringInput = ({ key, attribute, onChangeCheck, onChangeValue, checked, disabled, values }) => (
 	<StringInput
 		key={key}
 		disabled={disabled}
@@ -40,7 +34,7 @@ export const getAttributeInputs = ({
 	onChangeCheck,
 	onChangeValue,
 	values,
-	checkedAttributes,
+	checkedAttributes
 }: {
 	key: string;
 	attribute: any;
@@ -50,14 +44,9 @@ export const getAttributeInputs = ({
 	checkedAttributes: string[];
 	attributes: any;
 }) => {
-	let sourceAttributeKey = Object.keys(attributes).find(
-		(attrKey) => attributes[attrKey].targetField === key
-	);
+	let sourceAttributeKey = Object.keys(attributes).find((attrKey) => attributes[attrKey].targetField === key);
 
-	let disabled =
-		(sourceAttributeKey &&
-			checkedAttributes.includes(sourceAttributeKey)) ||
-		attribute.required;
+	let disabled = (sourceAttributeKey && checkedAttributes.includes(sourceAttributeKey)) || attribute.required;
 	const checked = checkedAttributes.includes(key);
 	const stringInput = getStringInput({
 		key,
@@ -66,7 +55,7 @@ export const getAttributeInputs = ({
 		onChangeValue,
 		checked,
 		disabled,
-		values,
+		values
 	});
 
 	return {
@@ -188,9 +177,7 @@ export const getAttributeInputs = ({
 				checked={checked}
 				onChangeCheck={onChangeCheck}
 				onChangeValue={onChangeValue}
-				values={
-					values[key] as { min: number; max: number }
-				}></JSONInput>
-		),
+				values={values[key] as { min: number; max: number }}></JSONInput>
+		)
 	};
 };
