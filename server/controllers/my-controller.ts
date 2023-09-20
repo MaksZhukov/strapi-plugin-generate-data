@@ -3,7 +3,7 @@ import path from 'path';
 
 const validateName = (name: string, countFiles: number) => {
     const [number, ext] = name.split('.');
-    return +number < countFiles;
+    return +number <= countFiles;
 };
 
 export default ({ strapi }) => ({
