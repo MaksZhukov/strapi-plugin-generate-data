@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react';
 import IntegerInputs from '../../components/attributeTypeComponents/IntegerInputs';
 import Email from '../../components/attributeTypeComponents/Email';

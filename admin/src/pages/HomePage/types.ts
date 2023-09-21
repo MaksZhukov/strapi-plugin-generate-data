@@ -12,12 +12,22 @@ export enum AttributeType {
 	UID = 'uid',
 	Decimal = 'decimal',
 	Relation = 'relation',
-	JSON = 'json',
+	JSON = 'json'
 }
 
 export type Values = {
-	[key: string]:
-		| { min: number; max: number }
-		| { from: Date; to: Date }
-		| { pageCount: number };
-} | null;
+	[key: string]: { min: number; max: number } | { from: Date; to: Date } | { pageCount: number };
+};
+
+export type AllowedTypes = 'images' | 'videos' | 'files' | 'audios';
+
+export type Attribute = {
+	type: AttributeType;
+	targetField: string;
+	target: string;
+	enum: string[];
+	min: number;
+	max: number;
+	multiple: boolean;
+	allowedTypes: AllowedTypes[];
+};

@@ -28,7 +28,7 @@ const Upload = ({
 	generatedData,
 	onChangeIsUploadingData,
 	onChangeShowAlert,
-	onChangeUploadedError,
+	onChangeUploadedError
 }: Props) => {
 	const handleUploadData = async () => {
 		onChangeIsUploadingData(true);
@@ -54,12 +54,15 @@ const Upload = ({
 						const mediaData = mediaKeys.reduce((prev, key) => {
 							return {
 								...prev,
-								[key]: dataByCount.map((item) => item[key]),
+								[key]: dataByCount.map((item) => item[key])
 							};
 						}, {});
-
-						const response = await axios.post('/generate-data/upload', mediaData);
-						uploadedMediaData = response.data;
+						try {
+							const response = await axios.post('/generate-data/upload', mediaData);
+							uploadedMediaData = response.data;
+						} catch (err) {
+							onChangeUploadedError(true);
+						}
 					}
 
 					const transformedData = Object.keys(uploadedMediaData).length

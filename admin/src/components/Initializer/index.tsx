@@ -3,24 +3,22 @@
  * Initializer
  *
  */
-//@ts-nocheck
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import pluginId from '../../pluginId';
 
 type InitializerProps = {
-  setPlugin: (id: string) => void;
+	setPlugin: (id: string) => void;
 };
 
-const Initializer: React.FC<InitializerProps> = ({ setPlugin }) => {
-  const ref = useRef<(id: string) => void | null>(null);
-  ref.current = setPlugin;
+const Initializer = ({ setPlugin }: InitializerProps) => {
+	const ref = useRef(setPlugin);
 
-  useEffect(() => {
-    ref.current(pluginId);
-  }, []);
+	useEffect(() => {
+		ref.current(pluginId);
+	}, []);
 
-  return null;
+	return null;
 };
 
 export default Initializer;
