@@ -45,7 +45,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 				<Flex justifyContent='center' padding={[2, 2]}>
 					<Pagination activePage={activePage} pageCount={pageCount}>
 						{new Array(pageCount).fill(null).map((item, index) => (
-							<Button onClick={handleChangePagination(index + 1)} variant='tertiary'>
+							<Button key={index} onClick={handleChangePagination(index + 1)} variant='tertiary'>
 								{index + 1}
 							</Button>
 						))}
@@ -60,7 +60,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 						</Typography>
 					</Th>
 					{headKeys.map((key) => (
-						<Th>
+						<Th key={key}>
 							<Typography textColor='neutral600' variant='sigma'>
 								{attributes[key].type === AttributeType.Relation ? `${key} (ID)` : key}
 							</Typography>
@@ -72,7 +72,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 				{data
 					.slice((activePage - 1) * COUNT_PAGINATION_ROWS, COUNT_PAGINATION_ROWS * activePage)
 					.map((item, index) => (
-						<Tr>
+						<Tr key={index}>
 							<Td>{index + 1 + (activePage - 1) * COUNT_PAGINATION_ROWS}</Td>
 							{headKeys.map((key, i) => (
 								<Td key={key}>{renderCell(item[key], i)}</Td>

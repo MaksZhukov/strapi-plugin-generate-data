@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
@@ -20,13 +18,13 @@ import Upload from '../../components/Upload';
 import Generate from '../../components/Generate';
 import axios from '../../utils/axiosInstance';
 import { getAttributeInputs } from './config';
-import { AttributeType, Values } from './types';
+import { Attribute, AttributeType, Values } from './types';
 
 interface ContentType {
 	apiID: string;
 	uid: string;
 	schema: {
-		attributes: { [key: string]: { type: AttributeType } };
+		attributes: { [key: string]: Attribute };
 		draftAndPublish: boolean;
 	};
 }
@@ -41,7 +39,7 @@ const HomePage: React.FC = () => {
 	const [isPublished, setIsPublished] = useState<boolean>(false);
 	const [showAlert, setShowAlert] = useState<boolean>(false);
 	const [uploadedError, setUploadedError] = useState<boolean>(false);
-	const [values, setValues] = useState<Values>(null);
+	const [values, setValues] = useState<Values | null>(null);
 	const [count, setCount] = useState<number>(10);
 	const [checkedAttributes, setCheckedAttributes] = useState<string[]>([]);
 	const [generatedData, setGeneratedData] = useState<{ [key: string]: any }[]>([]);
@@ -66,7 +64,7 @@ const HomePage: React.FC = () => {
 	let draftAndPublish = selectedType?.schema.draftAndPublish || false;
 
 	const attributes = useMemo(
-		() =>
+		(): { [key: string]: Attribute } | null =>
 			selectedType
 				? Object.keys(selectedType.schema.attributes).reduce((prev, key) => {
 						return includeTypes.includes(selectedType.schema.attributes[key].type)
@@ -156,52 +154,56 @@ const HomePage: React.FC = () => {
 	};
 
 	const handleChangeValue = (key: string, field: string) => (value: number | Date) => {
-		const { min, max } = attributes[key];
-		if (min || max) {
-			let { min: currentMin, max: currentMax } = values[key] as {
-				min: number;
-				max: number;
-			};
-			if (
-				value < min ||
-				value > max ||
-				(field === 'min' && value > currentMax) ||
-				(field === 'max' && value < currentMin)
-			) {
-				return;
+		if (attributes && values) {
+			const { min, max } = attributes[key];
+			if (min || max) {
+				let { min: currentMin, max: currentMax } = values[key] as {
+					min: number;
+					max: number;
+				};
+				if (
+					typeof value === 'number' &&
+					(value < min ||
+						value > max ||
+						(field === 'min' && value > currentMax) ||
+						(field === 'max' && value < currentMin))
+				) {
+					return;
+				}
 			}
-		}
-		if (field === 'from' || field === 'to') {
-			let { from, to } = values[key] as {
-				from: Date;
-				to: Date;
-			};
+			if (field === 'from' || field === 'to') {
+				let { from, to } = values[key] as {
+					from: Date;
+					to: Date;
+				};
 
-			if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
-				return;
+				if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
+					return;
+				}
 			}
-		}
-		if (value > 0) {
-			// @ts-ignore
-			setValues({
-				...values,
-				[key]: { ...values[key], [field]: value }
-			});
+			if (typeof value === 'number' && value > 0) {
+				setValues({
+					...values,
+					[key]: { ...values[key], [field]: value }
+				});
+			}
 		}
 	};
 
 	const handleChangeCheck = (key: string) => () => {
-		if (checkedAttributes.includes(key)) {
-			setCheckedAttributes(checkedAttributes.filter((item) => item !== key));
-		} else {
-			if (attributes[key].targetField) {
-				if (checkedAttributes.includes(attributes[key].targetField)) {
-					setCheckedAttributes([...checkedAttributes, key]);
-				} else {
-					setCheckedAttributes([...checkedAttributes, key, attributes[key].targetField]);
-				}
+		if (attributes) {
+			if (checkedAttributes.includes(key)) {
+				setCheckedAttributes(checkedAttributes.filter((item) => item !== key));
 			} else {
-				setCheckedAttributes([...checkedAttributes, key]);
+				if (attributes[key].targetField) {
+					if (checkedAttributes.includes(attributes[key].targetField)) {
+						setCheckedAttributes([...checkedAttributes, key]);
+					} else {
+						setCheckedAttributes([...checkedAttributes, key, attributes[key].targetField]);
+					}
+				} else {
+					setCheckedAttributes([...checkedAttributes, key]);
+				}
 			}
 		}
 	};
@@ -222,6 +224,7 @@ const HomePage: React.FC = () => {
 		setGeneratedData(data);
 	};
 
+
 	return (
 		<Layout>
 			<HeaderLayout
@@ -229,7 +232,8 @@ const HomePage: React.FC = () => {
 				subtitle='Generate data for your content types'
 				as='h1'
 				primaryAction={
-					selectedType && (
+					attributes &&
+					values && (
 						<Generate
 							attributes={attributes}
 							checkedAttributes={checkedAttributes}
@@ -260,18 +264,21 @@ const HomePage: React.FC = () => {
 					<Grid gap={4}>
 						{attributes &&
 							values &&
-							Object.keys(attributes).map(
-								(key) =>
-									getAttributeInputs({
-										key,
-										attributes,
-										attribute: attributes[key],
-										values,
-										checkedAttributes,
-										onChangeCheck: handleChangeCheck,
-										onChangeValue: handleChangeValue
-									})[attributes[key].type]
-							)}
+							Object.keys(attributes).map((key) => (
+								<React.Fragment key={key}>
+									{
+										getAttributeInputs({
+											key,
+											attributes,
+											attribute: attributes[key],
+											values,
+											checkedAttributes,
+											onChangeCheck: handleChangeCheck,
+											onChangeValue: handleChangeValue
+										})[attributes[key].type]
+									}
+								</React.Fragment>
+							))}
 					</Grid>
 					{attributes && (
 						<Flex gap='16px'>

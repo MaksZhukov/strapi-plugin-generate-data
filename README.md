@@ -39,7 +39,7 @@ It should be activated by default, but if you don't have it in your admin then e
 
 # Possible issues
 
-If you don't see generated images on ui and see in console error like **content security policy** for each image url then you need to update middleware **strapi::security** in config/middlewares like
+1. If you don't see generated images on ui and see in console error like **content security policy** for each image url then you need to update middleware **strapi::security** in config/middlewares like
 
 ```
 ...,
@@ -58,6 +58,10 @@ If you don't see generated images on ui and see in console error like **content 
   },
 ...
 ```
+
+2. If you have issue with upload data locally try to use **127.0.0.1** instead of **localhost**
+3. If you have issue with no **Generate data** plugin in left panel, try to run **strapi build** command it will build your app with plugins
+![Preview](./issue.png)
 
 # Environment
 

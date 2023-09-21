@@ -1,19 +1,17 @@
-//@ts-nocheck
-import React from 'react';
-import RefreshIcon from '@strapi/icons/Refresh';
-import { Button } from '@strapi/design-system';
-import { AttributeType, Values } from '../../pages/HomePage/types';
 import { faker } from '@faker-js/faker';
-import axios from '../../utils/axiosInstance';
+import { Button } from '@strapi/design-system';
+import { Refresh as RefreshIcon } from '@strapi/icons';
 import qs from 'qs';
+import React from 'react';
 import slugify from 'slugify';
+import { Attribute, AttributeType, Values } from '../../pages/HomePage/types';
+import axios from '../../utils/axiosInstance';
 
 const COUNT_VIDEOS = 10;
 const COUNT_AUDIOS = 5;
 const COUNT_FILES = 5;
-
 interface Props {
-	attributes: any;
+	attributes: { [key: string]: Attribute };
 	checkedAttributes: string[];
 	values: Values;
 	count: number;
@@ -52,36 +50,36 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		return faker.date.between(from, to);
 	};
 
-	const getValueByMediaTypeImages = (arrValues, width, height) =>
+	const getValueByMediaTypeImages = (arrValues: null[], width: number, height: number) =>
 		arrValues.map(() => faker.image.image(width, height, true));
 
-	const getValueByMediaTypeVideos = (arrValues) =>
+	const getValueByMediaTypeVideos = (arrValues: null[]) =>
 		arrValues.map(
 			() =>
-				axios.defaults.baseURL +
+				(axios.defaults.baseURL || location.origin) +
 				`/generate-data/videos/${faker.datatype.number({
 					min: 1,
-					max: COUNT_VIDEOS,
+					max: COUNT_VIDEOS
 				})}.mp4`
 		);
 
-	const getValueByMediaTypeAudios = (arrValues) =>
+	const getValueByMediaTypeAudios = (arrValues: null[]) =>
 		arrValues.map(
 			() =>
-				axios.defaults.baseURL +
+				(axios.defaults.baseURL || location.origin) +
 				`/generate-data/audios/${faker.datatype.number({
 					min: 1,
-					max: COUNT_AUDIOS,
+					max: COUNT_AUDIOS
 				})}.wav`
 		);
 
-	const getValueByMediaTypeFiles = (arrValues) =>
+	const getValueByMediaTypeFiles = (arrValues: null[]) =>
 		arrValues.map(
 			() =>
-				axios.defaults.baseURL +
+				(axios.defaults.baseURL || location.origin) +
 				`/generate-data/audios/${faker.datatype.number({
 					min: 1,
-					max: COUNT_FILES,
+					max: COUNT_FILES
 				})}.json`
 		);
 
@@ -91,11 +89,11 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			attribute.allowedTypes[
 				faker.datatype.number({
 					min: 0,
-					max: attribute.allowedTypes.length - 1,
+					max: attribute.allowedTypes.length - 1
 				})
 			];
 
-		let value = [];
+		let value: string[] = [];
 		let { width, height, min, max } = values[key] as {
 			width: number;
 			height: number;
@@ -103,13 +101,13 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			max: number;
 		};
 		let multiple = min && max;
-		let arrValues = new Array(multiple ? faker.datatype.number({ min, max }) : 1).fill(null);
+		let arrValues: null[] = new Array(multiple ? faker.datatype.number({ min, max }) : 1).fill(null);
 
 		let getValues = {
 			images: getValueByMediaTypeImages(arrValues, width, height),
 			videos: getValueByMediaTypeVideos(arrValues),
 			audios: getValueByMediaTypeAudios(arrValues),
-			files: getValueByMediaTypeFiles(arrValues),
+			files: getValueByMediaTypeFiles(arrValues)
 		};
 
 		value.push(...getValues[allowedType]);
@@ -125,7 +123,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		const enumValues = attributes[key].enum;
 		let randomIndex = faker.datatype.number({
 			min: 0,
-			max: enumValues.length - 1,
+			max: enumValues.length - 1
 		});
 		return enumValues[randomIndex];
 	};
@@ -151,7 +149,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		return new Array(countFields).fill(null).reduce(
 			(accum) => ({
 				...accum,
-				[faker.random.word()]: faker.random.word(),
+				[faker.random.word()]: faker.random.word()
 			}),
 			{}
 		);
@@ -176,12 +174,12 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			[AttributeType.UID]: getValueByUIDType,
 			[AttributeType.Decimal]: getValueByDecimalType,
 			[AttributeType.Relation]: getValueByRelationType,
-			[AttributeType.JSON]: getValueByJSONType,
+			[AttributeType.JSON]: getValueByJSONType
 		};
 		return obj[type](key, relationArray[key]);
 	};
 	const handleClickGenerate = async () => {
-		let data = [];
+		let data: { [key: string]: string | string[] }[] = [];
 		if (attributes && values) {
 			let relationData = {};
 			const relationKeys = Object.keys(attributes)
@@ -196,8 +194,8 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 								fields: ['id'],
 								page: faker.datatype.number({
 									min: 1,
-									max: 1,
-								}),
+									max: 1
+								})
 							},
 							{ encodeValuesOnly: true }
 						)}`
@@ -207,8 +205,8 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			);
 
 			for (let i = 0; i < count; i++) {
-				let obj = {};
-				let UIDsWithTargetField = [];
+				let obj: { [key: string]: string | string[] } = {};
+				let UIDsWithTargetField: [string, Attribute][] = [];
 				Object.keys(attributes)
 					.filter((key) => checkedAttributes.includes(key))
 					.forEach((key) => {
@@ -218,7 +216,10 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 						obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
 					});
 				UIDsWithTargetField.forEach(([key, attr]) => {
-					obj[key] = slugify(obj[attr.targetField], '-') + '-' + obj[key];
+					let field = obj[attr.targetField];
+					if (typeof field === 'string') {
+						obj[key] = slugify(field, '-') + '-' + obj[key];
+					}
 				});
 				data.push(obj);
 			}
