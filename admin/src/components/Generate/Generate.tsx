@@ -19,6 +19,10 @@ interface Props {
 }
 
 const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenerateData }: Props) => {
+	const capitalizeFirstLetter = (str: string): string => {
+		return str.charAt(0).toUpperCase() + str.slice(1);
+	  }
+	
 	const getValueByIntegerType = (key: string): number => {
 		let { min, max } = values[key] as {
 			min: number;
@@ -36,13 +40,14 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 	};
 
 	const getValueByStringAndRichtextType = (key: string, regex?: string): string => {
+		console.log("REGGGGGGGGGGGGGGGGGGGGGGGGGG", regex);
 		if (regex) {
-			console.log("regex", regex);
 			return faker.helpers.fromRegExp(regex);
 		}
 		let { min, max } = values[key] as { min: number; max: number };
 		console.log("min", min, "max", max);
 		if (!min && !max) return faker.lorem.words();
+		if (min === 1 && max === 1) return capitalizeFirstLetter(faker.lorem.words(1));
 		return faker.lorem.words({ min, max });
 	};
 	const getValueByEmailType = (): string => {
@@ -187,6 +192,11 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		};
 
 		console.log("type", type, "key", key, "relationArray", relationArray, "regex", regex);
+
+		if (type === AttributeType.String || type === AttributeType.Text || type === AttributeType.Richtext) {
+			console.log("type", type, "key", key, "relationArray", relationArray, "regex", regex);
+			return obj[type](key, regex);
+		}
 		// @ts-ignore
 		return obj[type](key, relationArray[key], regex);
 	};
@@ -234,6 +244,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 							console.log(attributes[key], " has regex: ", attributes[key].regex);
 							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData, attributes[key].regex);
 						} else {
+							console.log(attributes[key], " does not have regex: ");
 							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
 						}
 					});
