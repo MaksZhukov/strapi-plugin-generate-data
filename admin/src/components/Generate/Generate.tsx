@@ -24,7 +24,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			min: number;
 			max: number;
 		};
-		return faker.datatype.number({ min, max });
+		return faker.number.int({ min, max });
 	};
 
 	const getValueByDecimalType = (key: string): number => {
@@ -35,12 +35,19 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		return faker.datatype.float({ min, max });
 	};
 
-	const getValueByStringAndRichtextType = (key: string): string => {
+	const getValueByStringAndRichtextType = (key: string, regex?: string): string => {
+		if (regex) {
+			console.log("regex", regex);
+			return faker.helpers.fromRegExp(regex);
+		}
 		let { min, max } = values[key] as { min: number; max: number };
-		return faker.random.words(faker.datatype.number({ min, max }));
+		console.log("min", min, "max", max);
+		if (!min && !max) return faker.lorem.words();
+		return faker.lorem.words({ min, max });
 	};
 	const getValueByEmailType = (): string => {
-		return faker.internet.email();
+		console.log("getValueByEmailType");
+		return faker.internet.email({ provider: "element-software.co.uk" }).toLowerCase();
 	};
 	const getValueByDateType = (key: string): Date => {
 		let { from, to } = values[key] as {
@@ -57,7 +64,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		arrValues.map(
 			() =>
 				(axios.defaults.baseURL || location.origin) +
-				`/generate-data/videos/${faker.datatype.number({
+				`/generate-data/videos/${faker.number.int({
 					min: 1,
 					max: COUNT_VIDEOS
 				})}.mp4`
@@ -67,7 +74,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		arrValues.map(
 			() =>
 				(axios.defaults.baseURL || location.origin) +
-				`/generate-data/audios/${faker.datatype.number({
+				`/generate-data/audios/${faker.number.int({
 					min: 1,
 					max: COUNT_AUDIOS
 				})}.wav`
@@ -77,7 +84,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		arrValues.map(
 			() =>
 				(axios.defaults.baseURL || location.origin) +
-				`/generate-data/audios/${faker.datatype.number({
+				`/generate-data/audios/${faker.number.int({
 					min: 1,
 					max: COUNT_FILES
 				})}.json`
@@ -87,7 +94,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		let attribute = attributes[key];
 		let allowedType =
 			attribute.allowedTypes[
-				faker.datatype.number({
+				faker.number.int({
 					min: 0,
 					max: attribute.allowedTypes.length - 1
 				})
@@ -101,7 +108,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			max: number;
 		};
 		let multiple = min && max;
-		let arrValues: null[] = new Array(multiple ? faker.datatype.number({ min, max }) : 1).fill(null);
+		let arrValues: null[] = new Array(multiple ? faker.number.int({ min, max }) : 1).fill(null);
 
 		let getValues = {
 			images: getValueByMediaTypeImages(arrValues, width, height),
@@ -133,11 +140,11 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 	};
 
 	const getValueByUIDType = (): string => {
-		return faker.unique(faker.datatype.number).toString();
+		return faker.string.uuid();
 	};
 
 	const getValueByRelationType = (key: string, relationArray: number[]): number => {
-		return relationArray[faker.datatype.number({ min: 0, max: relationArray.length - 1 })];
+		return relationArray[faker.number.int({ min: 0, max: relationArray.length - 1 })];
 	};
 
 	const getValueByJSONType = (key) => {
@@ -145,7 +152,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			min: number;
 			max: number;
 		};
-		let countFields = faker.datatype.number({ min, max });
+		let countFields = faker.number.int({ min, max });
 		return new Array(countFields).fill(null).reduce(
 			(accum) => ({
 				...accum,
@@ -158,8 +165,10 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 	const getGeneratedDataByType = (
 		type: AttributeType,
 		key: string,
-		relationArray: { [key: string]: number[] }
+		relationArray: { [key: string]: number[] },
+		regex?: string
 	): any => {
+		//console.log(type, key, relationArray);
 		let obj = {
 			[AttributeType.Integer]: getValueByIntegerType,
 			[AttributeType.String]: getValueByStringAndRichtextType,
@@ -176,8 +185,13 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			[AttributeType.Relation]: getValueByRelationType,
 			[AttributeType.JSON]: getValueByJSONType
 		};
-		return obj[type](key, relationArray[key]);
+
+		console.log("type", type, "key", key, "relationArray", relationArray, "regex", regex);
+		// @ts-ignore
+		return obj[type](key, relationArray[key], regex);
 	};
+
+
 	const handleClickGenerate = async () => {
 		let data: { [key: string]: string | string[] }[] = [];
 		if (attributes && values) {
@@ -192,7 +206,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 						`/content-manager/collection-types/${attributes[key].target}?${qs.stringify(
 							{
 								fields: ['id'],
-								page: faker.datatype.number({
+								page: faker.number.int({
 									min: 1,
 									max: 1
 								})
@@ -207,13 +221,21 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			for (let i = 0; i < count; i++) {
 				let obj: { [key: string]: string | string[] } = {};
 				let UIDsWithTargetField: [string, Attribute][] = [];
+				console.log("attributes", attributes);
+				console.log("checkedAttributes", checkedAttributes);
 				Object.keys(attributes)
 					.filter((key) => checkedAttributes.includes(key))
 					.forEach((key) => {
 						if (attributes[key].type === AttributeType.UID && attributes[key].targetField) {
 							UIDsWithTargetField.push([key, attributes[key]]);
 						}
-						obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
+
+						if ((attributes[key].type === AttributeType.String || AttributeType.Text || AttributeType.Richtext) && attributes[key].regex) {
+							console.log(attributes[key], " has regex: ", attributes[key].regex);
+							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData, attributes[key].regex);
+						} else {
+							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
+						}
 					});
 				UIDsWithTargetField.forEach(([key, attr]) => {
 					let field = obj[attr.targetField];

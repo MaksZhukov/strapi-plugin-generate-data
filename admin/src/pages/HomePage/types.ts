@@ -30,4 +30,5 @@ export type Attribute = {
 	max: number;
 	multiple: boolean;
 	allowedTypes: AllowedTypes[];
+	regex?: string;
 };

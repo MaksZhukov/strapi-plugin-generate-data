@@ -56,6 +56,8 @@ export const getAttributeInputs = ({
 		values
 	});
 
+
+
 	return {
 		[AttributeType.Integer]: (
 			<IntegerInputs
