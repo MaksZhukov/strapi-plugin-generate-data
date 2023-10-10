@@ -40,18 +40,15 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 	};
 
 	const getValueByStringAndRichtextType = (key: string, regex?: string): string => {
-		console.log("REGGGGGGGGGGGGGGGGGGGGGGGGGG", regex);
 		if (regex) {
 			return faker.helpers.fromRegExp(regex);
 		}
 		let { min, max } = values[key] as { min: number; max: number };
-		console.log("min", min, "max", max);
 		if (!min && !max) return faker.lorem.words();
 		if (min === 1 && max === 1) return capitalizeFirstLetter(faker.lorem.words(1));
 		return faker.lorem.words({ min, max });
 	};
 	const getValueByEmailType = (): string => {
-		console.log("getValueByEmailType");
 		return faker.internet.email({ provider: "element-software.co.uk" }).toLowerCase();
 	};
 	const getValueByDateType = (key: string): Date => {
@@ -173,7 +170,6 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		relationArray: { [key: string]: number[] },
 		regex?: string
 	): any => {
-		//console.log(type, key, relationArray);
 		let obj = {
 			[AttributeType.Integer]: getValueByIntegerType,
 			[AttributeType.String]: getValueByStringAndRichtextType,
@@ -191,10 +187,8 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			[AttributeType.JSON]: getValueByJSONType
 		};
 
-		console.log("type", type, "key", key, "relationArray", relationArray, "regex", regex);
 
 		if (type === AttributeType.String || type === AttributeType.Text || type === AttributeType.Richtext) {
-			console.log("type", type, "key", key, "relationArray", relationArray, "regex", regex);
 			return obj[type](key, regex);
 		}
 		// @ts-ignore
@@ -231,8 +225,6 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			for (let i = 0; i < count; i++) {
 				let obj: { [key: string]: string | string[] } = {};
 				let UIDsWithTargetField: [string, Attribute][] = [];
-				console.log("attributes", attributes);
-				console.log("checkedAttributes", checkedAttributes);
 				Object.keys(attributes)
 					.filter((key) => checkedAttributes.includes(key))
 					.forEach((key) => {
@@ -241,10 +233,8 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 						}
 
 						if ((attributes[key].type === AttributeType.String || AttributeType.Text || AttributeType.Richtext) && attributes[key].regex) {
-							console.log(attributes[key], " has regex: ", attributes[key].regex);
 							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData, attributes[key].regex);
 						} else {
-							console.log(attributes[key], " does not have regex: ");
 							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
 						}
 					});
