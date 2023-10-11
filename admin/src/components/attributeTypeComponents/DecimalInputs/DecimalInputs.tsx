@@ -34,7 +34,6 @@ const DecimalInputs = ({
               name=""
               disabled={!checked}
               onValueChange={onChangeValue(attributeKey, "min")}
-              // @ts-ignore
               value={values.min}
               label={`min ${attribute.min ? attribute.min : ""}`}
             ></NumberInput>
@@ -44,7 +43,6 @@ const DecimalInputs = ({
               name=""
               disabled={!checked}
               onValueChange={onChangeValue(attributeKey, "max")}
-              // @ts-ignore
               value={values.max}
               label={`max ${attribute.max ? attribute.max : ""}`}
             ></NumberInput>

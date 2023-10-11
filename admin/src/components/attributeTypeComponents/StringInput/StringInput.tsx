@@ -4,7 +4,7 @@ import { GeneralProps } from '../types';
 import { AttributeType } from '../../../pages/HomePage/types';
 
 interface Props extends GeneralProps {
-	values: { count: number };
+	values: { min: number, max: number };
 	onChangeValue: (key: string, field: string) => void;
 }
 
@@ -39,7 +39,6 @@ const StringInput = ({
 							name=''
 							disabled={!checked}
 							onValueChange={onChangeValue(attributeKey, 'min')}
-							// @ts-ignore
 							value={values.min}
 							label={`min count words`}></NumberInput>
 					</Box>
@@ -48,7 +47,7 @@ const StringInput = ({
 							name=''
 							disabled={!checked}
 							onValueChange={onChangeValue(attributeKey, 'max')}
-							// @ts-ignore
+
 							value={values.max}
 							label={`max count words`}></NumberInput>
 					</Box>
