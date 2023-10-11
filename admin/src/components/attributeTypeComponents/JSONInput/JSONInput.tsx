@@ -31,7 +31,6 @@ const JSONInput = ({
 					name=''
 					disabled={!checked}
 					onValueChange={onChangeValue(attributeKey, 'min')}
-					// @ts-ignore
 					value={values.min}
 					label={`min fields`}></NumberInput>
 			</Box>
@@ -40,7 +39,6 @@ const JSONInput = ({
 					name=''
 					disabled={!checked}
 					onValueChange={onChangeValue(attributeKey, 'max')}
-					// @ts-ignore
 					value={values.max}
 					label={`max fields`}></NumberInput>
 			</Box>

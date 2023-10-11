@@ -21,8 +21,8 @@ interface Props {
 const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenerateData }: Props) => {
 	const capitalizeFirstLetter = (str: string): string => {
 		return str.charAt(0).toUpperCase() + str.slice(1);
-	  }
-	
+	};
+
 	const getValueByIntegerType = (key: string): number => {
 		let { min, max } = values[key] as {
 			min: number;
@@ -39,7 +39,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		return faker.datatype.float({ min, max });
 	};
 
-	const getValueByStringAndRichtextType = (key: string, regex?: string): string => {
+	const getValueByStringAndRichtextType = (key: string, relationArray: number[], regex?: string): string => {
 		if (regex) {
 			return faker.helpers.fromRegExp(regex);
 		}
@@ -187,14 +187,8 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			[AttributeType.JSON]: getValueByJSONType
 		};
 
-
-		if (type === AttributeType.String || type === AttributeType.Text || type === AttributeType.Richtext) {
-			return obj[type](key, regex);
-		}
-		// @ts-ignore
 		return obj[type](key, relationArray[key], regex);
 	};
-
 
 	const handleClickGenerate = async () => {
 		let data: { [key: string]: string | string[] }[] = [];
@@ -232,8 +226,18 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 							UIDsWithTargetField.push([key, attributes[key]]);
 						}
 
-						if ((attributes[key].type === AttributeType.String || AttributeType.Text || AttributeType.Richtext) && attributes[key].regex) {
-							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData, attributes[key].regex);
+						if (
+							(attributes[key].type === AttributeType.String ||
+								AttributeType.Text ||
+								AttributeType.Richtext) &&
+							attributes[key].regex
+						) {
+							obj[key] = getGeneratedDataByType(
+								attributes[key].type,
+								key,
+								relationData,
+								attributes[key].regex
+							);
 						} else {
 							obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
 						}

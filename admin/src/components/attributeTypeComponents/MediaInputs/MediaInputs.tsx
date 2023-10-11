@@ -39,7 +39,6 @@ const MediaInputs = ({
 									attributeKey,
 									'width'
 								)}
-								// @ts-ignore
 								value={values.width}
 								label={`width (px) for images`}></NumberInput>
 						</Box>
@@ -51,7 +50,6 @@ const MediaInputs = ({
 									attributeKey,
 									'height'
 								)}
-								// @ts-ignore
 								value={values.height}
 								label={`height (px) for images`}></NumberInput>
 						</Box>
@@ -67,7 +65,6 @@ const MediaInputs = ({
 									attributeKey,
 									'min'
 								)}
-								// @ts-ignore
 								value={values.min}
 								label={`Count min`}></NumberInput>
 						</Box>
@@ -79,7 +76,6 @@ const MediaInputs = ({
 									attributeKey,
 									'max'
 								)}
-								// @ts-ignore
 								value={values.max}
 								label={`Count max`}></NumberInput>
 						</Box>
