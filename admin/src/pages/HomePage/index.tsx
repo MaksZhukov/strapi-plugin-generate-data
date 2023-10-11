@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
 						) {
 							obj[key] = {
 								min: attributes[key].min || 1,
-								max: attributes[key].max || 10
+								max: attributes[key].max || 1
 							};
 						}
 						if (type === AttributeType.Date) {
@@ -230,7 +230,7 @@ const HomePage: React.FC = () => {
 			<HeaderLayout
 				title='Generate data'
 				subtitle='Generate data for your content types'
-				as='h1'
+				as='h2'
 				primaryAction={
 					attributes &&
 					values && (
