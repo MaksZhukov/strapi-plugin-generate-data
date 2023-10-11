@@ -49,7 +49,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		return faker.lorem.words({ min, max });
 	};
 	const getValueByEmailType = (): string => {
-		return faker.internet.email({ provider: "element-software.co.uk" }).toLowerCase();
+		return faker.internet.email().toLowerCase();
 	};
 	const getValueByDateType = (key: string): Date => {
 		let { from, to } = values[key] as {
