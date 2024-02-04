@@ -19,7 +19,7 @@ let getStringInput = ({ key, attribute, onChangeCheck, onChangeValue, checked, d
 		disabled={disabled}
 		attribute={attribute}
 		attributeKey={key}
-		values={values[key] as { min: number, max: number }}
+		values={values[key] as { min: number; max: number; maxSymbols: number; minSymbols: number }}
 		checked={checked}
 		onChangeCheck={onChangeCheck}
 		onChangeValue={onChangeValue}></StringInput>
@@ -55,8 +55,6 @@ export const getAttributeInputs = ({
 		disabled,
 		values
 	});
-
-
 
 	return {
 		[AttributeType.Integer]: (

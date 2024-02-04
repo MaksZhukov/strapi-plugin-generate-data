@@ -82,24 +82,24 @@ const HomePage: React.FC = () => {
 		if (attributes && !values) {
 			let obj = {};
 			let newCheckedAttributes: string[] = [];
+			const stringTypes = [AttributeType.String, AttributeType.Text, AttributeType.Richtext];
 			const createValues = async () => {
 				await Promise.all(
 					Object.keys(attributes).map(async (key) => {
 						let type = attributes[key].type;
 						if (
-							[
-								AttributeType.Integer,
-								AttributeType.Decimal,
-								AttributeType.String,
-								AttributeType.Text,
-								AttributeType.Richtext,
-								AttributeType.JSON
-							].includes(type)
+							[AttributeType.Integer, AttributeType.Decimal, AttributeType.JSON, ...stringTypes].includes(
+								type
+							)
 						) {
 							obj[key] = {
 								min: attributes[key].min || 1,
 								max: attributes[key].max || 1
 							};
+						}
+						if (stringTypes.includes(type)) {
+							obj[key].minSymbols = 1;
+							obj[key].maxSymbols = 10;
 						}
 						if (type === AttributeType.Date) {
 							obj[key] = { from: new Date(), to: new Date() };
@@ -223,7 +223,6 @@ const HomePage: React.FC = () => {
 	const handleChangeGenerateData = (data) => {
 		setGeneratedData(data);
 	};
-
 
 	return (
 		<Layout>

@@ -28,6 +28,8 @@ export type Attribute = {
 	enum: string[];
 	min: number;
 	max: number;
+	minSymbols: number;
+	maxSymbols: number;
 	multiple: boolean;
 	allowedTypes: AllowedTypes[];
 	regex?: string;

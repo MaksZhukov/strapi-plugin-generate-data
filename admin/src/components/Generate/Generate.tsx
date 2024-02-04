@@ -43,10 +43,27 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 		if (regex) {
 			return faker.helpers.fromRegExp(regex);
 		}
-		let { min, max } = values[key] as { min: number; max: number };
+		let { min, max, minSymbols, maxSymbols } = values[key] as {
+			min: number;
+			max: number;
+			minSymbols: number;
+			maxSymbols: number;
+		};
+
 		if (!min && !max) return faker.lorem.words();
-		if (min === 1 && max === 1) return capitalizeFirstLetter(faker.lorem.words(1));
-		return faker.lorem.words({ min, max });
+		if (min === 1 && max === 1)
+			return capitalizeFirstLetter(faker.lorem.word({ length: { max: maxSymbols, min: minSymbols } }));
+		return faker.lorem
+			.words({ min, max })
+			.split(' ')
+			.map((item) => {
+				let randomIndex = faker.number.int({
+					min: 0,
+					max: maxSymbols
+				});
+				return item.slice(0, randomIndex);
+			})
+			.join(' ');
 	};
 	const getValueByEmailType = (): string => {
 		return faker.internet.email().toLowerCase();
@@ -130,7 +147,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 
 	const getValueByEnumerationType = (key: string): string => {
 		const enumValues = attributes[key].enum;
-		let randomIndex = faker.datatype.number({
+		let randomIndex = faker.number.int({
 			min: 0,
 			max: enumValues.length - 1
 		});
