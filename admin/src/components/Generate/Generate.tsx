@@ -58,7 +58,7 @@ const Generate = ({ attributes, checkedAttributes, values, count, onChangeGenera
 			.split(' ')
 			.map((item) => {
 				let randomIndex = faker.number.int({
-					min: 0,
+					min: 1,
 					max: maxSymbols
 				});
 				return item.slice(0, randomIndex);
