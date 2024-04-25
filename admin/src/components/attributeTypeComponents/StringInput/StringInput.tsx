@@ -13,7 +13,7 @@ const StringInput = ({ attribute, attributeKey, checked, disabled, values, onCha
 		<GridItem col={6}>
 			<Box marginBottom='8px'>
 				<Box marginBottom='12px'>
-					<Checkbox disabled={disabled} onChange={onChangeCheck(attributeKey)} checked={checked}>
+					<Checkbox disabled={disabled} onChange={() => onChangeCheck(attributeKey)} checked={checked}>
 						{`${attributeKey} (Field type: ${
 							attribute.type === AttributeType.String || attribute.type == AttributeType.Text
 								? 'String'
@@ -26,7 +26,7 @@ const StringInput = ({ attribute, attributeKey, checked, disabled, values, onCha
 						<NumberInput
 							name=''
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'min')}
+							onValueChange={() => onChangeValue(attributeKey, 'min')}
 							value={values.min}
 							label={`min count words`}></NumberInput>
 					</Box>
@@ -34,7 +34,7 @@ const StringInput = ({ attribute, attributeKey, checked, disabled, values, onCha
 						<NumberInput
 							name=''
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'max')}
+							onValueChange={() => onChangeValue(attributeKey, 'max')}
 							value={values.max}
 							label={`max count words`}></NumberInput>
 					</Box>
@@ -42,7 +42,7 @@ const StringInput = ({ attribute, attributeKey, checked, disabled, values, onCha
 						<NumberInput
 							name=''
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'minSymbols')}
+							onValueChange={() => onChangeValue(attributeKey, 'minSymbols')}
 							value={values.minSymbols}
 							label={`min count symbols`}></NumberInput>
 					</Box>
@@ -50,7 +50,7 @@ const StringInput = ({ attribute, attributeKey, checked, disabled, values, onCha
 						<NumberInput
 							name=''
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'maxSymbols')}
+							onValueChange={() => onChangeValue(attributeKey, 'maxSymbols')}
 							value={values.maxSymbols}
 							label={`max count symbols`}></NumberInput>
 					</Box>

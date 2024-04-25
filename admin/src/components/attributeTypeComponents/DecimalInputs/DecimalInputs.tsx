@@ -21,7 +21,7 @@ const DecimalInputs = ({
       <Box marginBottom="8px">
         <Box marginBottom="12px">
           <Checkbox
-            onChange={onChangeCheck(attributeKey)}
+            onChange={() => onChangeCheck(attributeKey)}
             disabled={disabled}
             checked={checked}
           >
@@ -33,7 +33,7 @@ const DecimalInputs = ({
             <NumberInput
               name=""
               disabled={!checked}
-              onValueChange={onChangeValue(attributeKey, "min")}
+              onValueChange={() => onChangeValue(attributeKey, "min")}
               value={values.min}
               label={`min ${attribute.min ? attribute.min : ""}`}
             ></NumberInput>
@@ -42,7 +42,7 @@ const DecimalInputs = ({
             <NumberInput
               name=""
               disabled={!checked}
-              onValueChange={onChangeValue(attributeKey, "max")}
+              onValueChange={() => onChangeValue(attributeKey, "max")}
               value={values.max}
               label={`max ${attribute.max ? attribute.max : ""}`}
             ></NumberInput>

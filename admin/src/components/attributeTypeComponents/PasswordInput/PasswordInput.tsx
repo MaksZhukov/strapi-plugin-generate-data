@@ -14,7 +14,7 @@ const PasswordInput = ({
       <Box marginBottom="8px">
         <Checkbox
           disabled={disabled}
-          onChange={onChangeCheck(attributeKey)}
+          onChange={() => onChangeCheck(attributeKey)}
           checked={checked}
         >
           {`${attributeKey} (Field type: Password)`}

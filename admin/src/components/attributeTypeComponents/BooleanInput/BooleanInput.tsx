@@ -13,7 +13,7 @@ const BooleanInput = ({
     <GridItem col={6}>
       <Box marginBottom="8px">
         <Checkbox
-          onChange={onChangeCheck(attributeKey)}
+          onChange={() => onChangeCheck(attributeKey)}
           checked={checked}
           disabled={disabled}
         >

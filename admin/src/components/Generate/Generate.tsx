@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Button } from '@strapi/design-system';
-import { Refresh as RefreshIcon } from '@strapi/icons';
+import { ArrowClockwise as RefreshIcon } from '@strapi/icons';
 import qs from 'qs';
 import React from 'react';
 import slugify from 'slugify';

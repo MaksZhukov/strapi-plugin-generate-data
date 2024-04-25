@@ -21,7 +21,7 @@ const DateInputs = ({
         <Box marginBottom="12px">
           <Checkbox
             disabled={attribute.required}
-            onChange={onChangeCheck(attributeKey)}
+            onChange={() => onChangeCheck(attributeKey)}
             checked={checked}
           >
             {`${attributeKey} (Field type: Date)`}
@@ -30,7 +30,7 @@ const DateInputs = ({
         <Flex gap="16px">
           <Box flex="1">
             <DatePicker
-              onChange={onChangeValue(attributeKey, "from")}
+              onChange={() => onChangeValue(attributeKey, "from")}
               selectedDateLabel={(formattedDate) =>
                 `Date picker, current is ${formattedDate}`
               }
@@ -41,7 +41,7 @@ const DateInputs = ({
           <Box flex="1">
             <DatePicker
               label="Date to"
-              onChange={onChangeValue(attributeKey, "to")}
+              onChange={() => onChangeValue(attributeKey, "to")}
               selectedDateLabel={(formattedDate) =>
                 `Date picker, current is ${formattedDate}`
               }
