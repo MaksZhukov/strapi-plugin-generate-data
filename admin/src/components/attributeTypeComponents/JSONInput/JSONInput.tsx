@@ -20,7 +20,7 @@ const JSONInput = ({
 		<Box marginBottom='8px'>
 			<Checkbox
 				disabled={disabled}
-				onChange={onChangeCheck(attributeKey)}
+				onChange={() => onChangeCheck(attributeKey)}
 				checked={checked}>
 				{`${attributeKey} (Field type: JSON)`}
 			</Checkbox>
@@ -30,7 +30,7 @@ const JSONInput = ({
 				<NumberInput
 					name=''
 					disabled={!checked}
-					onValueChange={onChangeValue(attributeKey, 'min')}
+					onValueChange={() => onChangeValue(attributeKey, 'min')}
 					value={values.min}
 					label={`min fields`}></NumberInput>
 			</Box>
@@ -38,7 +38,7 @@ const JSONInput = ({
 				<NumberInput
 					name=''
 					disabled={!checked}
-					onValueChange={onChangeValue(attributeKey, 'max')}
+					onValueChange={() => onChangeValue(attributeKey, 'max')}
 					value={values.max}
 					label={`max fields`}></NumberInput>
 			</Box>

@@ -22,7 +22,7 @@ const IntegerInputs = ({
         <Box marginBottom="12px">
           <Checkbox
             disabled={disabled}
-            onChange={onChangeCheck(attributeKey)}
+            onChange={() => onChangeCheck(attributeKey)}
             checked={checked}
           >
             {`${attributeKey} (Field type: Integer)`}
@@ -33,7 +33,7 @@ const IntegerInputs = ({
             <NumberInput
               name=""
               disabled={!checked}
-              onValueChange={onChangeValue(attributeKey, "min")}
+              onValueChange={() => onChangeValue(attributeKey, "min")}
               value={values.min}
               label={`min ${attribute.min ? attribute.min : ""}`}
             ></NumberInput>
@@ -42,7 +42,7 @@ const IntegerInputs = ({
             <NumberInput
               name=""
               disabled={!checked}
-              onValueChange={onChangeValue(attributeKey, "max")}
+              onValueChange={() => onChangeValue(attributeKey, "max")}
               value={values.max}
               label={`max ${attribute.max ? attribute.max : ""}`}
             ></NumberInput>

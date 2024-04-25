@@ -19,7 +19,7 @@ const RelationInput = ({
       <Box marginBottom="8px">
         <Checkbox
           disabled={disabled || values.pageCount === 0}
-          onChange={onChangeCheck(attributeKey)}
+          onChange={() => onChangeCheck(attributeKey)}
           checked={checked}
         >
           {`${attributeKey} (Field type: Relation)

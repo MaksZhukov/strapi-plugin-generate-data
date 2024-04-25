@@ -22,7 +22,7 @@ const MediaInputs = ({
 				<Box marginBottom='12px'>
 					<Checkbox
 						disabled={disabled}
-						onChange={onChangeCheck(attributeKey)}
+						onChange={() => onChangeCheck(attributeKey)}
 						checked={checked}>
 						{`${attributeKey} (Field type: Media) Allowed types: ${attribute.allowedTypes.join(
 							', '
@@ -35,7 +35,7 @@ const MediaInputs = ({
 							<NumberInput
 								name=''
 								disabled={!checked}
-								onValueChange={onChangeValue(
+								onValueChange={() => onChangeValue(
 									attributeKey,
 									'width'
 								)}
@@ -46,7 +46,7 @@ const MediaInputs = ({
 							<NumberInput
 								name=''
 								disabled={!checked}
-								onValueChange={onChangeValue(
+								onValueChange={() => onChangeValue(
 									attributeKey,
 									'height'
 								)}
@@ -61,7 +61,7 @@ const MediaInputs = ({
 							<NumberInput
 								name=''
 								disabled={!checked}
-								onValueChange={onChangeValue(
+								onValueChange={() => onChangeValue(
 									attributeKey,
 									'min'
 								)}
@@ -72,7 +72,7 @@ const MediaInputs = ({
 							<NumberInput
 								name=''
 								disabled={!checked}
-								onValueChange={onChangeValue(
+								onValueChange={() => onChangeValue(
 									attributeKey,
 									'max'
 								)}

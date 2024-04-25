@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	HeaderLayout,
 	ContentLayout,
 	Layout,
-	Select,
-	Option,
+	SingleSelect,
+	SingleSelectOption,
 	Box,
 	Grid,
 	Flex,
 	NumberInput,
 	Checkbox,
-	Alert
+	Alert,
 } from '@strapi/design-system';
 import GeneratedDataTable from '../../components/GeneratedDataTable';
 import Upload from '../../components/Upload';
@@ -46,7 +46,7 @@ const HomePage: React.FC = () => {
 	const [isFlushedPreviousData, setIsFlashedPreviousData] = useState<boolean>(false);
 
 	const { search } = useLocation();
-	const history = useHistory();
+	const navigate = useNavigate();
 	const query = new URLSearchParams(search);
 	const selectedTypeUID = query.get('typeUID') || null;
 
@@ -147,7 +147,7 @@ const HomePage: React.FC = () => {
 	const handleChangeSelect = (newTypeUID: string) => {
 		const params = new URLSearchParams();
 		params.append('typeUID', newTypeUID);
-		history.push({ search: params.toString() });
+		navigate({ search: params.toString() });
 		setValues(null);
 		setGeneratedData([]);
 		setShowAlert(false);
@@ -246,17 +246,17 @@ const HomePage: React.FC = () => {
 				<Box shadow='filterShadow' padding={6} borderRadius='4px' marginBottom='24px' background='neutral0'>
 					<Flex gap='16px'>
 						<Box flex='1' marginBottom='24px'>
-							<Select
+							<SingleSelect
 								label='Content type'
 								placeholder='Select your content type'
 								value={selectedTypeUID}
 								onChange={handleChangeSelect}>
 								{contentTypes.map((item) => (
-									<Option key={item.uid} value={item.uid}>
+									<SingleSelectOption key={item.uid} value={item.uid}>
 										{item.apiID}
-									</Option>
+									</SingleSelectOption>
 								))}
-							</Select>
+							</SingleSelect>
 						</Box>
 						<Box flex='1'></Box>
 					</Flex>
@@ -325,7 +325,7 @@ const HomePage: React.FC = () => {
 					</>
 				)}
 				{!!generatedData.length && Object.keys(generatedData[0]).length < checkedAttributes.length && (
-					<Alert>Regenerate data with new added attributes</Alert>
+					<Alert closeLabel='Close alert'>Regenerate data with new added attributes</Alert>
 				)}
 				{showAlert && selectedType && (
 					<Alert
