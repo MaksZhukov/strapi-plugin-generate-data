@@ -1,1 +1,1 @@
-export { default } from "./EnumerationInput";
+export { default } from './EnumerationInput';

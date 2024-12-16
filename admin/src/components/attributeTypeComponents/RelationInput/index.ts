@@ -1,1 +1,1 @@
-export { default } from "./RelationInput";
+export { default } from './RelationInput';

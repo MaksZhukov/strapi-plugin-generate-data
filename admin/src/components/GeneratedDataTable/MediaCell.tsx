@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { CarouselInput, CarouselSlide, CarouselImage, Typography, Box } from '@strapi/design-system';
+import {
+	CarouselInput,
+	CarouselSlide,
+	CarouselImage,
+	Typography,
+	Box
+} from '@strapi/design-system';
 
 interface Props {
 	data: string[];
@@ -12,7 +18,7 @@ const MediaCell = ({ data }: Props) => {
 		setSelectedIndex(0);
 	}, [data]);
 
-	let type = 'images';
+	let type: 'images' | 'videos' | 'audios' | 'files' = 'images';
 
 	if (data[0] && data[0].includes('mp4')) {
 		type = 'videos';
@@ -30,22 +36,21 @@ const MediaCell = ({ data }: Props) => {
 		setSelectedIndex((current) => (current > 0 ? current - 1 : data.length - 1));
 	};
 
-	const renderCarouselSlideContent = (url) => ({
+	const renderCarouselSlideContent = (url: string) => ({
 		images: <CarouselImage src={url} alt={url} />,
 		videos: <video loop autoPlay width={200} src={url}></video>,
 		audios: <audio controls src={url}></audio>,
-		files: <Typography>{url.split('/').reverse()[0]}</Typography>,
+		files: <Typography>{url.split('/').reverse()[0]}</Typography>
 	});
 	return (
-		<Box width='200px'>
+		<Box width="200px">
 			<CarouselInput
 				selectedSlide={selectedIndex}
-				className='hello'
 				label={`Carousel (${selectedIndex + 1}/${data.length})`}
 				onNext={handleNext}
 				onPrevious={handlePrevious}
-				previousLabel='Previous slide'
-				nextLabel='Next slide'
+				previousLabel="Previous slide"
+				nextLabel="Next slide"
 			>
 				{data.map((url, index) => (
 					<CarouselSlide label={url} key={url + index}>

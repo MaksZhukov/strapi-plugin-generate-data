@@ -1,69 +1,82 @@
 {
-  "name": "strapi-plugin-generate-data",
-  "version": "1.0.32",
-  "description": "The plugin can help generate random data for your content.",
-  "keywords": [
-    "strapi",
-    "plugin",
-    "data",
-    "generate",
-    "open source",
-    "nodejs",
-    "javascript",
-    "react",
-    "typescript"
-  ],
-  "strapi": {
+    "version": "2.0.0",
+    "keywords": [],
+    "type": "commonjs",
+    "exports": {
+        "./package.json": "./package.json",
+        "./strapi-admin": {
+            "types": "./dist/admin/src/index.d.ts",
+            "source": "./admin/src/index.ts",
+            "import": "./dist/admin/index.mjs",
+            "require": "./dist/admin/index.js",
+            "default": "./dist/admin/index.js"
+        },
+        "./strapi-server": {
+            "types": "./dist/server/src/index.d.ts",
+            "source": "./server/src/index.ts",
+            "import": "./dist/server/index.mjs",
+            "require": "./dist/server/index.js",
+            "default": "./dist/server/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "strapi-plugin build",
+        "watch": "strapi-plugin watch",
+        "watch:link": "strapi-plugin watch:link",
+        "verify": "strapi-plugin verify",
+        "test:ts:front": "run -T tsc -p admin/tsconfig.json",
+        "test:ts:back": "run -T tsc -p server/tsconfig.json"
+    },
+    "dependencies": {
+        "@faker-js/faker": "^9.3.0",
+        "@strapi/design-system": "^2.0.0-rc.14",
+        "@strapi/icons": "^2.0.0-rc.14",
+        "axios": "^1.7.9",
+        "qs": "^6.13.1",
+        "randexp": "^0.5.3",
+        "react-intl": "^7.0.1",
+        "slugify": "^1.6.6"
+    },
+    "devDependencies": {
+        "@strapi/sdk-plugin": "^5.2.8",
+        "@strapi/strapi": "^5.5.1",
+        "@strapi/typescript-utils": "^5.5.1",
+        "@types/react": "^18.3.12",
+        "@types/react-dom": "^18.3.1",
+        "prettier": "^3.3.3",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.28.0",
+        "styled-components": "^6.1.13",
+        "typescript": "^5.6.3"
+    },
+    "peerDependencies": {
+        "@strapi/sdk-plugin": "^5.2.7",
+        "@strapi/strapi": "^5.5.1",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.28.0",
+        "styled-components": "^6.1.13"
+    },
+    "strapi": {
+        "kind": "plugin",
+        "name": "generate-data",
+        "displayName": "Generate data",
+        "description": "Generate data"
+    },
     "name": "generate-data",
-    "displayName": "Generate data",
-    "description": "The plugin can help generate random data for your content.",
-    "kind": "plugin"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MaksZhukov/strapi-generate-data.git"
-  },
-  "dependencies": {
-    "@faker-js/faker": "^8.1.0",
-    "@strapi/design-system": "^1.6.3",
-    "@strapi/helper-plugin": "^4.6.1",
-    "@strapi/icons": "^1.11.0",
-    "axios": "^0.27.2",
-    "mime-types": "^2.1.35",
-    "qs": "^6.11.0",
-    "randexp": "^0.5.3",
-    "slugify": "^1.6.5",
-    "typescript": "4.9.5"
-  },
-  "peerDependencies": {
-    "@strapi/strapi": "^4.0.0"
-  },
-  "author": {
-    "name": "Maksim Zhukau",
-    "email": "maks_zhukov_97@mail.ru",
-    "url": "https://github.com/MaksZhukov"
-  },
-  "maintainers": [
-    {
-      "name": "Maksim Zhukau",
-      "email": "maks_zhukov_97@mail.ru",
-      "url": "https://github.com/MaksZhukov"
-    }
-  ],
-  "engines": {
-    "node": ">=14.19.1 <=18.x.x",
-    "npm": ">=6.0.0"
-  },
-  "scripts": {
-    "postinstall": "tsc",
-    "develop": "tsc -w",
-    "build": "tsc"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^18.13.0"
-  }
+    "description": "Generate data",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/MaksZhukov/strapi-plugin-generate-data.git"
+    },
+    "bugs": {
+        "url": "https://github.com/MaksZhukov/strapi-plugin-generate-data/issues"
+    },
+    "homepage": "https://github.com/MaksZhukov/strapi-plugin-generate-data#readme",
+    "author": "Maksim Zhukau <maks_zhukov_97@mail.ru>"
 }

@@ -16,7 +16,13 @@ export enum AttributeType {
 }
 
 export type Values = {
-	[key: string]: { min: number; max: number } | { from: Date; to: Date } | { pageCount: number };
+	[key: string]:
+		| { width: number; height: number }
+		| { min: number; max: number }
+		| { minSymbols: number; maxSymbols: number }
+		| { from: Date; to: Date }
+		| { pageCount: number }
+		| {};
 };
 
 export type AllowedTypes = 'images' | 'videos' | 'files' | 'audios';
@@ -34,3 +40,5 @@ export type Attribute = {
 	allowedTypes: AllowedTypes[];
 	regex?: string;
 };
+
+export type GeneratedData = { [key: string]: any };

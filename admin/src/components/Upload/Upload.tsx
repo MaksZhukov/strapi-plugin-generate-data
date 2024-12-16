@@ -1,7 +1,6 @@
-import React from 'react';
 import { Button } from '@strapi/design-system';
 import axios from '../../utils/axiosInstance';
-import { AttributeType } from '../../pages/HomePage/types';
+import { AttributeType, GeneratedData } from '../../pages/HomePage/types';
 
 const COUNT_UPLOADED_DATA_ONCE = 25;
 
@@ -12,7 +11,7 @@ interface Props {
 	isFlushedPreviousData: boolean;
 	isPublished: boolean;
 	checkedAttributes: string[];
-	generatedData: { [key: string]: any }[];
+	generatedData: GeneratedData[];
 	onChangeIsUploadingData: (value: boolean) => void;
 	onChangeShowAlert: (value: boolean) => void;
 	onChangeUploadedError: (value: boolean) => void;
@@ -43,12 +42,12 @@ const Upload = ({
 				if (isFlushedPreviousData) {
 					await axios.post(`/generate-data/flush/${selectedType.uid}`);
 				}
-				let uploadData = async (data) => {
+				let uploadData = async (data: GeneratedData[]) => {
 					if (!data.length) {
 						return;
 					}
 					let dataByCount = data.slice(0, COUNT_UPLOADED_DATA_ONCE);
-					let uploadedMediaData = {};
+					let uploadedMediaData: { [key: string]: any[] } = {};
 
 					if (mediaKeys.length) {
 						const mediaData = mediaKeys.reduce((prev, key) => {
@@ -58,7 +57,10 @@ const Upload = ({
 							};
 						}, {});
 						try {
-							const response = await axios.post('/generate-data/upload', mediaData);
+							const response = await axios.post<{ data: any }>(
+								'/generate-data/upload',
+								mediaData
+							);
 							uploadedMediaData = response.data;
 						} catch (err) {
 							onChangeUploadedError(true);
@@ -67,22 +69,21 @@ const Upload = ({
 
 					const transformedData = Object.keys(uploadedMediaData).length
 						? dataByCount.map((item, index) => {
-								let newItem = {};
+								let newItem: { [key: string]: any } = {};
 								Object.keys(uploadedMediaData).forEach((key) => {
 									newItem[key] =
-										uploadedMediaData[key][index].map((uploadedItem) => uploadedItem.id) ||
-										item[key];
+										uploadedMediaData[key][index].map(
+											(uploadedItem: any) => uploadedItem.id
+										) || item[key];
 								});
 								return { ...item, ...newItem };
-						  })
+							})
 						: dataByCount;
 
-					await axios.post(
-						`/generate-data/create/${selectedType.uid}`,
-						isPublished
-							? transformedData.map((item) => ({ ...item, publishedAt: new Date() }))
-							: transformedData
-					);
+					await axios.post(`/generate-data/create/${selectedType.uid}`, {
+						data: transformedData,
+						status: isPublished ? 'published' : 'draft'
+					});
 
 					return uploadData(data.slice(COUNT_UPLOADED_DATA_ONCE));
 				};
@@ -95,7 +96,7 @@ const Upload = ({
 		onChangeShowAlert(true);
 	};
 	return (
-		<Button variant='secondary' loading={isUploadingData} onClick={handleUploadData}>
+		<Button variant="secondary" loading={isUploadingData} onClick={handleUploadData}>
 			Upload data
 		</Button>
 	);

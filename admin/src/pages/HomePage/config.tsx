@@ -13,7 +13,23 @@ import DecimalInputs from '../../components/attributeTypeComponents/DecimalInput
 import RelationInput from '../../components/attributeTypeComponents/RelationInput';
 import JSONInput from '../../components/attributeTypeComponents/JSONInput';
 
-let getStringInput = ({ key, attribute, onChangeCheck, onChangeValue, checked, disabled, values }) => (
+let getStringInput = ({
+	key,
+	attribute,
+	onChangeCheck,
+	onChangeValue,
+	checked,
+	disabled,
+	values
+}: {
+	key: string;
+	attribute: any;
+	values: Values;
+	onChangeCheck: (key: string) => void;
+	onChangeValue: (key: string, field: string) => void;
+	disabled: boolean;
+	checked: boolean;
+}) => (
 	<StringInput
 		key={key}
 		disabled={disabled}
@@ -22,7 +38,8 @@ let getStringInput = ({ key, attribute, onChangeCheck, onChangeValue, checked, d
 		values={values[key] as { min: number; max: number; maxSymbols: number; minSymbols: number }}
 		checked={checked}
 		onChangeCheck={onChangeCheck}
-		onChangeValue={onChangeValue}></StringInput>
+		onChangeValue={onChangeValue}
+	></StringInput>
 );
 
 export const getAttributeInputs = ({
@@ -42,9 +59,13 @@ export const getAttributeInputs = ({
 	checkedAttributes: string[];
 	attributes: any;
 }) => {
-	let sourceAttributeKey = Object.keys(attributes).find((attrKey) => attributes[attrKey].targetField === key);
+	let sourceAttributeKey = Object.keys(attributes).find(
+		(attrKey) => attributes[attrKey].targetField === key
+	);
 
-	let disabled = (sourceAttributeKey && checkedAttributes.includes(sourceAttributeKey)) || attribute.required;
+	let disabled =
+		(sourceAttributeKey && checkedAttributes.includes(sourceAttributeKey)) ||
+		attribute.required;
 	const checked = checkedAttributes.includes(key);
 	const stringInput = getStringInput({
 		key,
@@ -66,7 +87,8 @@ export const getAttributeInputs = ({
 				values={values[key] as { min: number; max: number }}
 				checked={checked}
 				onChangeCheck={onChangeCheck}
-				onChangeValue={onChangeValue}></IntegerInputs>
+				onChangeValue={onChangeValue}
+			></IntegerInputs>
 		),
 		[AttributeType.Richtext]: stringInput,
 		[AttributeType.String]: stringInput,
@@ -78,7 +100,8 @@ export const getAttributeInputs = ({
 				attributeKey={key}
 				disabled={disabled}
 				checked={checked}
-				onChangeCheck={onChangeCheck}></Email>
+				onChangeCheck={onChangeCheck}
+			></Email>
 		),
 		[AttributeType.Date]: (
 			<DateInputs
@@ -89,7 +112,8 @@ export const getAttributeInputs = ({
 				values={values[key] as { from: Date; to: Date }}
 				checked={checked}
 				onChangeValue={onChangeValue}
-				onChangeCheck={onChangeCheck}></DateInputs>
+				onChangeCheck={onChangeCheck}
+			></DateInputs>
 		),
 		[AttributeType.Media]: (
 			<MediaInputs
@@ -107,7 +131,8 @@ export const getAttributeInputs = ({
 					}
 				}
 				onChangeCheck={onChangeCheck}
-				onChangeValue={onChangeValue}></MediaInputs>
+				onChangeValue={onChangeValue}
+			></MediaInputs>
 		),
 		[AttributeType.Boolean]: (
 			<BooleanInput
@@ -116,7 +141,8 @@ export const getAttributeInputs = ({
 				attributeKey={key}
 				disabled={disabled}
 				checked={checked}
-				onChangeCheck={onChangeCheck}></BooleanInput>
+				onChangeCheck={onChangeCheck}
+			></BooleanInput>
 		),
 		[AttributeType.Enumeration]: (
 			<EnumerationInput
@@ -125,7 +151,8 @@ export const getAttributeInputs = ({
 				attributeKey={key}
 				disabled={disabled}
 				checked={checked}
-				onChangeCheck={onChangeCheck}></EnumerationInput>
+				onChangeCheck={onChangeCheck}
+			></EnumerationInput>
 		),
 		[AttributeType.Password]: (
 			<PasswordInput
@@ -134,7 +161,8 @@ export const getAttributeInputs = ({
 				disabled={disabled}
 				attributeKey={key}
 				checked={checked}
-				onChangeCheck={onChangeCheck}></PasswordInput>
+				onChangeCheck={onChangeCheck}
+			></PasswordInput>
 		),
 		[AttributeType.UID]: (
 			<UIDInput
@@ -143,7 +171,8 @@ export const getAttributeInputs = ({
 				attribute={attribute}
 				attributeKey={key}
 				checked={checked}
-				onChangeCheck={onChangeCheck}></UIDInput>
+				onChangeCheck={onChangeCheck}
+			></UIDInput>
 		),
 		[AttributeType.Decimal]: (
 			<DecimalInputs
@@ -154,7 +183,8 @@ export const getAttributeInputs = ({
 				values={values[key] as { min: number; max: number }}
 				checked={checked}
 				onChangeCheck={onChangeCheck}
-				onChangeValue={onChangeValue}></DecimalInputs>
+				onChangeValue={onChangeValue}
+			></DecimalInputs>
 		),
 		[AttributeType.Relation]: (
 			<RelationInput
@@ -164,7 +194,8 @@ export const getAttributeInputs = ({
 				attribute={attribute}
 				attributeKey={key}
 				checked={checked}
-				onChangeCheck={onChangeCheck}></RelationInput>
+				onChangeCheck={onChangeCheck}
+			></RelationInput>
 		),
 		[AttributeType.JSON]: (
 			<JSONInput
@@ -175,7 +206,8 @@ export const getAttributeInputs = ({
 				checked={checked}
 				onChangeCheck={onChangeCheck}
 				onChangeValue={onChangeValue}
-				values={values[key] as { min: number; max: number }}></JSONInput>
+				values={values[key] as { min: number; max: number }}
+			></JSONInput>
 		)
 	};
 };

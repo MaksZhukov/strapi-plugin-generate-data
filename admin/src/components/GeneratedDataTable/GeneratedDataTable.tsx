@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
-
-import { Table, Thead, Tbody, Tr, Td, Th, Button, Flex, Pagination, Typography } from '@strapi/design-system';
+import { useState, useEffect } from 'react';
+import {
+	Table,
+	Thead,
+	Tbody,
+	Tr,
+	Td,
+	Th,
+	Button,
+	Flex,
+	Pagination,
+	Typography
+} from '@strapi/design-system';
 import MediaCell from './MediaCell';
 import { AttributeType } from '../../pages/HomePage/types';
 
@@ -33,7 +43,11 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 		}
 
 		if (attributes[headKeys[index]].type === AttributeType.JSON) {
-			return <pre style={{ maxHeight: 200, overflowY: 'auto' }}>{JSON.stringify(item, undefined, 2)}</pre>;
+			return (
+				<pre style={{ maxHeight: 200, overflowY: 'auto' }}>
+					{JSON.stringify(item, undefined, 2)}
+				</pre>
+			);
 		}
 
 		return <Typography>{item.toString()}</Typography>;
@@ -42,27 +56,34 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 	return (
 		<Table
 			footer={
-				<Flex justifyContent='center' padding={[2, 2]}>
+				<Flex justifyContent="center" padding={[2, 2]}>
 					<Pagination activePage={activePage} pageCount={pageCount}>
 						{new Array(pageCount).fill(null).map((item, index) => (
-							<Button key={index} onClick={handleChangePagination(index + 1)} variant='tertiary'>
+							<Button
+								key={index}
+								onClick={handleChangePagination(index + 1)}
+								variant="tertiary"
+							>
 								{index + 1}
 							</Button>
 						))}
 					</Pagination>
 				</Flex>
-			}>
+			}
+		>
 			<Thead>
 				<Tr>
 					<Th>
-						<Typography textColor='neutral600' variant='sigma'>
+						<Typography textColor="neutral600" variant="sigma">
 							ROW
 						</Typography>
 					</Th>
 					{headKeys.map((key) => (
 						<Th key={key}>
-							<Typography textColor='neutral600' variant='sigma'>
-								{attributes[key].type === AttributeType.Relation ? `${key} (ID)` : key}
+							<Typography textColor="neutral600" variant="sigma">
+								{attributes[key].type === AttributeType.Relation
+									? `${key} (ID)`
+									: key}
 							</Typography>
 						</Th>
 					))}
@@ -70,7 +91,10 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 			</Thead>
 			<Tbody>
 				{data
-					.slice((activePage - 1) * COUNT_PAGINATION_ROWS, COUNT_PAGINATION_ROWS * activePage)
+					.slice(
+						(activePage - 1) * COUNT_PAGINATION_ROWS,
+						COUNT_PAGINATION_ROWS * activePage
+					)
 					.map((item, index) => (
 						<Tr key={index}>
 							<Td>{index + 1 + (activePage - 1) * COUNT_PAGINATION_ROWS}</Td>
