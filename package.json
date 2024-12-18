@@ -19,7 +19,8 @@
         }
     },
     "files": [
-        "dist"
+        "dist",
+        "public"
     ],
     "scripts": {
         "build": "strapi-plugin build",
@@ -34,7 +35,6 @@
         "@strapi/design-system": "^2.0.0-rc.14",
         "@strapi/icons": "^2.0.0-rc.14",
         "axios": "^1.7.9",
-        "generate-data": "github:MaksZhukov/strapi-plugin-generate-data#develop",
         "qs": "^6.13.1",
         "randexp": "^0.5.3",
         "react-intl": "^7.0.1",
