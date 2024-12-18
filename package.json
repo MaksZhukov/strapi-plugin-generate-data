@@ -67,7 +67,7 @@
         "displayName": "Generate data",
         "description": "Generate data"
     },
-    "name": "generate-data",
+    "name": "strapi-plugin-generate-data",
     "description": "Generate data",
     "license": "MIT",
     "repository": {
