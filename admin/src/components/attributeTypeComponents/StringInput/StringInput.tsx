@@ -1,62 +1,82 @@
 import React from 'react';
-import { Box, GridItem, Flex, NumberInput, Checkbox } from '@strapi/design-system';
+import { Box, Grid, Flex, NumberInput, Checkbox } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 import { AttributeType } from '../../../pages/HomePage/types';
+import { Typography } from '@strapi/design-system';
 
 interface Props extends GeneralProps {
 	values: { min: number; max: number; minSymbols: number; maxSymbols: number };
 	onChangeValue: (key: string, field: string) => void;
 }
 
-const StringInput = ({ attribute, attributeKey, checked, disabled, values, onChangeCheck, onChangeValue }: Props) => {
+const StringInput = ({
+	attribute,
+	attributeKey,
+	checked,
+	disabled,
+	values,
+	onChangeCheck,
+	onChangeValue
+}: Props) => {
 	return (
-		<GridItem col={6}>
-			<Box marginBottom='8px'>
-				<Box marginBottom='12px'>
-					<Checkbox disabled={disabled} onChange={onChangeCheck(attributeKey)} checked={checked}>
+		<Grid.Item col={6}>
+			<Box marginBottom="8px">
+				<Box marginBottom="12px">
+					<Checkbox
+						disabled={disabled}
+						onCheckedChange={() => {
+							onChangeCheck(attributeKey);
+						}}
+						checked={checked}
+					>
 						{`${attributeKey} (Field type: ${
-							attribute.type === AttributeType.String || attribute.type == AttributeType.Text
+							attribute.type === AttributeType.String ||
+							attribute.type == AttributeType.Text
 								? 'String'
 								: 'Richtext'
 						})`}
 					</Checkbox>
 				</Box>
-				<Flex gap='16px'>
-					<Box flex='1'>
+				<Flex gap="16px">
+					<Box flex="1">
+						<Typography>min count words</Typography>
 						<NumberInput
-							name=''
+							name=""
 							disabled={!checked}
 							onValueChange={onChangeValue(attributeKey, 'min')}
 							value={values.min}
-							label={`min count words`}></NumberInput>
+						></NumberInput>
 					</Box>
-					<Box flex='1'>
+					<Box flex="1">
+						<Typography>max count words</Typography>
 						<NumberInput
-							name=''
+							name=""
 							disabled={!checked}
 							onValueChange={onChangeValue(attributeKey, 'max')}
 							value={values.max}
-							label={`max count words`}></NumberInput>
+						></NumberInput>
 					</Box>
-					<Box flex='1'>
+					<Box flex="1">
+						<Typography>min count symbols</Typography>
 						<NumberInput
-							name=''
+							name=""
 							disabled={!checked}
 							onValueChange={onChangeValue(attributeKey, 'minSymbols')}
 							value={values.minSymbols}
-							label={`min count symbols`}></NumberInput>
+						></NumberInput>
 					</Box>
-					<Box flex='1'>
+					<Box flex="1">
+						<Typography>max count symbols</Typography>
 						<NumberInput
-							name=''
+							name=""
 							disabled={!checked}
 							onValueChange={onChangeValue(attributeKey, 'maxSymbols')}
 							value={values.maxSymbols}
-							label={`max count symbols`}></NumberInput>
+						></NumberInput>
 					</Box>
 				</Flex>
 			</Box>
-		</GridItem>
+		</Grid.Item>
 	);
 };
 

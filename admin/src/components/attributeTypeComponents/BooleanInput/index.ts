@@ -1,1 +1,1 @@
-export { default } from "./BooleanInput";
+export { default } from './BooleanInput';

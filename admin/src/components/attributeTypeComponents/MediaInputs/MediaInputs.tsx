@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, GridItem, Flex, Checkbox, NumberInput } from '@strapi/design-system';
+import { Box, Grid, Flex, Checkbox, NumberInput } from '@strapi/design-system';
 import { GeneralProps } from '../types';
+import { Typography } from '@strapi/design-system';
 interface Props extends GeneralProps {
 	onChangeValue: (key: string, field: string) => void;
 	values: { width: number; height: number; min: number; max: number };
@@ -13,76 +14,69 @@ const MediaInputs = ({
 	disabled,
 	values,
 	onChangeCheck,
-	onChangeValue,
+	onChangeValue
 }: Props) => {
 	const allowedImages = attribute.allowedTypes.includes('images');
 	return (
-		<GridItem col={12}>
-			<Box marginBottom='8px'>
-				<Box marginBottom='12px'>
+		<Grid.Item col={12}>
+			<Box marginBottom="8px">
+				<Box marginBottom="12px">
 					<Checkbox
 						disabled={disabled}
-						onChange={onChangeCheck(attributeKey)}
-						checked={checked}>
+						onCheckedChange={() => onChangeCheck(attributeKey)}
+						checked={checked}
+					>
 						{`${attributeKey} (Field type: Media) Allowed types: ${attribute.allowedTypes.join(
 							', '
 						)}`}
 					</Checkbox>
 				</Box>
 				{allowedImages && (
-					<Flex gap='16px'>
-						<Box flex='1'>
+					<Flex gap="16px">
+						<Box flex="1">
+							<Typography>width (px) for images</Typography>
 							<NumberInput
-								name=''
+								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(
-									attributeKey,
-									'width'
-								)}
+								onValueChange={onChangeValue(attributeKey, 'width')}
 								value={values.width}
-								label={`width (px) for images`}></NumberInput>
+							></NumberInput>
 						</Box>
-						<Box flex='1'>
+						<Box flex="1">
+							<Typography>height (px) for images</Typography>
 							<NumberInput
-								name=''
+								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(
-									attributeKey,
-									'height'
-								)}
+								onValueChange={onChangeValue(attributeKey, 'height')}
 								value={values.height}
-								label={`height (px) for images`}></NumberInput>
+							></NumberInput>
 						</Box>
 					</Flex>
 				)}
 				{attribute.multiple && (
-					<Flex marginTop='12px' gap='16px'>
-						<Box flex='1'>
+					<Flex marginTop="12px" gap="16px">
+						<Box flex="1">
+							<Typography>Count min</Typography>
 							<NumberInput
-								name=''
+								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(
-									attributeKey,
-									'min'
-								)}
+								onValueChange={onChangeValue(attributeKey, 'min')}
 								value={values.min}
-								label={`Count min`}></NumberInput>
+							></NumberInput>
 						</Box>
-						<Box flex='1'>
+						<Box flex="1">
+							<Typography>Count max</Typography>
 							<NumberInput
-								name=''
+								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(
-									attributeKey,
-									'max'
-								)}
+								onValueChange={onChangeValue(attributeKey, 'max')}
 								value={values.max}
-								label={`Count max`}></NumberInput>
+							></NumberInput>
 						</Box>
 					</Flex>
 				)}
 			</Box>
-		</GridItem>
+		</Grid.Item>
 	);
 };
 export default MediaInputs;
