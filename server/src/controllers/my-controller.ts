@@ -43,8 +43,10 @@ export default ({ strapi }) => ({
 				})
 			);
 		} catch (err) {
-			return new ctx.internalServerError('error');
+			console.error('Unexpected error during upload:', err);
+			return ctx.internalServerError('An error occurred during upload processing.');
 		}
+
 		return obj;
 	},
 	getVideos(ctx) {
