@@ -21,9 +21,19 @@ export default ({ strapi }) => ({
 
 	deleteFile(filePath) {
 		return new Promise((resolve, reject) => {
-			fs.unlink(filePath, (err) => {
-				if (err) reject(err.message);
-				resolve('deleted');
+			fs.access(filePath, fs.constants.F_OK, (accessErr) => {
+				if (accessErr) {
+					// File doesn't exist
+					return reject(`File does not exist: ${filePath}`);
+				}
+
+				// File exists, proceed to delete it
+				fs.unlink(filePath, (unlinkErr) => {
+					if (unlinkErr) {
+						return reject(unlinkErr.message);
+					}
+					resolve('deleted');
+				});
 			});
 		});
 	},
