@@ -6,6 +6,23 @@ const validateName = (name: string, countFiles: number) => {
 	return +number <= countFiles;
 };
 
+// Helper function to retry uploads with a backoff mechanism
+const retryUpload = async (strapi, url, retries = 5) => {
+	for (let attempt = 1; attempt <= retries; attempt++) {
+		try {
+			return await strapi.plugin('generate-data').service('myService').uploadToLibrary(url);
+		} catch (err) {
+			console.warn(`Upload failed (attempt ${attempt}) for URL: ${url}`, err);
+			if (attempt === retries) {
+				console.error(`Max retries reached for URL: ${url}`);
+				return null; // Return null to indicate a failure
+			}
+		}
+		// wait before trying again
+		await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
+	}
+};
+
 export default ({ strapi }) => ({
 	flush(ctx) {
 		const { contentType } = ctx.params;
@@ -24,27 +41,26 @@ export default ({ strapi }) => ({
 	async upload(ctx) {
 		const data = ctx.request.body;
 		let obj = {};
+
 		try {
 			await Promise.all(
 				Object.keys(data).map(async (key) => {
 					let response = await Promise.all(
-						data[key].map((urls) =>
-							Promise.all(
-								urls.map((url) =>
-									strapi
-										.plugin('generate-data')
-										.service('myService')
-										.uploadToLibrary(url)
-								)
-							)
+						data[key].map(async (urls) =>
+							Promise.all(urls.map(async (url) => await retryUpload(strapi, url)))
 						)
 					);
-					obj[key] = response;
+					// Filter out any failed uploads (null responses)
+					obj[key] = response.map((urlResponses) =>
+						urlResponses.filter((res) => res !== null)
+					);
 				})
 			);
 		} catch (err) {
-			return new ctx.internalServerError('error');
+			console.error('Unexpected error during upload:', err);
+			return ctx.internalServerError('An error occurred during upload processing.');
 		}
+
 		return obj;
 	},
 	getVideos(ctx) {
