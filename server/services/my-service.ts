@@ -1,16 +1,13 @@
 import axios from 'axios';
 import fs from 'fs';
+import os from 'os';
 import { Agent } from 'https';
 import stream from 'stream';
 import path from 'path';
 import util from 'util';
 import mime from 'mime-types';
 
-let dir = './tmp';
-
-if (!fs.existsSync(dir)) {
-	fs.mkdirSync(dir);
-}
+const dir = os.tmpdir();
 
 export default ({ strapi }) => ({
 	getFileDetails(filePath) {
@@ -45,22 +42,21 @@ export default ({ strapi }) => ({
 		const finished = util.promisify(stream.finished);
 		result.data.pipe(file);
 		await finished(file);
-		const image = await this.upload(filePath, 'uploads');
+		const image = await this.upload(filePath);
 		return image;
 	},
 
-	async upload(filePath, saveAs) {
-		const stats = await this.getFileDetails(filePath);
+	async upload(filePath) {
+		const stats = (await this.getFileDetails(filePath)) as any;
 		const fileName = path.parse(filePath).base;
 
 		const res = await strapi.plugins.upload.services.upload.upload({
-			data: { path: saveAs },
-			files: {
-				path: filePath,
-				name: fileName,
-				type: mime.lookup(filePath),
-				size: stats.size
-			}
+			data: {
+				fileInfo: {
+					name: fileName
+				}
+			},
+			files: { filepath: filePath, size: stats.size, mimetype: mime.lookup(fileName) }
 		});
 
 		await this.deleteFile(filePath);
