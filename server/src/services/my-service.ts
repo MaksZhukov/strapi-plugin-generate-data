@@ -1,16 +1,13 @@
 import axios from 'axios';
 import fs from 'fs';
+import os from 'os';
 import { Agent } from 'https';
 import stream from 'stream';
 import path from 'path';
 import util from 'util';
 import mime from 'mime-types';
 
-let dir = './tmp';
-
-if (!fs.existsSync(dir)) {
-	fs.mkdirSync(dir);
-}
+const dir = os.tmpdir();
 
 export default ({ strapi }) => ({
 	getFileDetails(filePath) {
