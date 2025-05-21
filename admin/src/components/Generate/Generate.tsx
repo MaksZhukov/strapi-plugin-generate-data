@@ -227,8 +227,8 @@ const Generate = ({
 
 			await Promise.all(
 				relationKeys.map(async (key) => {
-					const res = await axios(
-						`/content-manager/collection-types/${attributes[key].target}?${qs.stringify(
+					const { data } = await axios(
+						`/generate-data/collection-types/${attributes[key].target}?${qs.stringify(
 							{
 								fields: ['id'],
 								page: faker.number.int({
@@ -239,7 +239,7 @@ const Generate = ({
 							{ encodeValuesOnly: true }
 						)}`
 					);
-					relationData[key] = res.data.results.map((item: any) => item.id);
+					relationData[key] = data.results.map((item: any) => item.id);
 				})
 			);
 

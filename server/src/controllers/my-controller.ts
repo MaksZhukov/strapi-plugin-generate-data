@@ -24,6 +24,41 @@ const retryUpload = async (strapi, url, retries = 5) => {
 };
 
 export default ({ strapi }) => ({
+	getContentTypes(ctx) {
+		const contentTypes = Object.values(strapi.contentTypes)
+			.filter((ct: any) => ct.uid.startsWith('api') && ct.kind === 'collectionType')
+			.map((ct: any) => ({
+				uid: ct.uid,
+				apiID: ct.apiName,
+				schema: ct
+			}));
+		return { data: contentTypes };
+	},
+	async getCollection(ctx) {
+		const { contentType } = ctx.params;
+		const { fields = [], page = 1, pageSize = 25 } = ctx.query;
+
+		const [data, total] = await Promise.all([
+			strapi.db.query(contentType).findMany({
+				select: fields,
+				limit: pageSize,
+				offset: (page - 1) * pageSize
+			}),
+			strapi.db.query(contentType).count()
+		]);
+
+		return {
+			results: data,
+			meta: {
+				pagination: {
+					page,
+					pageSize,
+					total,
+					pageCount: Math.ceil(total / pageSize)
+				}
+			}
+		};
+	},
 	flush(ctx) {
 		const { contentType } = ctx.params;
 		return strapi.db.query(contentType).deleteMany();
