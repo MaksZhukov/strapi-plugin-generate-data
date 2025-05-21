@@ -5,7 +5,6 @@ import { useEffect, useRef } from 'react';
 
 const App = () => {
 	const ref = useRef<HTMLDivElement>(null);
-
 	useEffect(() => {
 		let parentNode = ref.current?.parentNode;
 		if (parentNode) {
