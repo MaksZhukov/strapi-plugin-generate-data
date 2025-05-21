@@ -1,4 +1,22 @@
 export default [
+    {
+		method: 'GET',
+		path: '/content-types',
+		handler: 'myController.getContentTypes',
+		config: {
+			policies: [],
+			auth: false
+		}
+	},
+    {
+		method: 'GET',
+		path: '/collection-types/:contentType',
+		handler: 'myController.getCollection',
+		config: {
+			policies: [],
+			auth: false
+		}
+	},
 	{
 		method: 'POST',
 		path: '/flush/:contentType',
