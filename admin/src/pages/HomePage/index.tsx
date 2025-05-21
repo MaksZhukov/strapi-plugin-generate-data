@@ -52,8 +52,8 @@ const HomePage: React.FC = () => {
 		(async () => {
 			const {
 				data: { data }
-			} = await axios.get<{ data: ContentType[] }>('/content-type-builder/content-types');
-			setContentTypes(data.filter((item) => item.uid.startsWith('api')));
+			} = await axios.get<{ data: ContentType[] }>('/generate-data/content-types');
+			setContentTypes(data);
 		})();
 	}, []);
 
@@ -114,13 +114,12 @@ const HomePage: React.FC = () => {
 							};
 						}
 						if (type === AttributeType.Relation) {
-							const {
-								data: { pagination }
-							} = await axios(
-								`/content-manager/collection-types/${attributes[key].target}?pageSize=1`
+							const { data } = await axios(
+								`/generate-data/collection-types/${attributes[key].target}`
 							);
+
 							let pageCount = Math.ceil(
-								pagination.total / COUNT_RELATION_DATA_PER_PAGE
+								data.meta.pagination.total / COUNT_RELATION_DATA_PER_PAGE
 							);
 							obj[key] = {
 								pageCount
@@ -368,7 +367,7 @@ const HomePage: React.FC = () => {
 						title="Uploaded Alert"
 					>
 						The data for <b>{selectedType.apiID}</b>
-						{uploadedError ? "wasn't" : 'was'} uploaded
+						{uploadedError ? " wasn't" : ' was'} uploaded
 					</Alert>
 				)}
 			</Box>
