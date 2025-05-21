@@ -1,5 +1,5 @@
 {
-    "version": "2.0.3",
+    "version": "2.0.4",
     "keywords": [],
     "type": "commonjs",
     "exports": {
@@ -18,7 +18,7 @@
             "require": "./dist/server/index.js",
             "default": "./dist/server/index.js"
         }
-      },
+    },
     "files": [
         "dist",
         "public"
