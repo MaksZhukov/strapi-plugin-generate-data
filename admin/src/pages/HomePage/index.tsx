@@ -8,8 +8,10 @@ import {
 	Flex,
 	NumberInput,
 	Checkbox,
-	Alert
+	Alert,
+	Button
 } from '@strapi/design-system';
+import { ChevronDown, ChevronUp } from '@strapi/icons';
 import GeneratedDataTable from '../../components/GeneratedDataTable';
 import Upload from '../../components/Upload';
 import Generate from '../../components/Generate';
@@ -42,6 +44,7 @@ const HomePage: React.FC = () => {
 	const [checkedAttributes, setCheckedAttributes] = useState<string[]>([]);
 	const [generatedData, setGeneratedData] = useState<GeneratedData[]>([]);
 	const [isFlushedPreviousData, setIsFlashedPreviousData] = useState<boolean>(false);
+	const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
 	const { search } = useLocation();
 	const navigate = useNavigate();
@@ -228,15 +231,15 @@ const HomePage: React.FC = () => {
 		setIsPublished(!isPublished);
 	};
 
-	const handleChangeGenerateData = (data: GeneratedData[]) => {
+	const handleChangeGenerateData = (data: GeneratedData[]): void => {
 		setGeneratedData(data);
 	};
 
 	return (
 		<Box padding="35px">
 			<Box display="flex" marginBottom="10px" style={{ justifyContent: 'space-between' }}>
-				<Box as="h2">
-					<Typography fontSize="24px" fontWeight="bold" as="div">
+				<Box>
+					<Typography fontSize="24px" fontWeight="bold" tag='div'>
 						Generate data
 					</Typography>
 					<Typography>Generate data for your content types</Typography>
@@ -259,54 +262,74 @@ const HomePage: React.FC = () => {
 					marginBottom="24px"
 					background="neutral0"
 				>
-					<Flex gap="16px">
-						<Box flex="1" marginBottom="24px">
-							<SingleSelect
-								label="Content type"
-								placeholder="Select your content type"
-								value={selectedTypeUID}
-								onChange={handleChangeSelect}
-							>
-								{contentTypes.map((item) => (
-									<SingleSelectOption key={item.uid} value={item.uid}>
-										{item.apiID}
-									</SingleSelectOption>
-								))}
-							</SingleSelect>
-						</Box>
-						<Box flex="1"></Box>
+					<Flex
+						justifyContent="space-between"
+						alignItems="center"
+						marginBottom={isCollapsed ? 0 : 4}
+					>
+						<Typography fontSize="16px" fontWeight="semiBold">
+							Configuration
+						</Typography>
+						<Button
+							variant="tertiary"
+							size="S"
+							onClick={() => setIsCollapsed(!isCollapsed)}
+							startIcon={isCollapsed ? <ChevronDown /> : <ChevronUp />}
+						>
+							{isCollapsed ? 'Expand' : 'Collapse'}
+						</Button>
 					</Flex>
-					<Grid.Root gap={4}>
-						{attributes &&
-							values &&
-							Object.keys(attributes).map((key) => (
-								<React.Fragment key={key}>
-									{
-										getAttributeInputs({
-											key,
-											attributes,
-											attribute: attributes[key],
-											values,
-											checkedAttributes,
-											onChangeCheck: handleChangeCheck,
-											onChangeValue: handleChangeValue
-										})[attributes[key].type]
-									}
-								</React.Fragment>
-							))}
-					</Grid.Root>
-					{attributes && (
-						<Flex gap="16px">
-							<Box paddingTop={4} flex="1">
-								<Typography>Count items to generate</Typography>
-								<NumberInput
-									value={count}
-									name=""
-									onValueChange={setCount}
-								></NumberInput>
-							</Box>{' '}
-							<Box flex="1"></Box>
-						</Flex>
+					{!isCollapsed && (
+						<>
+							<Flex gap="16px">
+								<Box flex="1" marginBottom="24px">
+									<SingleSelect
+										placeholder="Select your content type"
+										value={selectedTypeUID}
+										onChange={(value) => handleChangeSelect(value.toString())}
+									>
+										{contentTypes.map((item) => (
+											<SingleSelectOption key={item.uid} value={item.uid}>
+												{item.apiID}
+											</SingleSelectOption>
+										))}
+									</SingleSelect>
+								</Box>
+								<Box flex="1"></Box>
+							</Flex>
+							<Grid.Root gap={4}>
+								{attributes &&
+									values &&
+									Object.keys(attributes).map((key) => (
+										<React.Fragment key={key}>
+											{
+												getAttributeInputs({
+													key,
+													attributes,
+													attribute: attributes[key],
+													values,
+													checkedAttributes,
+													onChangeCheck: handleChangeCheck,
+													onChangeValue: handleChangeValue
+												})[attributes[key].type]
+											}
+										</React.Fragment>
+									))}
+							</Grid.Root>
+							{attributes && (
+								<Flex gap="16px">
+									<Box paddingTop={4} flex="1">
+										<Typography>Count items to generate</Typography>
+										<NumberInput
+											value={count}
+											name=""
+											onValueChange={(value) => setCount(value || 1)}
+										></NumberInput>
+									</Box>{' '}
+									<Box flex="1"></Box>
+								</Flex>
+							)}
+						</>
 					)}
 				</Box>
 				{!!generatedData.length &&

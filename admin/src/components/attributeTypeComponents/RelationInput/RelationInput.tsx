@@ -25,7 +25,7 @@ const RelationInput = ({
 					{`${attributeKey} (Field type: Relation)
           ${
 				values.pageCount === 0 ? (
-					<Typography textColor="warning500" variant="warning">
+					<Typography textColor="warning500" variant="delta">
 						Generate or add data for the type
 					</Typography>
 				) : (

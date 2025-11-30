@@ -55,6 +55,8 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 
 	return (
 		<Table
+			colCount={headKeys.length + 1}
+			rowCount={data.length}
 			footer={
 				<Flex justifyContent="center" padding={[2, 2]}>
 					<Pagination activePage={activePage} pageCount={pageCount}>

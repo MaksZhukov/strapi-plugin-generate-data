@@ -5,7 +5,7 @@ import { Typography } from '@strapi/design-system';
 
 interface Props extends GeneralProps {
 	values: { min: number; max: number };
-	onChangeValue: (key: string, field: string) => void;
+	onChangeValue: (key: string, field: string) => (value: number) => void;
 }
 
 const DecimalInputs = ({
@@ -35,7 +35,9 @@ const DecimalInputs = ({
 						<NumberInput
 							name=""
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'min')}
+							onValueChange={(value) =>
+								onChangeValue(attributeKey, 'min')(value || 1)
+							}
 							value={values.min}
 						></NumberInput>
 					</Box>
@@ -44,7 +46,9 @@ const DecimalInputs = ({
 						<NumberInput
 							name=""
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'max')}
+							onValueChange={(value) =>
+								onChangeValue(attributeKey, 'max')(value || 1)
+							}
 							value={values.max}
 						></NumberInput>
 					</Box>

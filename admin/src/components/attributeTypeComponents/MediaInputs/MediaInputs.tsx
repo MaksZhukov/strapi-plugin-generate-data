@@ -3,7 +3,7 @@ import { Box, Grid, Flex, Checkbox, NumberInput } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 import { Typography } from '@strapi/design-system';
 interface Props extends GeneralProps {
-	onChangeValue: (key: string, field: string) => void;
+	onChangeValue: (key: string, field: string) => (value: number) => void;
 	values: { width: number; height: number; min: number; max: number };
 }
 
@@ -38,7 +38,9 @@ const MediaInputs = ({
 							<NumberInput
 								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(attributeKey, 'width')}
+								onValueChange={(value) =>
+									onChangeValue(attributeKey, 'width')(value || 1)
+								}
 								value={values.width}
 							></NumberInput>
 						</Box>
@@ -47,7 +49,9 @@ const MediaInputs = ({
 							<NumberInput
 								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(attributeKey, 'height')}
+								onValueChange={(value) =>
+									onChangeValue(attributeKey, 'height')(value || 1)
+								}
 								value={values.height}
 							></NumberInput>
 						</Box>
@@ -60,7 +64,9 @@ const MediaInputs = ({
 							<NumberInput
 								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(attributeKey, 'min')}
+								onValueChange={(value) =>
+									onChangeValue(attributeKey, 'min')(value || 1)
+								}
 								value={values.min}
 							></NumberInput>
 						</Box>
@@ -69,7 +75,9 @@ const MediaInputs = ({
 							<NumberInput
 								name=""
 								disabled={!checked}
-								onValueChange={onChangeValue(attributeKey, 'max')}
+								onValueChange={(value) =>
+									onChangeValue(attributeKey, 'max')(value || 1)
+								}
 								value={values.max}
 							></NumberInput>
 						</Box>

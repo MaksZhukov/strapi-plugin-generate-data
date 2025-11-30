@@ -3,7 +3,7 @@ import { GeneralProps } from '../types';
 
 interface Props extends GeneralProps {
 	values: { to: Date; from: Date };
-	onChangeValue: (key: string, field: string) => void;
+	onChangeValue: (key: string, field: string) => (date: Date) => void;
 }
 
 const DateInputs = ({
@@ -29,15 +29,17 @@ const DateInputs = ({
 				<Flex gap="16px">
 					<Box flex="1">
 						<DatePicker
-							onChange={onChangeValue(attributeKey, 'from')}
+							onChange={(date) =>
+								onChangeValue(attributeKey, 'from')(date || new Date())
+							}
 							value={values.from}
-							label="Date from"
 						></DatePicker>
 					</Box>
 					<Box flex="1">
 						<DatePicker
-							label="Date to"
-							onChange={onChangeValue(attributeKey, 'to')}
+							onChange={(date) =>
+								onChangeValue(attributeKey, 'to')(date || new Date())
+							}
 							value={values.to}
 						></DatePicker>
 					</Box>
