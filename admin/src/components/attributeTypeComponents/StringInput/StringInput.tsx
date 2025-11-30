@@ -6,7 +6,7 @@ import { Typography } from '@strapi/design-system';
 
 interface Props extends GeneralProps {
 	values: { min: number; max: number; minSymbols: number; maxSymbols: number };
-	onChangeValue: (key: string, field: string) => void;
+	onChangeValue: (key: string, field: string) => (value: number) => void;
 }
 
 const StringInput = ({
@@ -43,7 +43,9 @@ const StringInput = ({
 						<NumberInput
 							name=""
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'min')}
+							onValueChange={(value) =>
+								onChangeValue(attributeKey, 'min')(value || 1)
+							}
 							value={values.min}
 						></NumberInput>
 					</Box>
@@ -52,7 +54,9 @@ const StringInput = ({
 						<NumberInput
 							name=""
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'max')}
+							onValueChange={(value) =>
+								onChangeValue(attributeKey, 'max')(value || 1)
+							}
 							value={values.max}
 						></NumberInput>
 					</Box>
@@ -61,7 +65,9 @@ const StringInput = ({
 						<NumberInput
 							name=""
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'minSymbols')}
+							onValueChange={(value) =>
+								onChangeValue(attributeKey, 'minSymbols')(value || 1)
+							}
 							value={values.minSymbols}
 						></NumberInput>
 					</Box>
@@ -70,7 +76,9 @@ const StringInput = ({
 						<NumberInput
 							name=""
 							disabled={!checked}
-							onValueChange={onChangeValue(attributeKey, 'maxSymbols')}
+							onValueChange={(value) =>
+								onChangeValue(attributeKey, 'maxSymbols')(value || 1)
+							}
 							value={values.maxSymbols}
 						></NumberInput>
 					</Box>

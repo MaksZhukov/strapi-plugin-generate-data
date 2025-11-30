@@ -26,7 +26,7 @@ let getStringInput = ({
 	attribute: any;
 	values: Values;
 	onChangeCheck: (key: string) => void;
-	onChangeValue: (key: string, field: string) => void;
+	onChangeValue: (key: string, field: string) => (value: number | Date) => void;
 	disabled: boolean;
 	checked: boolean;
 }) => (
@@ -55,7 +55,7 @@ export const getAttributeInputs = ({
 	attribute: any;
 	values: Values;
 	onChangeCheck: (key: string) => void;
-	onChangeValue: (key: string, field: string) => void;
+	onChangeValue: (key: string, field: string) => (value: number | Date) => void;
 	checkedAttributes: string[];
 	attributes: any;
 }) => {
