@@ -131,10 +131,12 @@ const HomePage: React.FC = () => {
 								return;
 							}
 						}
+						if (type === AttributeType.Boolean) {
+							obj[key] = { value: 'random' };
+						}
 						if (
 							[
 								AttributeType.Email,
-								AttributeType.Boolean,
 								AttributeType.Enumeration,
 								AttributeType.UID,
 								AttributeType.Password
@@ -161,7 +163,7 @@ const HomePage: React.FC = () => {
 		setShowAlert(false);
 	};
 
-	const handleChangeValue = (key: string, field: string) => (value: number | Date) => {
+	const handleChangeValue = (key: string, field: string) => (value: number | Date | boolean | 'random') => {
 		if (attributes && values) {
 			const { min, max } = attributes[key];
 			if (min || max) {
@@ -188,7 +190,7 @@ const HomePage: React.FC = () => {
 					return;
 				}
 			}
-			if ((typeof value === 'number' && value > 0) || value instanceof Date) {
+			if ((typeof value === 'number' && value > 0) || value instanceof Date || typeof value === 'boolean' || value === 'random') {
 				setValues({
 					...values,
 					[key]: { ...values[key], [field]: value }

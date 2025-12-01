@@ -26,7 +26,10 @@ let getStringInput = ({
 	attribute: any;
 	values: Values;
 	onChangeCheck: (key: string) => void;
-	onChangeValue: (key: string, field: string) => (value: number | Date) => void;
+	onChangeValue: (
+		key: string,
+		field: string
+	) => (value: number | Date | boolean | 'random') => void;
 	disabled: boolean;
 	checked: boolean;
 }) => (
@@ -55,7 +58,10 @@ export const getAttributeInputs = ({
 	attribute: any;
 	values: Values;
 	onChangeCheck: (key: string) => void;
-	onChangeValue: (key: string, field: string) => (value: number | Date) => void;
+	onChangeValue: (
+		key: string,
+		field: string
+	) => (value: number | Date | boolean | 'random') => void;
 	checkedAttributes: string[];
 	attributes: any;
 }) => {
@@ -142,6 +148,8 @@ export const getAttributeInputs = ({
 				disabled={disabled}
 				checked={checked}
 				onChangeCheck={onChangeCheck}
+				values={values[key] as { value: 'random' | true | false }}
+				onChangeValue={onChangeValue}
 			></BooleanInput>
 		),
 		[AttributeType.Enumeration]: (

@@ -1,5 +1,5 @@
 export default [
-    {
+	{
 		method: 'GET',
 		path: '/content-types',
 		handler: 'myController.getContentTypes',
@@ -8,7 +8,7 @@ export default [
 			auth: false
 		}
 	},
-    {
+	{
 		method: 'GET',
 		path: '/collection-types/:contentType',
 		handler: 'myController.getCollection',
