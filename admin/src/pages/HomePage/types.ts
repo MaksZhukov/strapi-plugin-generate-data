@@ -22,6 +22,7 @@ export type Values = {
 		| { minSymbols: number; maxSymbols: number }
 		| { from: Date; to: Date }
 		| { pageCount: number }
+		| { value: 'random' | true | false }
 		| {};
 };
 

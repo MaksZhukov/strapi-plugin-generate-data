@@ -151,8 +151,14 @@ const Generate = ({
 		return value;
 	};
 
-	const getValueByBooleanType = (): boolean => {
-		return faker.datatype.boolean();
+	const getValueByBooleanType = (key: string): boolean => {
+		let { value } = values[key] as {
+			value: 'random' | true | false;
+		};
+		if (value === 'random') {
+			return faker.datatype.boolean();
+		}
+		return value;
 	};
 
 	const getValueByEnumerationType = (key: string): string => {
@@ -205,7 +211,7 @@ const Generate = ({
 			[AttributeType.Email]: getValueByEmailType,
 			[AttributeType.Date]: getValueByDateType,
 			[AttributeType.Media]: getValueByMediaType,
-			[AttributeType.Boolean]: getValueByBooleanType,
+			[AttributeType.Boolean]: (key: string) => getValueByBooleanType(key),
 			[AttributeType.Enumeration]: getValueByEnumerationType,
 			[AttributeType.Password]: getValueByPasswordType,
 			[AttributeType.UID]: getValueByUIDType,

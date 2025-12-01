@@ -26,10 +26,14 @@ const retryUpload = async (strapi, url, retries = 5) => {
 export default ({ strapi }) => ({
 	getContentTypes(ctx) {
 		const contentTypes = Object.values(strapi.contentTypes)
-			.filter((ct: any) => ct.uid.startsWith('api') && ct.kind === 'collectionType')
+			.filter(
+				(ct: any) =>
+					(ct.uid.startsWith('api') && ct.kind === 'collectionType') ||
+					ct.uid === 'plugin::users-permissions.user'
+			)
 			.map((ct: any) => ({
 				uid: ct.uid,
-				apiID: ct.apiName,
+				apiID: ct.info?.singularName,
 				schema: ct
 			}));
 		return { data: contentTypes };
