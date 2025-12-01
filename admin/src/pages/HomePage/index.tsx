@@ -80,6 +80,7 @@ const HomePage: React.FC = () => {
 				: null,
 		[selectedType]
 	);
+	console.log(attributes);
 
 	useEffect(() => {
 		if (attributes && !values) {
@@ -163,41 +164,47 @@ const HomePage: React.FC = () => {
 		setShowAlert(false);
 	};
 
-	const handleChangeValue = (key: string, field: string) => (value: number | Date | boolean | 'random') => {
-		if (attributes && values) {
-			const { min, max } = attributes[key];
-			if (min || max) {
-				let { min: currentMin, max: currentMax } = values[key] as {
-					min: number;
-					max: number;
-				};
+	const handleChangeValue =
+		(key: string, field: string) => (value: number | Date | boolean | 'random') => {
+			if (attributes && values) {
+				const { min, max } = attributes[key];
+				if (min || max) {
+					let { min: currentMin, max: currentMax } = values[key] as {
+						min: number;
+						max: number;
+					};
+					if (
+						typeof value === 'number' &&
+						(value < min ||
+							value > max ||
+							(field === 'min' && value > currentMax) ||
+							(field === 'max' && value < currentMin))
+					) {
+						return;
+					}
+				}
+				if (field === 'from' || field === 'to') {
+					let { from, to } = values[key] as {
+						from: Date;
+						to: Date;
+					};
+					if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
+						return;
+					}
+				}
 				if (
-					typeof value === 'number' &&
-					(value < min ||
-						value > max ||
-						(field === 'min' && value > currentMax) ||
-						(field === 'max' && value < currentMin))
+					(typeof value === 'number' && value > 0) ||
+					value instanceof Date ||
+					typeof value === 'boolean' ||
+					value === 'random'
 				) {
-					return;
+					setValues({
+						...values,
+						[key]: { ...values[key], [field]: value }
+					});
 				}
 			}
-			if (field === 'from' || field === 'to') {
-				let { from, to } = values[key] as {
-					from: Date;
-					to: Date;
-				};
-				if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
-					return;
-				}
-			}
-			if ((typeof value === 'number' && value > 0) || value instanceof Date || typeof value === 'boolean' || value === 'random') {
-				setValues({
-					...values,
-					[key]: { ...values[key], [field]: value }
-				});
-			}
-		}
-	};
+		};
 
 	const handleChangeCheck = (key: string) => {
 		if (attributes) {
@@ -241,7 +248,7 @@ const HomePage: React.FC = () => {
 		<Box padding="35px">
 			<Box display="flex" marginBottom="10px" style={{ justifyContent: 'space-between' }}>
 				<Box>
-					<Typography fontSize="24px" fontWeight="bold" tag='div'>
+					<Typography fontSize="24px" fontWeight="bold" tag="div">
 						Generate data
 					</Typography>
 					<Typography>Generate data for your content types</Typography>
@@ -335,6 +342,7 @@ const HomePage: React.FC = () => {
 					)}
 				</Box>
 				{!!generatedData.length &&
+					attributes &&
 					Object.keys(generatedData[0]).length >= checkedAttributes.length && (
 						<>
 							<GeneratedDataTable
