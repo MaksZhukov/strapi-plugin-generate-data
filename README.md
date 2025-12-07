@@ -8,17 +8,32 @@ This plugin is for generating data for your content-types for strapi v4 and v5.
 
 # Features
 
--   It supports only `string` with RegExp pattern, `email`, `richtext`, `integer`, `decimal`, `date`, `media(videos, images, audios, files)`, `boolean` `enumeration`, `password`, `UID`, `relation`, `json` fields of your content types, including Strapi users.
+-   **Supported field types**: Generates fake data for the following field types:
+    -   `string` (including RegExp patterns)
+    -   `email`
+    -   `richtext`
+    -   `integer`
+    -   `decimal`
+    -   `date`
+    -   `media` (videos, images, audios, files)
+    -   `boolean`
+    -   `enumeration`
+    -   `password`
+    -   `UID`
+    -   `relation`
+    -   `json`
+    -   Works with all content types, including Strapi users
 -   **Locale support**: Generate localized fake data by selecting from multiple supported locales (English, German, Russian, French, Japanese, Korean, Arabic, Polish, Dutch, Turkish). The locale selector is available in the Configuration section.
 -   **Boolean fields**: Control boolean value generation with three options:
     -   **Random**: Generates random boolean values (default)
     -   **True**: Always generates `true`
     -   **False**: Always generates `false`
--   Ability to publish data if you have draft mode for your type
--   Ability of choosing which field should be included in generating data
--   It has preview of data in table, which you want to upload
--   Ability of flushing data of the content type you want to upload the generated data
--   It creates content in draft if the content type has draft & publish option
+-   **Field selection**: Choose which fields to include when generating data
+-   **Data preview**: Preview generated data in a table before uploading
+-   **Draft & publish**:
+    -   Creates content in draft mode if the content type supports draft & publish
+    -   Option to publish data directly if draft mode is enabled
+-   **Data management**: Flush existing data from a content type before uploading new generated data
 
 # Installations
 
