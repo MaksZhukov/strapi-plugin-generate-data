@@ -13,6 +13,7 @@ This plugin is for generating data for your content-types for strapi v4 and v5.
     -   **Random**: Generates random boolean values (default)
     -   **True**: Always generates `true`
     -   **False**: Always generates `false`
+-   **Locale support**: Generate localized fake data by selecting from multiple supported locales (English, German, Russian, French, Japanese, Korean, Arabic, Polish, Dutch, Turkish). The locale selector is available in the Configuration section.
 -   Ability to publish data if you have draft mode for your type
 -   Ability of choosing which field should be included in generating data
 -   It has preview of data in table, which you want to upload
@@ -79,3 +80,9 @@ It should be activated by default, but if you don't have it in your admin then e
 -   Custom fields
 -   Dynamic zones
 -   Components
+-   Better date controls: Calendar picker, relative dates ("last 30 days")
+-   Copy/paste generated data
+-   Statistics: Show data distribution, unique values count, etc.
+-   Inline cell editing
+-   Recent activity: "last generated 50 articles, 50 minutes ago"
+-   Regenerate only specific field field
