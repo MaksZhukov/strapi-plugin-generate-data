@@ -3,5 +3,6 @@ export interface GeneralProps {
 	attributeKey: string;
 	checked: boolean;
 	disabled: boolean;
+	required?: boolean;
 	onChangeCheck: (key: string) => void;
 }

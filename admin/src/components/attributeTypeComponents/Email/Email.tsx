@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Box, Grid, Checkbox } from '@strapi/design-system';
+import { Box, Grid, Checkbox, Typography } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 
 const Email = ({
@@ -7,6 +7,7 @@ const Email = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
 	onChangeCheck
 }: GeneralProps): ReactElement => (
 	<Grid.Item col={6}>
@@ -17,6 +18,11 @@ const Email = ({
 				checked={checked}
 			>
 				{`${attributeKey} (Field type: Email)`}
+				{disabled && required && (
+					<Typography textColor="neutral600" variant="pi" style={{ marginLeft: '8px' }}>
+						(Required)
+					</Typography>
+				)}
 			</Checkbox>
 		</Box>
 	</Grid.Item>

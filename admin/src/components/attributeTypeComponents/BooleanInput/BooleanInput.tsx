@@ -19,6 +19,7 @@ const BooleanInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
 	onChangeCheck,
 	values,
 	onChangeValue
@@ -33,6 +34,15 @@ const BooleanInput = ({
 						disabled={disabled}
 					>
 						{`${attributeKey} (Field type: Boolean)`}
+						{disabled && required && (
+							<Typography
+								textColor="neutral600"
+								variant="pi"
+								style={{ marginLeft: '8px' }}
+							>
+								(Required)
+							</Typography>
+						)}
 					</Checkbox>
 				</Box>
 				<Box>

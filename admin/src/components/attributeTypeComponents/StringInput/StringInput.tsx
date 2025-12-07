@@ -14,6 +14,7 @@ const StringInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
 	values,
 	onChangeCheck,
 	onChangeValue
@@ -35,6 +36,11 @@ const StringInput = ({
 								? 'String'
 								: 'Richtext'
 						})`}
+						{required && (
+							<>
+								; <strong>Required</strong>
+							</>
+						)}
 					</Checkbox>
 				</Box>
 				<Flex gap="16px">

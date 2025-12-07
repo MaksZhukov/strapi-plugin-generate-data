@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Grid, Flex, Checkbox, NumberInput } from '@strapi/design-system';
+import { Box, Grid, Flex, Checkbox, NumberInput, Typography } from '@strapi/design-system';
 import { GeneralProps } from '../types';
-import { Typography } from '@strapi/design-system';
 interface Props extends GeneralProps {
 	onChangeValue: (key: string, field: string) => (value: number) => void;
 	values: { width: number; height: number; min: number; max: number };
@@ -12,6 +11,7 @@ const MediaInputs = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
 	values,
 	onChangeCheck,
 	onChangeValue
@@ -29,6 +29,11 @@ const MediaInputs = ({
 						{`${attributeKey} (Field type: Media) Allowed types: ${attribute.allowedTypes.join(
 							', '
 						)}`}
+						{disabled && required && (
+							<>
+								; <strong>Required</strong>
+							</>
+						)}
 					</Checkbox>
 				</Box>
 				{allowedImages && (

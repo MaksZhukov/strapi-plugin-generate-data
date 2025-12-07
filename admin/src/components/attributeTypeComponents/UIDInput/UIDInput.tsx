@@ -7,6 +7,7 @@ const UIDInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
 	onChangeCheck
 }: GeneralProps): ReactElement => {
 	return (
@@ -25,6 +26,11 @@ const UIDInput = ({
 						</>
 					) : (
 						`${attributeKey} (Field type: UID)`
+					)}
+					{disabled && required && (
+						<>
+							; <strong>Required</strong>
+						</>
 					)}
 				</Checkbox>
 			</Box>

@@ -14,6 +14,7 @@ const DecimalInputs = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
 	values,
 	onChangeValue
 }: Props) => {
@@ -27,6 +28,11 @@ const DecimalInputs = ({
 						checked={checked}
 					>
 						{`${attributeKey} (Field type: Decimal)`}
+						{disabled && required && (
+							<>
+								; <strong>Required</strong>
+							</>
+						)}
 					</Checkbox>
 				</Box>
 				<Flex gap="16px">
