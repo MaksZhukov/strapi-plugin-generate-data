@@ -19,6 +19,8 @@ import axios from '../../utils/axiosInstance';
 import { getAttributeInputs } from './config';
 import { Attribute, AttributeType, GeneratedData, Values } from './types';
 import { Typography } from '@strapi/design-system';
+import { LOCALE_NAMES, LOCALES } from '../../constants';
+import { Locale } from '../../types';
 
 interface ContentType {
 	apiID: string;
@@ -45,6 +47,7 @@ const HomePage: React.FC = () => {
 	const [generatedData, setGeneratedData] = useState<GeneratedData[]>([]);
 	const [isFlushedPreviousData, setIsFlashedPreviousData] = useState<boolean>(false);
 	const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+	const [locale, setLocale] = useState<Locale>('en');
 
 	const { search } = useLocation();
 	const navigate = useNavigate();
@@ -80,7 +83,6 @@ const HomePage: React.FC = () => {
 				: null,
 		[selectedType]
 	);
-	console.log(attributes);
 
 	useEffect(() => {
 		if (attributes && !values) {
@@ -255,6 +257,7 @@ const HomePage: React.FC = () => {
 				</Box>
 				{attributes && values && (
 					<Generate
+						locale={locale}
 						attributes={attributes}
 						checkedAttributes={checkedAttributes}
 						count={count}
@@ -274,11 +277,28 @@ const HomePage: React.FC = () => {
 					<Flex
 						justifyContent="space-between"
 						alignItems="center"
+						gap="16px"
 						marginBottom={isCollapsed ? 0 : 4}
 					>
-						<Typography fontSize="16px" fontWeight="semiBold">
+						<Typography fontSize="16px" flex="1" fontWeight="semiBold">
 							Configuration
 						</Typography>
+						<Flex alignItems="center" gap="16px">
+							<Typography fontSize="16px" fontWeight="semiBold">
+								Data Locale:
+							</Typography>
+							<SingleSelect
+								size="S"
+								value={locale}
+								onChange={(value: Locale) => setLocale(value)}
+							>
+								{Object.keys(LOCALES).map((locale) => (
+									<SingleSelectOption key={locale} value={locale}>
+										{LOCALE_NAMES[locale as Locale]}
+									</SingleSelectOption>
+								))}
+							</SingleSelect>{' '}
+						</Flex>
 						<Button
 							variant="tertiary"
 							size="S"
