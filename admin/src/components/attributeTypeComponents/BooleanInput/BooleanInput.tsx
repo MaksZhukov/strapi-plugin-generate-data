@@ -58,7 +58,7 @@ const BooleanInput = ({
 									? 'false'
 									: 'random'
 						}
-						onChange={(value: string) => {
+						onChange={(value) => {
 							if (value === 'random') {
 								onChangeValue(attributeKey, 'value')('random');
 							} else {

@@ -290,7 +290,7 @@ const HomePage: React.FC = () => {
 							<SingleSelect
 								size="S"
 								value={locale}
-								onChange={(value: Locale) => setLocale(value)}
+								onChange={(value) => setLocale(value as Locale)}
 							>
 								{Object.keys(LOCALES).map((locale) => (
 									<SingleSelectOption key={locale} value={locale}>
