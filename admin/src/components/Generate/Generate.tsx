@@ -66,7 +66,7 @@ const Generate = ({
 		};
 
 		if (!min && !max) return localeFaker.lorem.words();
-		console.log(localeFaker);
+        
 		if (min === 1 && max === 1)
 			return capitalizeFirstLetter(
 				localeFaker.lorem.word({ length: { max: maxSymbols, min: minSymbols } })

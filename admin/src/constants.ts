@@ -13,7 +13,6 @@ export const LOCALES: Record<Locale, LocaleDefinition> = {
 	nl,
 	tr
 } as const;
-console.log(LOCALES);
 
 export const LOCALE_NAMES: Record<Locale, string> = {
 	en: 'English',
