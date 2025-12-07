@@ -12,6 +12,7 @@ const RelationInput = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	values,
 	onChangeCheck
 }: Props): ReactElement => {
@@ -24,9 +25,14 @@ const RelationInput = ({
 					checked={checked}
 				>
 					{`${attributeKey} (Field type: Relation)`}
-					{disabled && required && (
+					{required && (
 						<>
 							; <strong>Required</strong>
+						</>
+					)}
+					{unique && (
+						<>
+							; <strong>Unique</strong>
 						</>
 					)}
 					{values.pageCount === 0 && (

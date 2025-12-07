@@ -8,6 +8,7 @@ const Email = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	onChangeCheck
 }: GeneralProps): ReactElement => (
 	<Grid.Item col={6}>
@@ -18,10 +19,15 @@ const Email = ({
 				checked={checked}
 			>
 				{`${attributeKey} (Field type: Email)`}
-				{disabled && required && (
-					<Typography textColor="neutral600" variant="pi" style={{ marginLeft: '8px' }}>
-						(Required)
-					</Typography>
+				{required && (
+					<>
+						; <strong>Required</strong>
+					</>
+				)}
+				{unique && (
+					<>
+						; <strong>Unique</strong>
+					</>
 				)}
 			</Checkbox>
 		</Box>

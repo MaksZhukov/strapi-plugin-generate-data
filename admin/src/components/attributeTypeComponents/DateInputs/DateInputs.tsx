@@ -12,6 +12,7 @@ const DateInputs = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	values,
 	onChangeValue,
 	onChangeCheck
@@ -26,9 +27,14 @@ const DateInputs = ({
 						checked={checked}
 					>
 						{`${attributeKey} (Field type: Date)`}
-						{disabled && required && (
+						{required && (
 							<>
 								; <strong>Required</strong>
+							</>
+						)}
+						{unique && (
+							<>
+								; <strong>Unique</strong>
 							</>
 						)}
 					</Checkbox>

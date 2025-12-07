@@ -15,6 +15,7 @@ const JSONInput = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	onChangeValue,
 	onChangeCheck
 }: Props): ReactElement => (
@@ -27,9 +28,14 @@ const JSONInput = ({
 					checked={checked}
 				>
 					{`${attributeKey} (Field type: JSON)`}
-					{disabled && required && (
+					{required && (
 						<>
 							; <strong>Required</strong>
+						</>
+					)}
+					{unique && (
+						<>
+							; <strong>Unique</strong>
 						</>
 					)}
 				</Checkbox>

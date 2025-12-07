@@ -8,6 +8,7 @@ const EnumerationInput = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	onChangeCheck
 }: GeneralProps): ReactElement => (
 	<Grid.Item col={6}>
@@ -18,9 +19,14 @@ const EnumerationInput = ({
 				checked={checked}
 			>
 				{`${attributeKey} (field type: Enumeration)`}
-				{disabled && required && (
+				{required && (
 					<>
 						; <strong>Required</strong>
+					</>
+				)}
+				{unique && (
+					<>
+						; <strong>Unique</strong>
 					</>
 				)}
 			</Checkbox>

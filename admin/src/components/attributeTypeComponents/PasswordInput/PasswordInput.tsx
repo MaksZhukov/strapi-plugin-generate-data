@@ -8,6 +8,7 @@ const PasswordInput = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	onChangeCheck
 }: GeneralProps): ReactElement => {
 	return (
@@ -19,9 +20,14 @@ const PasswordInput = ({
 					checked={checked}
 				>
 					{`${attributeKey} (Field type: Password)`}
-					{disabled && required && (
+					{required && (
 						<>
 							; <strong>Required</strong>
+						</>
+					)}
+					{unique && (
+						<>
+							; <strong>Unique</strong>
 						</>
 					)}
 				</Checkbox>

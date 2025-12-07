@@ -12,6 +12,7 @@ const MediaInputs = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	values,
 	onChangeCheck,
 	onChangeValue
@@ -29,9 +30,14 @@ const MediaInputs = ({
 						{`${attributeKey} (Field type: Media) Allowed types: ${attribute.allowedTypes.join(
 							', '
 						)}`}
-						{disabled && required && (
+						{required && (
 							<>
 								; <strong>Required</strong>
+							</>
+						)}
+						{unique && (
+							<>
+								; <strong>Unique</strong>
 							</>
 						)}
 					</Checkbox>

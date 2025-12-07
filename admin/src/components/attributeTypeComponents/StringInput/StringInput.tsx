@@ -15,6 +15,7 @@ const StringInput = ({
 	checked,
 	disabled,
 	required,
+	unique,
 	values,
 	onChangeCheck,
 	onChangeValue
@@ -39,6 +40,11 @@ const StringInput = ({
 						{required && (
 							<>
 								; <strong>Required</strong>
+							</>
+						)}
+						{unique && (
+							<>
+								; <strong>Unique</strong>
 							</>
 						)}
 					</Checkbox>
