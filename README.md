@@ -4,16 +4,16 @@ This plugin is for generating data for your content-types for strapi v4 and v5.
 `For strapi version v4 use plugin version 1`
 `For strapi version v5 use plugin version 2`
 
-![Preview](./preview.jpg)
+![Preview](./preview.png)
 
 # Features
 
 -   It supports only `string` with RegExp pattern, `email`, `richtext`, `integer`, `decimal`, `date`, `media(videos, images, audios, files)`, `boolean` `enumeration`, `password`, `UID`, `relation`, `json` fields of your content types, including Strapi users.
+-   **Locale support**: Generate localized fake data by selecting from multiple supported locales (English, German, Russian, French, Japanese, Korean, Arabic, Polish, Dutch, Turkish). The locale selector is available in the Configuration section.
 -   **Boolean fields**: Control boolean value generation with three options:
     -   **Random**: Generates random boolean values (default)
     -   **True**: Always generates `true`
     -   **False**: Always generates `false`
--   **Locale support**: Generate localized fake data by selecting from multiple supported locales (English, German, Russian, French, Japanese, Korean, Arabic, Polish, Dutch, Turkish). The locale selector is available in the Configuration section.
 -   Ability to publish data if you have draft mode for your type
 -   Ability of choosing which field should be included in generating data
 -   It has preview of data in table, which you want to upload
