@@ -19,6 +19,8 @@ import axios from '../../utils/axiosInstance';
 import { getAttributeInputs } from './config';
 import { Attribute, AttributeType, GeneratedData, Values } from './types';
 import { Typography } from '@strapi/design-system';
+import { LOCALE_NAMES, LOCALES } from '../../constants';
+import { Locale } from '../../types';
 
 interface ContentType {
 	apiID: string;
@@ -45,6 +47,7 @@ const HomePage: React.FC = () => {
 	const [generatedData, setGeneratedData] = useState<GeneratedData[]>([]);
 	const [isFlushedPreviousData, setIsFlashedPreviousData] = useState<boolean>(false);
 	const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+	const [locale, setLocale] = useState<Locale>('en');
 
 	const { search } = useLocation();
 	const navigate = useNavigate();
@@ -163,41 +166,47 @@ const HomePage: React.FC = () => {
 		setShowAlert(false);
 	};
 
-	const handleChangeValue = (key: string, field: string) => (value: number | Date | boolean | 'random') => {
-		if (attributes && values) {
-			const { min, max } = attributes[key];
-			if (min || max) {
-				let { min: currentMin, max: currentMax } = values[key] as {
-					min: number;
-					max: number;
-				};
+	const handleChangeValue =
+		(key: string, field: string) => (value: number | Date | boolean | 'random') => {
+			if (attributes && values) {
+				const { min, max } = attributes[key];
+				if (min || max) {
+					let { min: currentMin, max: currentMax } = values[key] as {
+						min: number;
+						max: number;
+					};
+					if (
+						typeof value === 'number' &&
+						(value < min ||
+							value > max ||
+							(field === 'min' && value > currentMax) ||
+							(field === 'max' && value < currentMin))
+					) {
+						return;
+					}
+				}
+				if (field === 'from' || field === 'to') {
+					let { from, to } = values[key] as {
+						from: Date;
+						to: Date;
+					};
+					if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
+						return;
+					}
+				}
 				if (
-					typeof value === 'number' &&
-					(value < min ||
-						value > max ||
-						(field === 'min' && value > currentMax) ||
-						(field === 'max' && value < currentMin))
+					(typeof value === 'number' && value > 0) ||
+					value instanceof Date ||
+					typeof value === 'boolean' ||
+					value === 'random'
 				) {
-					return;
+					setValues({
+						...values,
+						[key]: { ...values[key], [field]: value }
+					});
 				}
 			}
-			if (field === 'from' || field === 'to') {
-				let { from, to } = values[key] as {
-					from: Date;
-					to: Date;
-				};
-				if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
-					return;
-				}
-			}
-			if ((typeof value === 'number' && value > 0) || value instanceof Date || typeof value === 'boolean' || value === 'random') {
-				setValues({
-					...values,
-					[key]: { ...values[key], [field]: value }
-				});
-			}
-		}
-	};
+		};
 
 	const handleChangeCheck = (key: string) => {
 		if (attributes) {
@@ -241,13 +250,14 @@ const HomePage: React.FC = () => {
 		<Box padding="35px">
 			<Box display="flex" marginBottom="10px" style={{ justifyContent: 'space-between' }}>
 				<Box>
-					<Typography fontSize="24px" fontWeight="bold" tag='div'>
+					<Typography fontSize="24px" fontWeight="bold" tag="div">
 						Generate data
 					</Typography>
 					<Typography>Generate data for your content types</Typography>
 				</Box>
 				{attributes && values && (
 					<Generate
+						locale={locale}
 						attributes={attributes}
 						checkedAttributes={checkedAttributes}
 						count={count}
@@ -267,11 +277,28 @@ const HomePage: React.FC = () => {
 					<Flex
 						justifyContent="space-between"
 						alignItems="center"
+						gap="16px"
 						marginBottom={isCollapsed ? 0 : 4}
 					>
-						<Typography fontSize="16px" fontWeight="semiBold">
+						<Typography fontSize="16px" flex="1" fontWeight="semiBold">
 							Configuration
 						</Typography>
+						<Flex alignItems="center" gap="16px">
+							<Typography fontSize="16px" fontWeight="semiBold">
+								Data Locale:
+							</Typography>
+							<SingleSelect
+								size="S"
+								value={locale}
+								onChange={(value) => setLocale(value as Locale)}
+							>
+								{Object.keys(LOCALES).map((locale) => (
+									<SingleSelectOption key={locale} value={locale}>
+										{LOCALE_NAMES[locale as Locale]}
+									</SingleSelectOption>
+								))}
+							</SingleSelect>{' '}
+						</Flex>
 						<Button
 							variant="tertiary"
 							size="S"
@@ -335,6 +362,7 @@ const HomePage: React.FC = () => {
 					)}
 				</Box>
 				{!!generatedData.length &&
+					attributes &&
 					Object.keys(generatedData[0]).length >= checkedAttributes.length && (
 						<>
 							<GeneratedDataTable

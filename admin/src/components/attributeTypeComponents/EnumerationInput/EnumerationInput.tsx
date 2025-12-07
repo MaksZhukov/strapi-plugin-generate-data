@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Box, Grid, Checkbox } from '@strapi/design-system';
+import { Box, Grid, Checkbox, Typography } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 
 const EnumerationInput = ({
@@ -7,6 +7,8 @@ const EnumerationInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
+	unique,
 	onChangeCheck
 }: GeneralProps): ReactElement => (
 	<Grid.Item col={6}>
@@ -17,6 +19,16 @@ const EnumerationInput = ({
 				checked={checked}
 			>
 				{`${attributeKey} (field type: Enumeration)`}
+				{required && (
+					<>
+						; <strong>Required</strong>
+					</>
+				)}
+				{unique && (
+					<>
+						; <strong>Unique</strong>
+					</>
+				)}
 			</Checkbox>
 		</Box>
 	</Grid.Item>

@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Box, Grid, Checkbox } from '@strapi/design-system';
+import { Box, Grid, Checkbox, Typography } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 
 const PasswordInput = ({
@@ -7,6 +7,8 @@ const PasswordInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
+	unique,
 	onChangeCheck
 }: GeneralProps): ReactElement => {
 	return (
@@ -18,6 +20,16 @@ const PasswordInput = ({
 					checked={checked}
 				>
 					{`${attributeKey} (Field type: Password)`}
+					{required && (
+						<>
+							; <strong>Required</strong>
+						</>
+					)}
+					{unique && (
+						<>
+							; <strong>Unique</strong>
+						</>
+					)}
 				</Checkbox>
 			</Box>
 		</Grid.Item>

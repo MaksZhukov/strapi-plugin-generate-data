@@ -11,6 +11,8 @@ const RelationInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
+	unique,
 	values,
 	onChangeCheck
 }: Props): ReactElement => {
@@ -22,16 +24,22 @@ const RelationInput = ({
 					onCheckedChange={() => onChangeCheck(attributeKey)}
 					checked={checked}
 				>
-					{`${attributeKey} (Field type: Relation)
-          ${
-				values.pageCount === 0 ? (
-					<Typography textColor="warning500" variant="delta">
-						Generate or add data for the type
-					</Typography>
-				) : (
-					''
-				)
-			}`}
+					{`${attributeKey} (Field type: Relation)`}
+					{required && (
+						<>
+							; <strong>Required</strong>
+						</>
+					)}
+					{unique && (
+						<>
+							; <strong>Unique</strong>
+						</>
+					)}
+					{values.pageCount === 0 && (
+						<Typography textColor="warning500" variant="delta">
+							Generate or add data for the type
+						</Typography>
+					)}
 				</Checkbox>
 			</Box>
 		</Grid.Item>

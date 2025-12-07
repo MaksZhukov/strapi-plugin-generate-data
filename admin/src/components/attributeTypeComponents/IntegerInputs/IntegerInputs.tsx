@@ -14,6 +14,8 @@ const IntegerInputs = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
+	unique,
 	values,
 	onChangeValue
 }: Props) => {
@@ -27,6 +29,16 @@ const IntegerInputs = ({
 						checked={checked}
 					>
 						{`${attributeKey} (Field type: Integer)`}
+						{required && (
+							<>
+								; <strong>Required</strong>
+							</>
+						)}
+						{unique && (
+							<>
+								; <strong>Unique</strong>
+							</>
+						)}
 					</Checkbox>
 				</Box>
 				<Flex gap="16px">

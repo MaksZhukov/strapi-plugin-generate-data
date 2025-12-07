@@ -1,4 +1,4 @@
-import { DatePicker, Box, Grid, Flex, Checkbox } from '@strapi/design-system';
+import { DatePicker, Box, Grid, Flex, Checkbox, Typography } from '@strapi/design-system';
 import { GeneralProps } from '../types';
 
 interface Props extends GeneralProps {
@@ -10,6 +10,9 @@ const DateInputs = ({
 	attribute,
 	attributeKey,
 	checked,
+	disabled,
+	required,
+	unique,
 	values,
 	onChangeValue,
 	onChangeCheck
@@ -19,11 +22,21 @@ const DateInputs = ({
 			<Box marginBottom="8px">
 				<Box marginBottom="12px">
 					<Checkbox
-						disabled={attribute.required}
+						disabled={disabled}
 						onCheckedChange={() => onChangeCheck(attributeKey)}
 						checked={checked}
 					>
 						{`${attributeKey} (Field type: Date)`}
+						{required && (
+							<>
+								; <strong>Required</strong>
+							</>
+						)}
+						{unique && (
+							<>
+								; <strong>Unique</strong>
+							</>
+						)}
 					</Checkbox>
 				</Box>
 				<Flex gap="16px">

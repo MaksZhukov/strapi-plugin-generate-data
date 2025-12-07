@@ -19,6 +19,8 @@ const BooleanInput = ({
 	attributeKey,
 	checked,
 	disabled,
+	required,
+	unique,
 	onChangeCheck,
 	values,
 	onChangeValue
@@ -33,6 +35,16 @@ const BooleanInput = ({
 						disabled={disabled}
 					>
 						{`${attributeKey} (Field type: Boolean)`}
+						{required && (
+							<>
+								; <strong>Required</strong>
+							</>
+						)}
+						{unique && (
+							<>
+								; <strong>Unique</strong>
+							</>
+						)}
 					</Checkbox>
 				</Box>
 				<Box>
@@ -46,7 +58,7 @@ const BooleanInput = ({
 									? 'false'
 									: 'random'
 						}
-						onChange={(value: string) => {
+						onChange={(value) => {
 							if (value === 'random') {
 								onChangeValue(attributeKey, 'value')('random');
 							} else {

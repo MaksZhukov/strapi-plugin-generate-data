@@ -1,18 +1,23 @@
-import { faker } from '@faker-js/faker';
+import { faker, Faker, base, en, LocaleDefinition } from '@faker-js/faker';
 import { Button } from '@strapi/design-system';
 import { ArrowClockwise as RefreshIcon } from '@strapi/icons';
 import qs from 'qs';
 import slugify from 'slugify';
 import { Attribute, AttributeType, Values } from '../../pages/HomePage/types';
 import axios from '../../utils/axiosInstance';
+import { LOCALES } from '../../constants';
+import { Locale } from '../../types';
+
 const COUNT_VIDEOS = 10;
 const COUNT_AUDIOS = 5;
 const COUNT_FILES = 5;
+
 interface Props {
 	attributes: { [key: string]: Attribute };
 	checkedAttributes: string[];
 	values: Values;
 	count: number;
+	locale: Locale;
 	onChangeGenerateData: (data: any[]) => void;
 }
 
@@ -21,6 +26,7 @@ const Generate = ({
 	checkedAttributes,
 	values,
 	count,
+	locale,
 	onChangeGenerateData
 }: Props) => {
 	const capitalizeFirstLetter = (str: string): string => {
@@ -46,10 +52,11 @@ const Generate = ({
 	const getValueByStringAndRichtextType = (
 		key: string,
 		relationArray: number[],
+		localeFaker: Faker,
 		regex?: string
 	): string => {
 		if (regex) {
-			return faker.helpers.fromRegExp(regex);
+			return localeFaker.helpers.fromRegExp(regex);
 		}
 		let { min, max, minSymbols, maxSymbols } = values[key] as {
 			min: number;
@@ -58,16 +65,17 @@ const Generate = ({
 			maxSymbols: number;
 		};
 
-		if (!min && !max) return faker.lorem.words();
+		if (!min && !max) return localeFaker.lorem.words();
+		console.log(localeFaker);
 		if (min === 1 && max === 1)
 			return capitalizeFirstLetter(
-				faker.lorem.word({ length: { max: maxSymbols, min: minSymbols } })
+				localeFaker.lorem.word({ length: { max: maxSymbols, min: minSymbols } })
 			);
-		return faker.lorem
+		return localeFaker.lorem
 			.words({ min, max })
 			.split(' ')
-			.map((item) => {
-				let randomIndex = faker.number.int({
+			.map((item: string) => {
+				let randomIndex = localeFaker.number.int({
 					min: minSymbols,
 					max: maxSymbols
 				});
@@ -201,6 +209,7 @@ const Generate = ({
 		type: AttributeType,
 		key: string,
 		relationArray: { [key: string]: number[] },
+		localeFaker: Faker,
 		regex?: string
 	): any => {
 		let obj = {
@@ -220,11 +229,13 @@ const Generate = ({
 			[AttributeType.JSON]: getValueByJSONType
 		};
 
-		return obj[type](key, relationArray[key], regex);
+		return obj[type](key, relationArray[key], localeFaker, regex);
 	};
 
 	const handleClickGenerate = async () => {
 		let data: { [key: string]: string | string[] }[] = [];
+		const selectedLocale: LocaleDefinition = LOCALES[locale] || en;
+		const localeFaker = new Faker({ locale: [selectedLocale, base] });
 		if (attributes && values) {
 			let relationData: { [key: string]: any } = {};
 			const relationKeys = Object.keys(attributes)
@@ -269,10 +280,16 @@ const Generate = ({
 							attributes[key].type,
 							key,
 							relationData,
+							localeFaker,
 							attributes[key].regex
 						);
 					} else {
-						obj[key] = getGeneratedDataByType(attributes[key].type, key, relationData);
+						obj[key] = getGeneratedDataByType(
+							attributes[key].type,
+							key,
+							relationData,
+							localeFaker
+						);
 					}
 				});
 
