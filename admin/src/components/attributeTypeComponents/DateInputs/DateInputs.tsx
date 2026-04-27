@@ -6,8 +6,11 @@ interface Props extends GeneralProps {
 	onChangeValue: (key: string, field: string) => (date: Date) => void;
 }
 
+const toUTCMidnight = (date: Date) =>
+	new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+
 const DateInputs = ({
-	attribute,
+	attribute: _attribute,
 	attributeKey,
 	checked,
 	disabled,
@@ -41,20 +44,34 @@ const DateInputs = ({
 				</Box>
 				<Flex gap="16px">
 					<Box flex="1">
+						<Typography variant="pi" fontWeight="bold" marginBottom={1}>
+							From
+						</Typography>
 						<DatePicker
 							onChange={(date) =>
-								onChangeValue(attributeKey, 'from')(date || new Date())
+								onChangeValue(
+									attributeKey,
+									'from'
+								)(date ? toUTCMidnight(date) : new Date())
 							}
 							value={values.from}
-						></DatePicker>
+							maxDate={values.to}
+						/>
 					</Box>
 					<Box flex="1">
+						<Typography variant="pi" fontWeight="bold" marginBottom={1}>
+							To
+						</Typography>
 						<DatePicker
 							onChange={(date) =>
-								onChangeValue(attributeKey, 'to')(date || new Date())
+								onChangeValue(
+									attributeKey,
+									'to'
+								)(date ? toUTCMidnight(date) : new Date())
 							}
 							value={values.to}
-						></DatePicker>
+							minDate={values.from}
+						/>
 					</Box>
 				</Flex>
 			</Box>

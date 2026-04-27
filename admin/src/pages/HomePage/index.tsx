@@ -110,7 +110,9 @@ const HomePage: React.FC = () => {
 							};
 						}
 						if (type === AttributeType.Date) {
-							obj[key] = { from: new Date(), to: new Date() };
+							const t = new Date();
+							const today = new Date(Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()));
+							obj[key] = { from: today, to: today };
 						}
 						if (attributes[key].type === AttributeType.Media) {
 							obj[key] = {
@@ -186,13 +188,18 @@ const HomePage: React.FC = () => {
 					}
 				}
 				if (field === 'from' || field === 'to') {
-					let { from, to } = values[key] as {
-						from: Date;
-						to: Date;
-					};
-					if ((field === 'from' && value > to) || (field === 'to' && value < from)) {
+					if (!(value instanceof Date)) return;
+					let { from, to } = values[key] as { from: Date; to: Date };
+					if (field === 'from' && value > to) {
+						setValues({ ...values, [key]: { from: value, to: value } });
 						return;
 					}
+					if (field === 'to' && value < from) {
+						setValues({ ...values, [key]: { from: value, to: value } });
+						return;
+					}
+					setValues({ ...values, [key]: { ...values[key], [field]: value } });
+					return;
 				}
 				if (
 					(typeof value === 'number' && value > 0) ||
@@ -238,6 +245,14 @@ const HomePage: React.FC = () => {
 		setShowAlert(false);
 	};
 
+	useEffect(() => {
+		if (!showAlert) {
+			return;
+		}
+		const timer = setTimeout(() => setShowAlert(false), 5000);
+		return () => clearTimeout(timer);
+	}, [showAlert]);
+
 	const handleChangeIsPublished = () => {
 		setIsPublished(!isPublished);
 	};
@@ -247,7 +262,7 @@ const HomePage: React.FC = () => {
 	};
 
 	return (
-		<Box padding="35px">
+		<Box background="neutral100" padding="35px" minHeight="100vh">
 			<Box display="flex" marginBottom="10px" style={{ justifyContent: 'space-between' }}>
 				<Box>
 					<Typography fontSize="24px" fontWeight="bold" tag="div">
@@ -402,6 +417,7 @@ const HomePage: React.FC = () => {
 									onChangeUploadedError={setUploadedError}
 									onChangeIsUploadingData={setIsUploadingData}
 									onChangeShowAlert={setShowAlert}
+									onUploadSuccess={() => setGeneratedData([])}
 								></Upload>
 							</Flex>
 						</>

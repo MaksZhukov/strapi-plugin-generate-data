@@ -15,6 +15,7 @@ interface Props {
 	onChangeIsUploadingData: (value: boolean) => void;
 	onChangeShowAlert: (value: boolean) => void;
 	onChangeUploadedError: (value: boolean) => void;
+	onUploadSuccess?: () => void;
 }
 
 const Upload = ({
@@ -27,7 +28,8 @@ const Upload = ({
 	generatedData,
 	onChangeIsUploadingData,
 	onChangeShowAlert,
-	onChangeUploadedError
+	onChangeUploadedError,
+	onUploadSuccess
 }: Props) => {
 	const handleUploadData = async () => {
 		onChangeIsUploadingData(true);
@@ -67,18 +69,20 @@ const Upload = ({
 						}
 					}
 
-					const transformedData = Object.keys(uploadedMediaData).length
-						? dataByCount.map((item, index) => {
-								let newItem: { [key: string]: any } = {};
-								Object.keys(uploadedMediaData).forEach((key) => {
-									newItem[key] =
-										uploadedMediaData[key][index].map(
-											(uploadedItem: any) => uploadedItem.id
-										) || item[key];
-								});
-								return { ...item, ...newItem };
-							})
-						: dataByCount;
+					const transformedData = dataByCount.map((item, index) => {
+						const filtered = checkedAttributes.reduce((prev, key) => {
+							if (uploadedMediaData[key]) {
+								return {
+									...prev,
+									[key]: uploadedMediaData[key][index].map(
+										(uploadedItem: any) => uploadedItem.id
+									)
+								};
+							}
+							return { ...prev, [key]: item[key] };
+						}, {} as { [key: string]: any });
+						return filtered;
+					});
 
 					await axios.post(`/generate-data/create/${selectedType.uid}`, {
 						data: transformedData,
@@ -88,6 +92,7 @@ const Upload = ({
 					return uploadData(data.slice(COUNT_UPLOADED_DATA_ONCE));
 				};
 				await uploadData(generatedData);
+				onUploadSuccess?.();
 			} catch (err) {
 				onChangeUploadedError(true);
 			}

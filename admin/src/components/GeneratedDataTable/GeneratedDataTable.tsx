@@ -44,7 +44,18 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 
 		if (attributes[headKeys[index]].type === AttributeType.JSON) {
 			return (
-				<pre style={{ maxHeight: 200, overflowY: 'auto' }}>
+				<pre
+					style={{
+						maxHeight: 200,
+						overflowY: 'auto',
+						margin: 0,
+						fontSize: 12,
+						padding: '8px',
+						borderRadius: '4px',
+						background: 'var(--strapi-neutral-100)',
+						color: 'var(--strapi-neutral-800)'
+					}}
+				>
 					{JSON.stringify(item, undefined, 2)}
 				</pre>
 			);
@@ -60,7 +71,7 @@ const GeneratedDataTable = ({ data, attributes, checkedAttributes }: Props) => {
 			footer={
 				<Flex justifyContent="center" padding={[2, 2]}>
 					<Pagination activePage={activePage} pageCount={pageCount}>
-						{new Array(pageCount).fill(null).map((item, index) => (
+						{new Array(pageCount).fill(null).map((_, index) => (
 							<Button
 								key={index}
 								onClick={handleChangePagination(index + 1)}
